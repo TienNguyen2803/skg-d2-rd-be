@@ -26,9 +26,12 @@ import { ServiceCategoriesModule } from './service-categories/service-categories
 import { ServicesModule } from './services/services.module';
 import { ClsModule } from 'nestjs-cls';
 import { EntityHelperSubscriber } from './utils/subcribers/entity-helper.subscriber';
+import { PortalsModule } from './portals/portals.module';
+
 
 @Module({
   imports: [
+
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
@@ -86,6 +89,9 @@ import { EntityHelperSubscriber } from './utils/subcribers/entity-helper.subscri
     SpaInfoModule,
     ServiceCategoriesModule,
     ServicesModule,
+    PortalsModule, // Added PortalsModule to imports
   ],
 })
 export class AppModule { }
+
+

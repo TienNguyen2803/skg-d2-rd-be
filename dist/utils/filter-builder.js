@@ -5,7 +5,7 @@ const typeorm_1 = require("typeorm");
 class FilterBuilder {
     static buildFilter(filterQuery) {
         const findOptions = {
-            where: {}
+            where: []
         };
         if (filterQuery) {
             try {
@@ -13,16 +13,16 @@ class FilterBuilder {
                 if (filters.$and) {
                     filters.$and.forEach((andCondition) => {
                         if (andCondition.$or) {
-                            const searchableFields = Object.keys(andCondition.$or[0]).filter(key => typeof andCondition.$or[0][key] === 'object' && '$contL' in andCondition.$or[0][key]);
-                            findOptions.where = searchableFields.map(() => ({}));
-                            andCondition.$or.forEach((condition) => {
-                                searchableFields.forEach((field, index) => {
-                                    var _a;
-                                    if ((_a = condition[field]) === null || _a === void 0 ? void 0 : _a.$contL) {
-                                        findOptions.where[index] = { [field]: (0, typeorm_1.ILike)(`%${condition[field].$contL}%`) };
+                            const orConditions = andCondition.$or.map((condition) => {
+                                const whereCondition = {};
+                                Object.keys(condition).forEach(field => {
+                                    if (typeof condition[field] === 'object' && '$contL' in condition[field]) {
+                                        whereCondition[field] = (0, typeorm_1.ILike)(`%${condition[field].$contL}%`);
                                     }
                                 });
+                                return whereCondition;
                             });
+                            findOptions.where = orConditions;
                         }
                     });
                 }
