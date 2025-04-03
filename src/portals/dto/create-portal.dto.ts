@@ -17,4 +17,9 @@ export class CreatePortalDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({ example: 'https://example.com' })
+  @IsString()
+  @IsOptional()
+  url?: string;
 }
