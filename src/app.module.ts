@@ -26,12 +26,12 @@ import { ServiceCategoriesModule } from './service-categories/service-categories
 import { ServicesModule } from './services/services.module';
 import { ClsModule } from 'nestjs-cls';
 import { EntityHelperSubscriber } from './utils/subcribers/entity-helper.subscriber';
-import { PortalsModule } from './portals/portals.module'; // Import the newly created module
+import { PortalsModule } from './portals/portals.module';
 
 
 @Module({
   imports: [
-    PortalsModule, // Added PortalsModule to imports
+
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
@@ -89,136 +89,9 @@ import { PortalsModule } from './portals/portals.module'; // Import the newly cr
     SpaInfoModule,
     ServiceCategoriesModule,
     ServicesModule,
+    PortalsModule, // Added PortalsModule to imports
   ],
 })
 export class AppModule { }
 
-//Below are the files that need to be created to complete the request.  These are examples and may need adjustments based on your specific needs and the structure of spa-info
 
-// src/portals/dto/create-portal.dto.ts
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
-
-export class CreatePortalDto {
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  // Add other fields as needed from spa-info
-}
-
-// src/portals/dto/update-portal.dto.ts
-import { PartialType } from '@nestjs/mapped-types';
-import { CreatePortalDto } from './create-portal.dto';
-
-export class UpdatePortalDto extends PartialType(CreatePortalDto) {}
-
-// src/portals/portals.service.ts
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreatePortalDto } from './dto/create-portal.dto';
-import { UpdatePortalDto } from './dto/update-portal.dto';
-import { Portal } from './entities/portal.entity'; // You'll need to create this entity
-
-@Injectable()
-export class PortalsService {
-  constructor(
-    @InjectRepository(Portal)
-    private portalsRepository: Repository<Portal>,
-  ) {}
-
-  findAll(): Promise<Portal[]> {
-    return this.portalsRepository.find();
-  }
-
-  findOne(id: number): Promise<Portal> {
-    return this.portalsRepository.findOneBy({ id });
-  }
-
-  create(createPortalDto: CreatePortalDto): Promise<Portal> {
-    const portal = this.portalsRepository.create(createPortalDto);
-    return this.portalsRepository.save(portal);
-  }
-
-  update(id: number, updatePortalDto: UpdatePortalDto): Promise<Portal> {
-    return this.portalsRepository.update(id, updatePortalDto).then(() => this.findOne(id));
-  }
-
-  remove(id: number): Promise<void> {
-    return this.portalsRepository.delete(id).then(() => undefined);
-  }
-}
-
-
-// src/portals/portals.controller.ts
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
-import { CreatePortalDto } from './dto/create-portal.dto';
-import { UpdatePortalDto } from './dto/update-portal.dto';
-import { PortalsService } from './portals.service';
-
-@Controller('portals')
-export class PortalsController {
-  constructor(private readonly portalsService: PortalsService) {}
-
-  @Post()
-  create(@Body() createPortalDto: CreatePortalDto) {
-    return this.portalsService.create(createPortalDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.portalsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.portalsService.findOne(+id);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updatePortalDto: UpdatePortalDto) {
-    return this.portalsService.update(+id, updatePortalDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.portalsService.remove(+id);
-  }
-}
-
-
-// src/portals/entities/portal.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-
-@Entity()
-export class Portal {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  name: string;
-
-  @Column({ type: 'text', nullable: true })
-  description: string;
-
-  // Add other fields as needed from spa-info
-}
-
-// src/portals/portals.module.ts
-import { Module } from '@nestjs/common';
-import { PortalsService } from './portals.service';
-import { PortalsController } from './portals.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Portal } from './entities/portal.entity';
-
-@Module({
-  imports: [TypeOrmModule.forFeature([Portal])],
-  controllers: [PortalsController],
-  providers: [PortalsService],
-  exports: [PortalsService] //Added to export the service if needed elsewhere
-})
-export class PortalsModule {}
