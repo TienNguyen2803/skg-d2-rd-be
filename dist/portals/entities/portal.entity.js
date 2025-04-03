@@ -30,6 +30,10 @@ __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Portal.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Portal.prototype, "url", void 0);
 exports.Portal = Portal = __decorate([
     (0, typeorm_1.Entity)()
 ], Portal);

@@ -4,4 +4,5 @@ export declare class Portal extends EntityHelper {
     name: string;
     icon: string;
     description: string;
+    url: string;
 }
