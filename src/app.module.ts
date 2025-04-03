@@ -29,6 +29,7 @@ import { EntityHelperSubscriber } from './utils/subcribers/entity-helper.subscri
 
 @Module({
   imports: [
+    PortalsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
