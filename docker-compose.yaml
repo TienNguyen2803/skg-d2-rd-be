@@ -1,0 +1,44 @@
+services:
+  quote-postgres:
+    image: postgres:15.3-alpine
+    ports:
+      - 54321:5432
+    volumes:
+      - ./.data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: quote
+      POSTGRES_PASSWORD: master123
+      POSTGRES_DB: quote
+
+
+  quote:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./logs:/usr/src/app/logs
+    ports:
+      - "3001:3001"
+    depends_on:
+      - quote-postgres
+
+  # maildev:
+  #   build:
+  #     context: .
+  #     dockerfile: maildev.Dockerfile
+  #   ports:
+  #     - ${MAIL_CLIENT_PORT}:1080
+  #     - ${MAIL_PORT}:1025
+
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
+
+  # Uncomment to use redis
+  # redis:
+  #   image: redis:7-alpine
+  #   ports:
+  #     - 6379:6379
