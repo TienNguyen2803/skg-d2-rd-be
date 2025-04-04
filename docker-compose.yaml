@@ -2,13 +2,13 @@ services:
   quote-postgres:
     image: postgres:15.3-alpine
     ports:
-      - 54321:5432
+      - 54331:5432
     volumes:
       - ./.data/db:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: quote
+      POSTGRES_USER: skg
       POSTGRES_PASSWORD: master123
-      POSTGRES_DB: quote
+      POSTGRES_DB: skg
 
 
   quote:
@@ -19,9 +19,9 @@ services:
     volumes:
       - ./logs:/usr/src/app/logs
     ports:
-      - "3001:3001"
+      - "54331:54331"
     depends_on:
-      - quote-postgres
+      - skg-postgres
 
   # maildev:
   #   build:
