@@ -12,8 +12,14 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
+  UploadedFiles,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiConsumes } from '@nestjs/swagger';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
+import { extname } from 'path';
 import { SiteConfigurationsService } from './site-configurations.service';
 import { CreateSiteConfigurationDto } from './dto/create-site-configuration.dto';
 import { UpdateSiteConfigurationDto } from './dto/update-site-configuration.dto';
@@ -30,8 +36,48 @@ export class SiteConfigurationsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create new site configuration' })
-  create(@Body() createSiteConfigurationDto: CreateSiteConfigurationDto) {
-    return this.siteConfigurationsService.create(createSiteConfigurationDto);
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'logo', maxCount: 1 },
+        { name: 'favicon', maxCount: 1 },
+        { name: 'footer_logo', maxCount: 1 },
+      ],
+      {
+        storage: diskStorage({
+          destination: './uploads',
+          filename: (req, file, callback) => {
+            const fileExtName = extname(file.originalname);
+            callback(null, `${randomStringGenerator()}${fileExtName}`);
+          },
+        }),
+        fileFilter: (req, file, callback) => {
+          if (!file.originalname.match(/\.(jpg|jpeg|png|gif|ico)$/i)) {
+            return callback(new Error('Only image files are allowed!'), false);
+          }
+          callback(null, true);
+        },
+      },
+    ),
+  )
+  async create(
+    @Body() createSiteConfigurationDto: CreateSiteConfigurationDto,
+    @UploadedFiles()
+    files: {
+      logo?: Express.Multer.File[];
+      favicon?: Express.Multer.File[];
+      footer_logo?: Express.Multer.File[];
+    },
+  ) {
+    const dto = {
+      ...createSiteConfigurationDto,
+      logo_path: files.logo?.[0]?.filename,
+      favicon_path: files.favicon?.[0]?.filename,
+      footer_logo_path: files.footer_logo?.[0]?.filename,
+    };
+    
+    return this.siteConfigurationsService.create(dto);
   }
 
   @Get()
@@ -63,11 +109,49 @@ export class SiteConfigurationsController {
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Update site configuration' })
-  update(
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'logo', maxCount: 1 },
+        { name: 'favicon', maxCount: 1 },
+        { name: 'footer_logo', maxCount: 1 },
+      ],
+      {
+        storage: diskStorage({
+          destination: './uploads',
+          filename: (req, file, callback) => {
+            const fileExtName = extname(file.originalname);
+            callback(null, `${randomStringGenerator()}${fileExtName}`);
+          },
+        }),
+        fileFilter: (req, file, callback) => {
+          if (!file.originalname.match(/\.(jpg|jpeg|png|gif|ico)$/i)) {
+            return callback(new Error('Only image files are allowed!'), false);
+          }
+          callback(null, true);
+        },
+      },
+    ),
+  )
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateSiteConfigurationDto: UpdateSiteConfigurationDto,
+    @UploadedFiles()
+    files: {
+      logo?: Express.Multer.File[];
+      favicon?: Express.Multer.File[];
+      footer_logo?: Express.Multer.File[];
+    },
   ) {
-    return this.siteConfigurationsService.update(id, updateSiteConfigurationDto);
+    const dto = {
+      ...updateSiteConfigurationDto,
+      logo_path: files.logo?.[0]?.filename,
+      favicon_path: files.favicon?.[0]?.filename,
+      footer_logo_path: files.footer_logo?.[0]?.filename,
+    };
+
+    return this.siteConfigurationsService.update(id, dto);
   }
 
   @Delete(':id')

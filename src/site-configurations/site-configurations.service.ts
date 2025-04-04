@@ -15,8 +15,13 @@ export class SiteConfigurationsService {
     private siteConfigurationRepository: Repository<SiteConfiguration>,
   ) {}
 
-  create(createSiteConfigurationDto: CreateSiteConfigurationDto) {
-    const siteConfiguration = this.siteConfigurationRepository.create(createSiteConfigurationDto);
+  async create(createSiteConfigurationDto: CreateSiteConfigurationDto) {
+    const siteConfiguration = this.siteConfigurationRepository.create({
+      ...createSiteConfigurationDto,
+      logo_path: createSiteConfigurationDto.logo_path ? `/uploads/${createSiteConfigurationDto.logo_path}` : null,
+      favicon_path: createSiteConfigurationDto.favicon_path ? `/uploads/${createSiteConfigurationDto.favicon_path}` : null,
+      footer_logo_path: createSiteConfigurationDto.footer_logo_path ? `/uploads/${createSiteConfigurationDto.footer_logo_path}` : null,
+    });
     return this.siteConfigurationRepository.save(siteConfiguration);
   }
 
@@ -54,7 +59,15 @@ export class SiteConfigurationsService {
 
   async update(id: number, updateSiteConfigurationDto: UpdateSiteConfigurationDto) {
     const siteConfiguration = await this.findOne(id);
-    Object.assign(siteConfiguration, updateSiteConfigurationDto);
+    
+    const updatedData = {
+      ...updateSiteConfigurationDto,
+      logo_path: updateSiteConfigurationDto.logo_path ? `/uploads/${updateSiteConfigurationDto.logo_path}` : siteConfiguration.logo_path,
+      favicon_path: updateSiteConfigurationDto.favicon_path ? `/uploads/${updateSiteConfigurationDto.favicon_path}` : siteConfiguration.favicon_path,
+      footer_logo_path: updateSiteConfigurationDto.footer_logo_path ? `/uploads/${updateSiteConfigurationDto.footer_logo_path}` : siteConfiguration.footer_logo_path,
+    };
+    
+    Object.assign(siteConfiguration, updatedData);
     return this.siteConfigurationRepository.save(siteConfiguration);
   }
 
