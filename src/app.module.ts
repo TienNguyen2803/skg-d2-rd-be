@@ -27,6 +27,8 @@ import { ServicesModule } from './services/services.module';
 import { ClsModule } from 'nestjs-cls';
 import { EntityHelperSubscriber } from './utils/subcribers/entity-helper.subscriber';
 import { PortalsModule } from './portals/portals.module';
+import { SiteConfigurationsModule } from './site-configurations/site-configurations.module';
+import { ImgsModule } from './imgs/imgs.module';
 
 
 @Module({
@@ -89,9 +91,9 @@ import { PortalsModule } from './portals/portals.module';
     SpaInfoModule,
     ServiceCategoriesModule,
     ServicesModule,
-    PortalsModule, // Added PortalsModule to imports
+    PortalsModule,
+    SiteConfigurationsModule,
+    ImgsModule,
   ],
 })
 export class AppModule { }
-
-
