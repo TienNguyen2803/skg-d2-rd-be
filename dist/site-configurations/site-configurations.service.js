@@ -52,27 +52,33 @@ let SiteConfigurationsService = exports.SiteConfigurationsService = class SiteCo
         const savedConfig = await this.siteConfigurationRepository.save(siteConfiguration);
         const result = Object.assign({}, savedConfig);
         if (result.logo_path) {
-            const filename = result.logo_path.split('/').pop();
-            const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
-            if (fs.existsSync(filePath)) {
-                result['logo'] = fs.readFileSync(filePath);
-                result.logo_path = filename;
+            const filename = result.logo_path.split('/').pop() || '';
+            if (filename) {
+                const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
+                if (fs.existsSync(filePath)) {
+                    result['logo'] = fs.readFileSync(filePath);
+                    result.logo_path = filename;
+                }
             }
         }
         if (result.favicon_path) {
-            const filename = result.favicon_path.split('/').pop();
-            const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
-            if (fs.existsSync(filePath)) {
-                result['favicon'] = fs.readFileSync(filePath);
-                result.favicon_path = filename;
+            const filename = result.favicon_path.split('/').pop() || '';
+            if (filename) {
+                const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
+                if (fs.existsSync(filePath)) {
+                    result['favicon'] = fs.readFileSync(filePath);
+                    result.favicon_path = filename;
+                }
             }
         }
         if (result.footer_logo_path) {
-            const filename = result.footer_logo_path.split('/').pop();
-            const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
-            if (fs.existsSync(filePath)) {
-                result['footer_logo'] = fs.readFileSync(filePath);
-                result.footer_logo_path = filename;
+            const filename = result.footer_logo_path.split('/').pop() || '';
+            if (filename) {
+                const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
+                if (fs.existsSync(filePath)) {
+                    result['footer_logo'] = fs.readFileSync(filePath);
+                    result.footer_logo_path = filename;
+                }
             }
         }
         return result;
@@ -101,7 +107,7 @@ let SiteConfigurationsService = exports.SiteConfigurationsService = class SiteCo
         const savedConfig = await this.siteConfigurationRepository.save(siteConfiguration);
         const result = Object.assign({}, savedConfig);
         if (result.logo_path) {
-            const filename = result.logo_path.split('/').pop();
+            const filename = result.logo_path.split('/').pop() || '';
             const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
             if (fs.existsSync(filePath)) {
                 result['logo'] = fs.readFileSync(filePath);
@@ -109,7 +115,7 @@ let SiteConfigurationsService = exports.SiteConfigurationsService = class SiteCo
             }
         }
         if (result.favicon_path) {
-            const filename = result.favicon_path.split('/').pop();
+            const filename = result.favicon_path.split('/').pop() || '';
             const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
             if (fs.existsSync(filePath)) {
                 result['favicon'] = fs.readFileSync(filePath);
@@ -117,7 +123,7 @@ let SiteConfigurationsService = exports.SiteConfigurationsService = class SiteCo
             }
         }
         if (result.footer_logo_path) {
-            const filename = result.footer_logo_path.split('/').pop();
+            const filename = result.footer_logo_path.split('/').pop() || '';
             const filePath = (0, path_1.join)(process.cwd(), 'uploads', filename);
             if (fs.existsSync(filePath)) {
                 result['footer_logo'] = fs.readFileSync(filePath);

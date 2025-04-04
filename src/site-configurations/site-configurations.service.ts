@@ -26,7 +26,7 @@ export class SiteConfigurationsService {
     } as SiteConfiguration);
 
     const savedConfig = await this.siteConfigurationRepository.save(siteConfiguration);
-    
+
     // Process and return image data
     const result = { ...savedConfig };
 
@@ -115,7 +115,7 @@ export class SiteConfigurationsService {
     const result = { ...savedConfig };
 
     if (result.logo_path) {
-      const filename = result.logo_path.split('/').pop();
+      const filename = result.logo_path.split('/').pop() || '';
       const filePath = join(process.cwd(), 'uploads', filename);
       if (fs.existsSync(filePath)) {
         result['logo'] = fs.readFileSync(filePath);
@@ -124,7 +124,7 @@ export class SiteConfigurationsService {
     }
 
     if (result.favicon_path) {
-      const filename = result.favicon_path.split('/').pop();
+      const filename = result.favicon_path.split('/').pop() || '';
       const filePath = join(process.cwd(), 'uploads', filename);
       if (fs.existsSync(filePath)) {
         result['favicon'] = fs.readFileSync(filePath);
@@ -133,7 +133,7 @@ export class SiteConfigurationsService {
     }
 
     if (result.footer_logo_path) {
-      const filename = result.footer_logo_path.split('/').pop();
+      const filename = result.footer_logo_path.split('/').pop() || '';
       const filePath = join(process.cwd(), 'uploads', filename);
       if (fs.existsSync(filePath)) {
         result['footer_logo'] = fs.readFileSync(filePath);
