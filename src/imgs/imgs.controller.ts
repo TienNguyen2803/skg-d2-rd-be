@@ -1,10 +1,12 @@
 
-import { Controller, Post, UseInterceptors, UploadedFile, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, UseInterceptors, UploadedFile, Param, Res, HttpCode, HttpStatus } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
-import { extname } from 'path';
+import { extname, join } from 'path';
+import { Response } from 'express';
+import * as fs from 'fs';
 
 @ApiTags('Images')
 @Controller({
@@ -37,5 +39,23 @@ export class ImgsController {
     return {
       path: file.path.replace('uploads/', '/'),
     };
+  }
+
+  @Get(':filename')
+  @ApiOperation({ summary: 'Get image by filename' })
+  async getImage(@Param('filename') filename: string, @Res() res: Response) {
+    const filePath = join(process.cwd(), 'uploads', filename);
+    
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send('Image not found');
+    }
+
+    const file = fs.createReadStream(filePath);
+    const stat = fs.statSync(filePath);
+    
+    res.setHeader('Content-Length', stat.size);
+    res.setHeader('Content-Type', 'image/*');
+    
+    file.pipe(res);
   }
 }
