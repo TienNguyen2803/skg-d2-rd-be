@@ -3,53 +3,15 @@ import { CreateSiteConfigurationDto } from './dto/create-site-configuration.dto'
 import { UpdateSiteConfigurationDto } from './dto/update-site-configuration.dto';
 import { SiteConfiguration } from './entities/site-configuration.entity';
 import { IPaginationOptions } from '../utils/types/pagination-options';
+import { Response } from 'express';
 export declare class SiteConfigurationsService {
     private siteConfigurationRepository;
     constructor(siteConfigurationRepository: Repository<SiteConfiguration>);
-    create(createSiteConfigurationDto: CreateSiteConfigurationDto): Promise<{
-        id: number;
-        website_name: string;
-        slogan: string;
-        logo_path: string;
-        favicon_path: string;
-        email: string;
-        phone: string;
-        address: string;
-        facebook_url: string;
-        instagram_url: string;
-        copyright_text: string;
-        footer_logo_path: string;
-        is_active: boolean;
-        __entity?: string | undefined;
-        updated_at: Date;
-        created_at: Date;
-        deleted_at: Date;
-        created_by: number;
-        updated_by: number;
-    }>;
+    create(createSiteConfigurationDto: CreateSiteConfigurationDto): Promise<SiteConfiguration>;
     findManyWithPagination({ page, limit, offset }: IPaginationOptions, filterQuery?: string, sort?: string): Promise<SiteConfiguration[]>;
     standardCount(filterQuery?: string): Promise<number>;
     findOne(id: number): Promise<SiteConfiguration>;
-    update(id: number, updateSiteConfigurationDto: UpdateSiteConfigurationDto): Promise<{
-        id: number;
-        website_name: string;
-        slogan: string;
-        logo_path: string;
-        favicon_path: string;
-        email: string;
-        phone: string;
-        address: string;
-        facebook_url: string;
-        instagram_url: string;
-        copyright_text: string;
-        footer_logo_path: string;
-        is_active: boolean;
-        __entity?: string | undefined;
-        updated_at: Date;
-        created_at: Date;
-        deleted_at: Date;
-        created_by: number;
-        updated_by: number;
-    }>;
+    update(id: number, updateSiteConfigurationDto: UpdateSiteConfigurationDto): Promise<SiteConfiguration>;
     softDelete(id: number): Promise<void>;
+    getImage(filename: string, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }

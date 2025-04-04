@@ -9,27 +9,7 @@ export declare class SiteConfigurationsController {
         logo?: Express.Multer.File[];
         favicon?: Express.Multer.File[];
         footer_logo?: Express.Multer.File[];
-    }): Promise<{
-        id: number;
-        website_name: string;
-        slogan: string;
-        logo_path: string;
-        favicon_path: string;
-        email: string;
-        phone: string;
-        address: string;
-        facebook_url: string;
-        instagram_url: string;
-        copyright_text: string;
-        footer_logo_path: string;
-        is_active: boolean;
-        __entity?: string | undefined;
-        updated_at: Date;
-        created_at: Date;
-        deleted_at: Date;
-        created_by: number;
-        updated_by: number;
-    }>;
+    }): Promise<import("./entities/site-configuration.entity").SiteConfiguration>;
     findAll(page: number, limit: number, filterQuery?: string, sort?: string): Promise<Readonly<{
         data: import("./entities/site-configuration.entity").SiteConfiguration[];
         total: number;
@@ -39,26 +19,6 @@ export declare class SiteConfigurationsController {
         logo?: Express.Multer.File[];
         favicon?: Express.Multer.File[];
         footer_logo?: Express.Multer.File[];
-    }): Promise<{
-        id: number;
-        website_name: string;
-        slogan: string;
-        logo_path: string;
-        favicon_path: string;
-        email: string;
-        phone: string;
-        address: string;
-        facebook_url: string;
-        instagram_url: string;
-        copyright_text: string;
-        footer_logo_path: string;
-        is_active: boolean;
-        __entity?: string | undefined;
-        updated_at: Date;
-        created_at: Date;
-        deleted_at: Date;
-        created_by: number;
-        updated_by: number;
-    }>;
+    }): Promise<import("./entities/site-configuration.entity").SiteConfiguration>;
     remove(id: number): Promise<void>;
 }
