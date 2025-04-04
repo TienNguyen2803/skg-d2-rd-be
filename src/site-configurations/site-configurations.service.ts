@@ -15,7 +15,7 @@ export class SiteConfigurationsService {
     private siteConfigurationRepository: Repository<SiteConfiguration>,
   ) {}
 
-  async create(createSiteConfigurationDto: CreateSiteConfigurationDto) {
+  async create(createSiteConfigurationDto: CreateSiteConfigurationDto): Promise<SiteConfiguration> {
     const siteConfiguration = this.siteConfigurationRepository.create({
       ...createSiteConfigurationDto,
       logo_path: createSiteConfigurationDto.logo_path ? `/uploads/${createSiteConfigurationDto.logo_path}` : null,
