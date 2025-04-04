@@ -2,6 +2,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { join } from 'path';
+import * as fs from 'fs';
 import { CreateSiteConfigurationDto } from './dto/create-site-configuration.dto';
 import { UpdateSiteConfigurationDto } from './dto/update-site-configuration.dto';
 import { SiteConfiguration } from './entities/site-configuration.entity';
@@ -22,7 +24,40 @@ export class SiteConfigurationsService {
       favicon_path: createSiteConfigurationDto.favicon_path ? `/uploads/${createSiteConfigurationDto.favicon_path}` : null,
       footer_logo_path: createSiteConfigurationDto.footer_logo_path ? `/uploads/${createSiteConfigurationDto.footer_logo_path}` : null,
     } as SiteConfiguration);
-    return this.siteConfigurationRepository.save(siteConfiguration);
+
+    const savedConfig = await this.siteConfigurationRepository.save(siteConfiguration);
+    
+    // Process and return image data
+    const result = { ...savedConfig };
+
+    if (result.logo_path) {
+      const filename = result.logo_path.split('/').pop();
+      const filePath = join(process.cwd(), 'uploads', filename);
+      if (fs.existsSync(filePath)) {
+        result['logo'] = fs.readFileSync(filePath);
+        result.logo_path = filename;
+      }
+    }
+
+    if (result.favicon_path) {
+      const filename = result.favicon_path.split('/').pop();
+      const filePath = join(process.cwd(), 'uploads', filename);
+      if (fs.existsSync(filePath)) {
+        result['favicon'] = fs.readFileSync(filePath);
+        result.favicon_path = filename;
+      }
+    }
+
+    if (result.footer_logo_path) {
+      const filename = result.footer_logo_path.split('/').pop();
+      const filePath = join(process.cwd(), 'uploads', filename);
+      if (fs.existsSync(filePath)) {
+        result['footer_logo'] = fs.readFileSync(filePath);
+        result.footer_logo_path = filename;
+      }
+    }
+
+    return result;
   }
 
   async findManyWithPagination(
@@ -68,7 +103,39 @@ export class SiteConfigurationsService {
     };
 
     Object.assign(siteConfiguration, updatedData);
-    return this.siteConfigurationRepository.save(siteConfiguration);
+    const savedConfig = await this.siteConfigurationRepository.save(siteConfiguration);
+
+    // Process and return image data
+    const result = { ...savedConfig };
+
+    if (result.logo_path) {
+      const filename = result.logo_path.split('/').pop();
+      const filePath = join(process.cwd(), 'uploads', filename);
+      if (fs.existsSync(filePath)) {
+        result['logo'] = fs.readFileSync(filePath);
+        result.logo_path = filename;
+      }
+    }
+
+    if (result.favicon_path) {
+      const filename = result.favicon_path.split('/').pop();
+      const filePath = join(process.cwd(), 'uploads', filename);
+      if (fs.existsSync(filePath)) {
+        result['favicon'] = fs.readFileSync(filePath);
+        result.favicon_path = filename;
+      }
+    }
+
+    if (result.footer_logo_path) {
+      const filename = result.footer_logo_path.split('/').pop();
+      const filePath = join(process.cwd(), 'uploads', filename);
+      if (fs.existsSync(filePath)) {
+        result['footer_logo'] = fs.readFileSync(filePath);
+        result.footer_logo_path = filename;
+      }
+    }
+
+    return result;
   }
 
   async softDelete(id: number) {
