@@ -9,7 +9,7 @@ export declare class SiteConfigurationsController {
         logo?: Express.Multer.File[];
         favicon?: Express.Multer.File[];
         footer_logo?: Express.Multer.File[];
-    }): Promise<import("./entities/site-configuration.entity").SiteConfiguration[]>;
+    }): Promise<import("./entities/site-configuration.entity").SiteConfiguration>;
     findAll(page: number, limit: number, filterQuery?: string, sort?: string): Promise<Readonly<{
         data: import("./entities/site-configuration.entity").SiteConfiguration[];
         total: number;

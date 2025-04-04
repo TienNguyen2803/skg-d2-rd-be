@@ -6,7 +6,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 export declare class SiteConfigurationsService {
     private siteConfigurationRepository;
     constructor(siteConfigurationRepository: Repository<SiteConfiguration>);
-    create(createSiteConfigurationDto: CreateSiteConfigurationDto): Promise<SiteConfiguration[]>;
+    create(createSiteConfigurationDto: CreateSiteConfigurationDto): Promise<SiteConfiguration>;
     findManyWithPagination({ page, limit, offset }: IPaginationOptions, filterQuery?: string, sort?: string): Promise<SiteConfiguration[]>;
     standardCount(filterQuery?: string): Promise<number>;
     findOne(id: number): Promise<SiteConfiguration>;
