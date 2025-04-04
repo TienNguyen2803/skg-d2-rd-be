@@ -15,6 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SiteConfigurationsController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
+const random_string_generator_util_1 = require("@nestjs/common/utils/random-string-generator.util");
+const path_1 = require("path");
 const site_configurations_service_1 = require("./site-configurations.service");
 const create_site_configuration_dto_1 = require("./dto/create-site-configuration.dto");
 const update_site_configuration_dto_1 = require("./dto/update-site-configuration.dto");
@@ -23,8 +27,10 @@ let SiteConfigurationsController = exports.SiteConfigurationsController = class 
     constructor(siteConfigurationsService) {
         this.siteConfigurationsService = siteConfigurationsService;
     }
-    create(createSiteConfigurationDto) {
-        return this.siteConfigurationsService.create(createSiteConfigurationDto);
+    async create(createSiteConfigurationDto, files) {
+        var _a, _b, _c, _d, _e, _f;
+        const dto = Object.assign(Object.assign({}, createSiteConfigurationDto), { logo_path: (_b = (_a = files.logo) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.filename, favicon_path: (_d = (_c = files.favicon) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.filename, footer_logo_path: (_f = (_e = files.footer_logo) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.filename });
+        return this.siteConfigurationsService.create(dto);
     }
     async findAll(page, limit, filterQuery, sort) {
         return (0, standard_pagination_1.standardPagination)(await this.siteConfigurationsService.findManyWithPagination({ page, limit, offset: (page - 1) * limit }, filterQuery, sort), await this.siteConfigurationsService.standardCount(filterQuery));
@@ -32,8 +38,10 @@ let SiteConfigurationsController = exports.SiteConfigurationsController = class 
     findOne(id) {
         return this.siteConfigurationsService.findOne(id);
     }
-    update(id, updateSiteConfigurationDto) {
-        return this.siteConfigurationsService.update(id, updateSiteConfigurationDto);
+    async update(id, updateSiteConfigurationDto, files) {
+        var _a, _b, _c, _d, _e, _f;
+        const dto = Object.assign(Object.assign({}, updateSiteConfigurationDto), { logo_path: (_b = (_a = files.logo) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.filename, favicon_path: (_d = (_c = files.favicon) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.filename, footer_logo_path: (_f = (_e = files.footer_logo) === null || _e === void 0 ? void 0 : _e[0]) === null || _f === void 0 ? void 0 : _f.filename });
+        return this.siteConfigurationsService.update(id, dto);
     }
     remove(id) {
         return this.siteConfigurationsService.softDelete(id);
@@ -43,10 +51,31 @@ __decorate([
     (0, common_1.Post)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     (0, swagger_1.ApiOperation)({ summary: 'Create new site configuration' }),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
+        { name: 'logo', maxCount: 1 },
+        { name: 'favicon', maxCount: 1 },
+        { name: 'footer_logo', maxCount: 1 },
+    ], {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, callback) => {
+                const fileExtName = (0, path_1.extname)(file.originalname);
+                callback(null, `${(0, random_string_generator_util_1.randomStringGenerator)()}${fileExtName}`);
+            },
+        }),
+        fileFilter: (req, file, callback) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif|ico)$/i)) {
+                return callback(new Error('Only image files are allowed!'), false);
+            }
+            callback(null, true);
+        },
+    })),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFiles)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_site_configuration_dto_1.CreateSiteConfigurationDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [create_site_configuration_dto_1.CreateSiteConfigurationDto, Object]),
+    __metadata("design:returntype", Promise)
 ], SiteConfigurationsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
@@ -73,11 +102,32 @@ __decorate([
     (0, common_1.Patch)(':id'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, swagger_1.ApiOperation)({ summary: 'Update site configuration' }),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileFieldsInterceptor)([
+        { name: 'logo', maxCount: 1 },
+        { name: 'favicon', maxCount: 1 },
+        { name: 'footer_logo', maxCount: 1 },
+    ], {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads',
+            filename: (req, file, callback) => {
+                const fileExtName = (0, path_1.extname)(file.originalname);
+                callback(null, `${(0, random_string_generator_util_1.randomStringGenerator)()}${fileExtName}`);
+            },
+        }),
+        fileFilter: (req, file, callback) => {
+            if (!file.originalname.match(/\.(jpg|jpeg|png|gif|ico)$/i)) {
+                return callback(new Error('Only image files are allowed!'), false);
+            }
+            callback(null, true);
+        },
+    })),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.UploadedFiles)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, update_site_configuration_dto_1.UpdateSiteConfigurationDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Number, update_site_configuration_dto_1.UpdateSiteConfigurationDto, Object]),
+    __metadata("design:returntype", Promise)
 ], SiteConfigurationsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
