@@ -38,6 +38,8 @@ const services_module_1 = require("./services/services.module");
 const nestjs_cls_1 = require("nestjs-cls");
 const entity_helper_subscriber_1 = require("./utils/subcribers/entity-helper.subscriber");
 const portals_module_1 = require("./portals/portals.module");
+const site_configurations_module_1 = require("./site-configurations/site-configurations.module");
+const imgs_module_1 = require("./imgs/imgs.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -101,6 +103,8 @@ exports.AppModule = AppModule = __decorate([
             service_categories_module_1.ServiceCategoriesModule,
             services_module_1.ServicesModule,
             portals_module_1.PortalsModule,
+            site_configurations_module_1.SiteConfigurationsModule,
+            imgs_module_1.ImgsModule,
         ],
     })
 ], AppModule);
