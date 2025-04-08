@@ -5,10 +5,12 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '../../users/entities/user.entity';
 import { Department } from '../../departments/entities/department.entity';
+import { Timesheet } from 'src/timesheet/entities/timesheet.entity';
 
 @Entity()
 export class Project extends EntityHelper {
@@ -44,4 +46,7 @@ export class Project extends EntityHelper {
 
   @Column({ type: Number, nullable: true })
   pm_user_id: number;
+
+  @OneToMany(() => Timesheet, (t) => t.project)
+  timesheets: Timesheet[];
 }

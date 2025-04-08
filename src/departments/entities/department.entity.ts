@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '../../users/entities/user.entity';
 import { Project } from '../../projects/entities/project.entity';
+import { Timesheet } from 'src/timesheet/entities/timesheet.entity';
 
 @Entity()
 export class Department extends EntityHelper {
@@ -23,4 +24,7 @@ export class Department extends EntityHelper {
 
   @OneToMany(() => Project, (project) => project.department)
   projects: Project[];
+
+  @OneToMany(() => Timesheet, (t) => t.department)
+  timesheets: Timesheet[];
 }

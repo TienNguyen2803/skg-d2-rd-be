@@ -1,14 +1,43 @@
 1/ Create Entity
 
-Tôi cần tạo một entity theo hình minh họa, trong đó các trường (field) đều có thể để trống (null). Vui lòng tham khảo cấu trúc của entity spa-info.  
-- Thêm entity: Department và cập nhật entity User.  
-- Mối quan hệ: Một Department có nhiều User, một User chỉ thuộc một Department.  
+Tôi cần tạo 3 entity, trong đó các trường (field) đều có thể để trống (null). Dựa trên cấu trúc của entity spa-info, hãy thực hiện như sau:
 
-Trong quan hệ ManyToOne, cần thêm JoinColumn và các tùy chọn đầy đủ như:  
-cascade: true,  
-onDelete: 'CASCADE',  
-onUpdate: 'CASCADE',  
-eager: false.  
+- Thêm các entity: **Timesheet**, **TimesheetDetail** và **TimesheetStatus**.
+- Mối quan hệ:
+  + Một **Timesheet** có thể chứa nhiều **TimesheetDetail**.
+  + Một **Timesheet** chỉ thuộc một **TimesheetStatus**.
+
+**Cấu trúc bảng:**
+
+**Timesheet**:
+- id
+- project_id (một project có thể có nhiều timesheet)
+- department_id (một department có thể có nhiều timesheet)
+- month_year
+- total_hours
+- status_id (một timesheet chỉ thuộc một timesheet_status)
+- reject_reason
+
+**TimesheetDetail**:
+- id
+- date
+- start_time
+- end_time
+- ot_hours
+- description
+
+**TimesheetStatus**:
+- id
+- code
+- name
+- description
+
+**Yêu cầu kỹ thuật cho quan hệ ManyToOne**:
+- Thêm JoinColumn với các tùy chọn đầy đủ:
+  + cascade: true
+  + onDelete: 'CASCADE'
+  + onUpdate: 'CASCADE'
+  + eager: false
 
 2/ Tạo CRUD 
 

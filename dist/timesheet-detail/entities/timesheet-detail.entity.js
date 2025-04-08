@@ -9,59 +9,51 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Project = void 0;
+exports.TimesheetDetail = void 0;
 const typeorm_1 = require("typeorm");
 const entity_helper_1 = require("../../utils/entity-helper");
-const user_entity_1 = require("../../users/entities/user.entity");
-const department_entity_1 = require("../../departments/entities/department.entity");
 const timesheet_entity_1 = require("../../timesheet/entities/timesheet.entity");
-let Project = exports.Project = class Project extends entity_helper_1.EntityHelper {
+let TimesheetDetail = exports.TimesheetDetail = class TimesheetDetail extends entity_helper_1.EntityHelper {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Project.prototype, "id", void 0);
+], TimesheetDetail.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: Date, nullable: true }),
+    __metadata("design:type", Date)
+], TimesheetDetail.prototype, "date", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: String, nullable: true }),
     __metadata("design:type", String)
-], Project.prototype, "name", void 0);
+], TimesheetDetail.prototype, "start_time", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: String, nullable: true }),
     __metadata("design:type", String)
-], Project.prototype, "description", void 0);
+], TimesheetDetail.prototype, "end_time", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => department_entity_1.Department, (department) => department.projects, {
+    (0, typeorm_1.Column)({ type: Number, nullable: true }),
+    __metadata("design:type", Number)
+], TimesheetDetail.prototype, "ot_hours", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: String, nullable: true }),
+    __metadata("design:type", String)
+], TimesheetDetail.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => timesheet_entity_1.Timesheet, (timesheet) => timesheet.details, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
         eager: false
     }),
-    (0, typeorm_1.JoinColumn)({ name: 'department_id' }),
-    __metadata("design:type", department_entity_1.Department)
-], Project.prototype, "department", void 0);
+    (0, typeorm_1.JoinColumn)({ name: 'timesheet_id' }),
+    __metadata("design:type", timesheet_entity_1.Timesheet)
+], TimesheetDetail.prototype, "timesheet", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: Number, nullable: true }),
     __metadata("design:type", Number)
-], Project.prototype, "department_id", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.managed_projects, {
-        cascade: true,
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-        eager: false
-    }),
-    (0, typeorm_1.JoinColumn)({ name: 'pm_user_id' }),
-    __metadata("design:type", user_entity_1.User)
-], Project.prototype, "project_manager", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: Number, nullable: true }),
-    __metadata("design:type", Number)
-], Project.prototype, "pm_user_id", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => timesheet_entity_1.Timesheet, (t) => t.project),
-    __metadata("design:type", Array)
-], Project.prototype, "timesheets", void 0);
-exports.Project = Project = __decorate([
+], TimesheetDetail.prototype, "timesheet_id", void 0);
+exports.TimesheetDetail = TimesheetDetail = __decorate([
     (0, typeorm_1.Entity)()
-], Project);
-//# sourceMappingURL=project.entity.js.map
+], TimesheetDetail);
+//# sourceMappingURL=timesheet-detail.entity.js.map

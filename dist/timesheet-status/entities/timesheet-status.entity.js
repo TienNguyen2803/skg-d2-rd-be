@@ -9,43 +9,33 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Department = void 0;
+exports.TimesheetStatus = void 0;
 const typeorm_1 = require("typeorm");
 const entity_helper_1 = require("../../utils/entity-helper");
-const user_entity_1 = require("../../users/entities/user.entity");
-const project_entity_1 = require("../../projects/entities/project.entity");
 const timesheet_entity_1 = require("../../timesheet/entities/timesheet.entity");
-let Department = exports.Department = class Department extends entity_helper_1.EntityHelper {
+let TimesheetStatus = exports.TimesheetStatus = class TimesheetStatus extends entity_helper_1.EntityHelper {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Department.prototype, "id", void 0);
+], TimesheetStatus.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: String, nullable: true }),
     __metadata("design:type", String)
-], Department.prototype, "name", void 0);
+], TimesheetStatus.prototype, "code", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: String, nullable: true }),
     __metadata("design:type", String)
-], Department.prototype, "code", void 0);
+], TimesheetStatus.prototype, "name", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: String, nullable: true }),
     __metadata("design:type", String)
-], Department.prototype, "description", void 0);
+], TimesheetStatus.prototype, "description", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => user_entity_1.User, (user) => user.department),
+    (0, typeorm_1.OneToMany)(() => timesheet_entity_1.Timesheet, (timesheet) => timesheet.status),
     __metadata("design:type", Array)
-], Department.prototype, "users", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => project_entity_1.Project, (project) => project.department),
-    __metadata("design:type", Array)
-], Department.prototype, "projects", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => timesheet_entity_1.Timesheet, (t) => t.department),
-    __metadata("design:type", Array)
-], Department.prototype, "timesheets", void 0);
-exports.Department = Department = __decorate([
+], TimesheetStatus.prototype, "timesheets", void 0);
+exports.TimesheetStatus = TimesheetStatus = __decorate([
     (0, typeorm_1.Entity)()
-], Department);
-//# sourceMappingURL=department.entity.js.map
+], TimesheetStatus);
+//# sourceMappingURL=timesheet-status.entity.js.map
