@@ -40,11 +40,13 @@ const entity_helper_subscriber_1 = require("./utils/subcribers/entity-helper.sub
 const portals_module_1 = require("./portals/portals.module");
 const site_configurations_module_1 = require("./site-configurations/site-configurations.module");
 const imgs_module_1 = require("./imgs/imgs.module");
+const departments_module_1 = require("./departments/departments.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            departments_module_1.DepartmentsModule,
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 load: [
