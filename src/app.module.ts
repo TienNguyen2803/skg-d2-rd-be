@@ -29,11 +29,12 @@ import { EntityHelperSubscriber } from './utils/subcribers/entity-helper.subscri
 import { PortalsModule } from './portals/portals.module';
 import { SiteConfigurationsModule } from './site-configurations/site-configurations.module';
 import { ImgsModule } from './imgs/imgs.module';
+import { DepartmentsModule } from './departments/departments.module';
 
 
 @Module({
   imports: [
-
+    DepartmentsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
