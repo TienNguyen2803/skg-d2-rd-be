@@ -9,7 +9,7 @@ services:
     depends_on:
       - skg-management-postgres
     ports:
-      - '7000:7000'
+      - '7000:3000'
     networks:
       - backend
 
