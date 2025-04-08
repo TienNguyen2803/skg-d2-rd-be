@@ -67,7 +67,7 @@ export class ProjectsService {
   }
 
   async update(id: number, updateProjectDto: UpdateProjectDto): Promise<Project> {
-    const project = await this.projectRepository.findOne({
+    let project = await this.projectRepository.findOne({
       where: { id },
       relations: ['department', 'project_manager'],
     });
@@ -76,8 +76,11 @@ export class ProjectsService {
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
 
-    // Update project properties
-    Object.assign(project, updateProjectDto);
+    // Create new project object with updated values
+    project = {
+      ...project,
+      ...updateProjectDto,
+    };
 
     // Save the updated project
     const savedProject = await this.projectRepository.save(project);
