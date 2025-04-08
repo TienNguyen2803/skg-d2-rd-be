@@ -17,6 +17,7 @@ import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
 import { Department } from '../../departments/entities/department.entity';
 import { Project } from '../../projects/entities/project.entity';
+import { Timesheet } from '../../timesheet/entities/timesheet.entity';
 import bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
@@ -109,4 +110,7 @@ export class User extends EntityHelper {
 
   @OneToMany(() => Project, (project) => project.project_manager)
   managed_projects: Project[];
+
+  @OneToMany(() => Timesheet, (timesheet) => timesheet.creator)
+  timesheets: Timesheet[];
 }

@@ -12,9 +12,21 @@ import { Project } from '../../projects/entities/project.entity';
 import { Department } from '../../departments/entities/department.entity';
 import { TimesheetStatus } from '../../timesheet-status/entities/timesheet-status.entity';
 import { TimesheetDetail } from '../../timesheet-detail/entities/timesheet-detail.entity';
+import { User } from '../../users/entities/user.entity';
 
 @Entity()
 export class Timesheet extends EntityHelper {
+  @ManyToOne(() => User, (user) => user.timesheets, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    eager: false
+  })
+  @JoinColumn({ name: 'creator_id' })
+  creator: User;
+
+  @Column({ type: Number, nullable: true })
+  creator_id: number;
   @PrimaryGeneratedColumn()
   id: number;
 
