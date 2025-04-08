@@ -31,10 +31,12 @@ import { SiteConfigurationsModule } from './site-configurations/site-configurati
 import { ImgsModule } from './imgs/imgs.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { ProjectsModule } from './projects/projects.module';
+import { TimesheetModule } from './timesheet/timesheet.module';
 
 
 @Module({
   imports: [
+    TimesheetModule,
     DepartmentsModule,
     ProjectsModule,
     SpaInfoModule,
