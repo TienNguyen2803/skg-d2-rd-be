@@ -17,7 +17,7 @@ import { RolesGuard } from '../roles/roles.guard';
 import { CurrentUser } from '../decorators/user/current-user.decorator';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.user)
+@Roles([RoleEnum.user, RoleEnum.admin])
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Timesheet')
 @Controller({
@@ -25,10 +25,11 @@ import { CurrentUser } from '../decorators/user/current-user.decorator';
   version: '1',
 })
 export class TimesheetController {
-  constructor(private readonly timesheetService: TimesheetService) {}
+  constructor(private readonly timesheetService: TimesheetService) { }
 
   @Post()
   create(@Body() createTimesheetDto: CreateTimesheetDto, @CurrentUser() user) {
+    console.log('user', user)
     return this.timesheetService.create(createTimesheetDto, user.id);
   }
 

@@ -17,6 +17,10 @@ const common_1 = require("@nestjs/common");
 const timesheet_service_1 = require("./timesheet.service");
 const create_timesheet_dto_1 = require("./dto/create-timesheet.dto");
 const swagger_1 = require("@nestjs/swagger");
+const roles_decorator_1 = require("../roles/roles.decorator");
+const roles_enum_1 = require("../roles/roles.enum");
+const passport_1 = require("@nestjs/passport");
+const roles_guard_1 = require("../roles/roles.guard");
 const current_user_decorator_1 = require("../decorators/user/current-user.decorator");
 let TimesheetController = exports.TimesheetController = class TimesheetController {
     constructor(timesheetService) {
@@ -46,6 +50,9 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TimesheetController.prototype, "findAll", null);
 exports.TimesheetController = TimesheetController = __decorate([
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, roles_decorator_1.Roles)([roles_enum_1.RoleEnum.user, roles_enum_1.RoleEnum.admin]),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, swagger_1.ApiTags)('Timesheet'),
     (0, common_1.Controller)({
         path: 'timesheets',
