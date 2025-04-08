@@ -7,13 +7,21 @@ import { Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
+import { Department } from 'src/departments/entities/department.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ProjectsService {
   constructor(
     @InjectRepository(Project)
     private projectRepository: Repository<Project>,
-  ) {}
+
+    @InjectRepository(Project)
+    private departmentRepository: Repository<Department>,
+
+    @InjectRepository(Project)
+    private userRepository: Repository<User>,
+  ) { }
 
   async create(createProjectDto: CreateProjectDto): Promise<Project> {
     const project = this.projectRepository.create(createProjectDto);
@@ -69,7 +77,7 @@ export class ProjectsService {
   async update(id: number, updateProjectDto: UpdateProjectDto): Promise<Project> {
     const project = await this.projectRepository.findOne({
       where: { id },
-      relations: ['department', 'project_manager'],
+      // relations: ['department', 'project_manager'],
     });
 
     if (!project) {
@@ -79,11 +87,31 @@ export class ProjectsService {
     // Update project properties
     Object.assign(project, updateProjectDto);
 
+    // Update department if provided
+    if (updateProjectDto.department_id) {
+      const department = await this.departmentRepository.findOne({
+        where: { id: updateProjectDto.department_id },
+      });
+      if (department) {
+        project.department = department;
+      }
+    }
+
+    // Update project manager if provided
+    if (updateProjectDto.pm_user_id) {
+      const projectManager = await this.userRepository.findOne({
+        where: { id: updateProjectDto.pm_user_id },
+      });
+      if (projectManager) {
+        project.project_manager = projectManager;
+      }
+    }
+
     // Save the updated project
     await this.projectRepository.save(project);
 
     // Return updated project with relations
-    return this.projectRepository.findOne({
+    return this.projectRepository.findOneOrFail({
       where: { id },
       relations: ['department', 'project_manager'],
     });

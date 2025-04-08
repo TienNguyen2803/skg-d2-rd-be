@@ -19,8 +19,10 @@ const filter_builder_1 = require("../utils/filter-builder");
 const typeorm_2 = require("typeorm");
 const project_entity_1 = require("./entities/project.entity");
 let ProjectsService = exports.ProjectsService = class ProjectsService {
-    constructor(projectRepository) {
+    constructor(projectRepository, departmentRepository, userRepository) {
         this.projectRepository = projectRepository;
+        this.departmentRepository = departmentRepository;
+        this.userRepository = userRepository;
     }
     async create(createProjectDto) {
         const project = this.projectRepository.create(createProjectDto);
@@ -57,17 +59,32 @@ let ProjectsService = exports.ProjectsService = class ProjectsService {
         return project;
     }
     async update(id, updateProjectDto) {
-        let project = await this.projectRepository.findOne({
+        const project = await this.projectRepository.findOne({
             where: { id },
-            relations: ['department', 'project_manager'],
         });
         if (!project) {
             throw new common_1.NotFoundException(`Project with ID ${id} not found`);
         }
-        project = Object.assign(Object.assign({}, project), updateProjectDto);
-        const savedProject = await this.projectRepository.save(project);
-        return this.projectRepository.findOne({
-            where: { id: savedProject.id },
+        Object.assign(project, updateProjectDto);
+        if (updateProjectDto.department_id) {
+            const department = await this.departmentRepository.findOne({
+                where: { id: updateProjectDto.department_id },
+            });
+            if (department) {
+                project.department = department;
+            }
+        }
+        if (updateProjectDto.pm_user_id) {
+            const projectManager = await this.userRepository.findOne({
+                where: { id: updateProjectDto.pm_user_id },
+            });
+            if (projectManager) {
+                project.project_manager = projectManager;
+            }
+        }
+        await this.projectRepository.save(project);
+        return this.projectRepository.findOneOrFail({
+            where: { id },
             relations: ['department', 'project_manager'],
         });
     }
@@ -78,6 +95,10 @@ let ProjectsService = exports.ProjectsService = class ProjectsService {
 exports.ProjectsService = ProjectsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(project_entity_1.Project)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(project_entity_1.Project)),
+    __param(2, (0, typeorm_1.InjectRepository)(project_entity_1.Project)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository])
 ], ProjectsService);
 //# sourceMappingURL=projects.service.js.map
