@@ -1,7 +1,14 @@
 1/ Create Entity
 
-Tôi cần tạo 2 entity giống như hình minh họa, trong đó các trường (field) đều có thể để trống (null). Vui lòng tham khảo cấu trúc của entity spa-info.
-Quan hệ ManyToOne Cần thêm JoinColumn.
+Tôi cần tạo một entity theo hình minh họa, trong đó các trường (field) đều có thể để trống (null). Vui lòng tham khảo cấu trúc của entity spa-info.  
+- Thêm entity: Department và cập nhật entity User.  
+- Mối quan hệ: Một Department có nhiều User, một User chỉ thuộc một Department.  
+
+Trong quan hệ ManyToOne, cần thêm JoinColumn và các tùy chọn đầy đủ như:  
+cascade: true,  
+onDelete: 'CASCADE',  
+onUpdate: 'CASCADE',  
+eager: false.  
 
 2/ Tạo CRUD 
 
