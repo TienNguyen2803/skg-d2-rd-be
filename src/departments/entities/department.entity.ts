@@ -2,6 +2,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '../../users/entities/user.entity';
+import { Project } from '../../projects/entities/project.entity';
 
 @Entity()
 export class Department extends EntityHelper {
@@ -19,4 +20,7 @@ export class Department extends EntityHelper {
 
   @OneToMany(() => User, (user) => user.department)
   users: User[];
+
+  @OneToMany(() => Project, (project) => project.department)
+  projects: Project[];
 }

@@ -15,6 +15,7 @@ import {
 import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
 import { Department } from '../../departments/entities/department.entity';
+import { Project } from '../../projects/entities/project.entity';
 import bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
@@ -104,4 +105,7 @@ export class User extends EntityHelper {
 
   @Column({ type: Number, nullable: true })
   department_id: number;
+
+  @OneToMany(() => Project, (project) => project.project_manager)
+  managed_projects: Project[];
 }
