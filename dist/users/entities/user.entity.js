@@ -16,6 +16,7 @@ exports.User = void 0;
 const typeorm_1 = require("typeorm");
 const role_entity_1 = require("../../roles/entities/role.entity");
 const status_entity_1 = require("../../statuses/entities/status.entity");
+const department_entity_1 = require("../../departments/entities/department.entity");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const entity_helper_1 = require("../../utils/entity-helper");
 const auth_providers_enum_1 = require("../../auth/auth-providers.enum");
@@ -113,6 +114,20 @@ __decorate([
     (0, typeorm_1.DeleteDateColumn)(),
     __metadata("design:type", Date)
 ], User.prototype, "deletedAt", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => department_entity_1.Department, (department) => department.users, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        eager: false
+    }),
+    (0, typeorm_1.JoinColumn)({ name: 'department_id' }),
+    __metadata("design:type", department_entity_1.Department)
+], User.prototype, "department", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: Number, nullable: true }),
+    __metadata("design:type", Number)
+], User.prototype, "department_id", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

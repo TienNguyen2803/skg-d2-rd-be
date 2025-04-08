@@ -12,10 +12,10 @@ export class Department extends EntityHelper {
   name: string;
 
   @Column({ type: String, nullable: true })
-  description: string;
+  code: string;
 
-  @Column({ type: Number, nullable: true })
-  manager_id: number;
+  @Column({ type: String, nullable: true })
+  description: string;
 
   @OneToMany(() => User, (user) => user.department)
   users: User[];

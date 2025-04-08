@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
   BeforeInsert,
   BeforeUpdate,
+  JoinColumn,
 } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
