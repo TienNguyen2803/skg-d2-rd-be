@@ -1,14 +1,16 @@
 services:
   skg-postgres:
     image: postgres:15.3-alpine
+    restart: unless-stopped
     ports:
       - 54331:5432
     volumes:
       - ./.data/db:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER: skg
-      POSTGRES_PASSWORD: master123
-      POSTGRES_DB: skg
+      - DATABASE_USERNAME: skg
+      - DATABASE_PASSWORD: master123
+      - DATABASE_NAME: skg
+      - TZ=Asia/Ho_Chi_Minh
 
 
   skg:
