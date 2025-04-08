@@ -13,6 +13,7 @@ import {
 } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
+import { Department } from '../../departments/entities/department.entity';
 import bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
@@ -90,4 +91,16 @@ export class User extends EntityHelper {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @ManyToOne(() => Department, (department) => department.users, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    eager: false
+  })
+  @JoinColumn({ name: 'department_id' })
+  department: Department;
+
+  @Column({ type: Number, nullable: true })
+  department_id: number;
 }
