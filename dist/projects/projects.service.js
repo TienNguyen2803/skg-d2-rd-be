@@ -57,14 +57,14 @@ let ProjectsService = exports.ProjectsService = class ProjectsService {
         return project;
     }
     async update(id, updateProjectDto) {
-        const project = await this.projectRepository.findOne({
+        let project = await this.projectRepository.findOne({
             where: { id },
             relations: ['department', 'project_manager'],
         });
         if (!project) {
             throw new common_1.NotFoundException(`Project with ID ${id} not found`);
         }
-        Object.assign(project, updateProjectDto);
+        project = Object.assign(Object.assign({}, project), updateProjectDto);
         const savedProject = await this.projectRepository.save(project);
         return this.projectRepository.findOne({
             where: { id: savedProject.id },
