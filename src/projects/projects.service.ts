@@ -67,9 +67,26 @@ export class ProjectsService {
   }
 
   async update(id: number, updateProjectDto: UpdateProjectDto): Promise<Project> {
-    const project = await this.findOne(id);
+    const project = await this.projectRepository.findOne({
+      where: { id },
+      relations: ['department', 'project_manager'],
+    });
+
+    if (!project) {
+      throw new NotFoundException(`Project with ID ${id} not found`);
+    }
+
+    // Update project properties
     Object.assign(project, updateProjectDto);
-    return this.projectRepository.save(project);
+
+    // Save the updated project
+    const savedProject = await this.projectRepository.save(project);
+
+    // Return updated project with relations
+    return this.projectRepository.findOne({
+      where: { id: savedProject.id },
+      relations: ['department', 'project_manager'],
+    });
   }
 
   async softDelete(id: number): Promise<void> {
