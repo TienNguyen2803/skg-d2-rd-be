@@ -3,7 +3,10 @@ import { Project } from '../../projects/entities/project.entity';
 import { Department } from '../../departments/entities/department.entity';
 import { TimesheetStatus } from '../../timesheet-status/entities/timesheet-status.entity';
 import { TimesheetDetail } from '../../timesheet-detail/entities/timesheet-detail.entity';
+import { User } from '../../users/entities/user.entity';
 export declare class Timesheet extends EntityHelper {
+    creator: User;
+    creator_id: number;
     id: number;
     month_year: string;
     total_hours: number;

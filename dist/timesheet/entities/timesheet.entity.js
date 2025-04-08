@@ -16,8 +16,23 @@ const project_entity_1 = require("../../projects/entities/project.entity");
 const department_entity_1 = require("../../departments/entities/department.entity");
 const timesheet_status_entity_1 = require("../../timesheet-status/entities/timesheet-status.entity");
 const timesheet_detail_entity_1 = require("../../timesheet-detail/entities/timesheet-detail.entity");
+const user_entity_1 = require("../../users/entities/user.entity");
 let Timesheet = exports.Timesheet = class Timesheet extends entity_helper_1.EntityHelper {
 };
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.timesheets, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        eager: false
+    }),
+    (0, typeorm_1.JoinColumn)({ name: 'creator_id' }),
+    __metadata("design:type", user_entity_1.User)
+], Timesheet.prototype, "creator", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: Number, nullable: true }),
+    __metadata("design:type", Number)
+], Timesheet.prototype, "creator_id", void 0);
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
