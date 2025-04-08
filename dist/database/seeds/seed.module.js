@@ -20,6 +20,7 @@ const typeorm_config_service_1 = require("../typeorm-config.service");
 const role_seed_module_1 = require("./role/role-seed.module");
 const status_seed_module_1 = require("./status/status-seed.module");
 const user_seed_module_1 = require("./user/user-seed.module");
+const timesheet_status_seed_module_1 = require("./timesheet-status/timesheet-status-seed.module");
 let SeedModule = exports.SeedModule = class SeedModule {
 };
 exports.SeedModule = SeedModule = __decorate([
@@ -28,6 +29,7 @@ exports.SeedModule = SeedModule = __decorate([
             role_seed_module_1.RoleSeedModule,
             status_seed_module_1.StatusSeedModule,
             user_seed_module_1.UserSeedModule,
+            timesheet_status_seed_module_1.TimesheetStatusSeedModule,
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 load: [database_config_1.default, app_config_1.default],
