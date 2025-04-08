@@ -41,12 +41,15 @@ const portals_module_1 = require("./portals/portals.module");
 const site_configurations_module_1 = require("./site-configurations/site-configurations.module");
 const imgs_module_1 = require("./imgs/imgs.module");
 const departments_module_1 = require("./departments/departments.module");
+const projects_module_1 = require("./projects/projects.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             departments_module_1.DepartmentsModule,
+            projects_module_1.ProjectsModule,
+            spa_info_module_1.SpaInfoModule,
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 load: [
@@ -101,7 +104,6 @@ exports.AppModule = AppModule = __decorate([
             mail_module_1.MailModule,
             mailer_module_1.MailerModule,
             home_module_1.HomeModule,
-            spa_info_module_1.SpaInfoModule,
             service_categories_module_1.ServiceCategoriesModule,
             services_module_1.ServicesModule,
             portals_module_1.PortalsModule,
