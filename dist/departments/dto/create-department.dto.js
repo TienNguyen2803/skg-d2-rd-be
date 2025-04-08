@@ -22,15 +22,15 @@ __decorate([
     __metadata("design:type", String)
 ], CreateDepartmentDto.prototype, "name", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'IT' }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateDepartmentDto.prototype, "code", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({ example: 'Information Technology Department' }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateDepartmentDto.prototype, "description", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({ example: 1 }),
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Number)
-], CreateDepartmentDto.prototype, "manager_id", void 0);
 //# sourceMappingURL=create-department.dto.js.map
