@@ -17,7 +17,7 @@ import { RolesGuard } from '../roles/roles.guard';
 import { CurrentUser } from '../decorators/user/current-user.decorator';
 
 @ApiBearerAuth()
-@Roles([RoleEnum.user, RoleEnum.admin])
+@Roles(RoleEnum.user, RoleEnum.admin)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Timesheet')
 @Controller({
