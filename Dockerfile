@@ -27,4 +27,4 @@ RUN if [ ! -f .env ]; then cp .env.sample .env; fi
 
 RUN npm run build
 
-CMD npm run start:prod
+CMD npm run migration:run && npm run seed:run && npm run start:prod
