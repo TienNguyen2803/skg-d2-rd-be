@@ -30,11 +30,14 @@ import { PortalsModule } from './portals/portals.module';
 import { SiteConfigurationsModule } from './site-configurations/site-configurations.module';
 import { ImgsModule } from './imgs/imgs.module';
 import { DepartmentsModule } from './departments/departments.module';
+import { ProjectsModule } from './projects/projects.module';
 
 
 @Module({
   imports: [
     DepartmentsModule,
+    ProjectsModule,
+    SpaInfoModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
@@ -89,7 +92,6 @@ import { DepartmentsModule } from './departments/departments.module';
     MailModule,
     MailerModule,
     HomeModule,
-    SpaInfoModule,
     ServiceCategoriesModule,
     ServicesModule,
     PortalsModule,
