@@ -23,7 +23,7 @@ COPY --from=deps ./node_modules ./node_modules
 
 COPY . .
 
-RUN if [ ! -f .env ]; then cp .env.testing .env; fi
+RUN if [ ! -f .env ]; then cp .env.sample .env; fi
 
 RUN npm run build
 

@@ -19,8 +19,8 @@ services:
     ports:
       - '54335:5432'
     environment:
-      - DATABASE_USERNAME=skgadmin
-      - DATABASE_PASSWORD=Skg@2024
+      - DATABASE_USERNAME=skg
+      - DATABASE_PASSWORD=master123
       - DATABASE_NAME=skg_management
       - TZ=Asia/Ho_Chi_Minh
     volumes:
