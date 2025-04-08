@@ -1,6 +1,7 @@
 import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
 import { Department } from '../../departments/entities/department.entity';
+import { Project } from '../../projects/entities/project.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
 export declare class User extends EntityHelper {
     id: number;
@@ -21,4 +22,5 @@ export declare class User extends EntityHelper {
     deletedAt: Date;
     department: Department;
     department_id: number;
+    managed_projects: Project[];
 }

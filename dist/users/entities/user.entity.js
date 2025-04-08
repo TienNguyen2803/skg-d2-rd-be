@@ -17,6 +17,7 @@ const typeorm_1 = require("typeorm");
 const role_entity_1 = require("../../roles/entities/role.entity");
 const status_entity_1 = require("../../statuses/entities/status.entity");
 const department_entity_1 = require("../../departments/entities/department.entity");
+const project_entity_1 = require("../../projects/entities/project.entity");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const entity_helper_1 = require("../../utils/entity-helper");
 const auth_providers_enum_1 = require("../../auth/auth-providers.enum");
@@ -128,6 +129,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: Number, nullable: true }),
     __metadata("design:type", Number)
 ], User.prototype, "department_id", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => project_entity_1.Project, (project) => project.project_manager),
+    __metadata("design:type", Array)
+], User.prototype, "managed_projects", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);
