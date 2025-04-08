@@ -1,44 +1,35 @@
-services:
-  skg-postgres:
-    image: postgres:15.3-alpine
-    restart: unless-stopped
-    ports:
-      - 54331:5432
-    volumes:
-      - ./.data/db:/var/lib/postgresql/data
-    environment:
-      - DATABASE_USERNAME: skg
-      - DATABASE_PASSWORD: master123
-      - DATABASE_NAME: skg
+version: '3.8' # Thêm lại version nếu cần
 
-  skg:
+services:
+  skg-management:
     build:
       context: .
       dockerfile: Dockerfile
     restart: always
-    volumes:
-      - ./logs:/usr/src/app/logs
-    ports:
-      - "3030:3030"
     depends_on:
-      - skg-postgres
+      - skg-management-postgres
+    ports:
+      - '7000:7000'
+    networks:
+      - backend
 
-  # maildev:
-  #   build:
-  #     context: .
-  #     dockerfile: maildev.Dockerfile
-  #   ports:
-  #     - ${MAIL_CLIENT_PORT}:1080
-  #     - ${MAIL_PORT}:1025
+  skg-management-postgres:
+    image: postgres:16.0-alpine3.18
+    restart: unless-stopped
+    ports:
+      - '54335:5432'
+    environment:
+      - DATABASE_USERNAME=skgadmin
+      - DATABASE_PASSWORD=Skg@2024
+      - DATABASE_NAME=skg_management
+      - TZ=Asia/Ho_Chi_Minh
+    volumes:
+      - skg_management_data:/var/lib/postgresql/data
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
 
-  # adminer:
-  #   image: adminer
-  #   restart: always
-  #   ports:
-  #     - 8080:8080
-
-  # Uncomment to use redis
-  # redis:
-  #   image: redis:7-alpine
-  #   ports:
-  #     - 6379:6379
+volumes:
+  skg_management_data:
