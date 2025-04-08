@@ -90,4 +90,17 @@ export class User extends EntityHelper {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @Column({ nullable: true })
+  department_id: number;
+
+  @ManyToOne(() => Department, (department) => department.users)
+  @JoinColumn({ name: 'department_id' })
+  department: Department;
+
+  @OneToMany(() => Project, (project) => project.manager)
+  managed_projects: Project[];
+
+  @OneToMany(() => Timesheet, (timesheet) => timesheet.user)
+  timesheets: Timesheet[];
 }
