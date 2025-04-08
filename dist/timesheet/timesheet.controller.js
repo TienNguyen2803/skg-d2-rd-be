@@ -51,7 +51,7 @@ __decorate([
 ], TimesheetController.prototype, "findAll", null);
 exports.TimesheetController = TimesheetController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
-    (0, roles_decorator_1.Roles)([roles_enum_1.RoleEnum.user, roles_enum_1.RoleEnum.admin]),
+    (0, roles_decorator_1.Roles)(roles_enum_1.RoleEnum.user, roles_enum_1.RoleEnum.admin),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, swagger_1.ApiTags)('Timesheet'),
     (0, common_1.Controller)({
