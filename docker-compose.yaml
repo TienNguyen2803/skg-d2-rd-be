@@ -10,8 +10,6 @@ services:
       - DATABASE_USERNAME: skg
       - DATABASE_PASSWORD: master123
       - DATABASE_NAME: skg
-      - TZ=Asia/Ho_Chi_Minh
-
 
   skg:
     build:
