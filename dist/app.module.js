@@ -42,11 +42,13 @@ const site_configurations_module_1 = require("./site-configurations/site-configu
 const imgs_module_1 = require("./imgs/imgs.module");
 const departments_module_1 = require("./departments/departments.module");
 const projects_module_1 = require("./projects/projects.module");
+const timesheet_module_1 = require("./timesheet/timesheet.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            timesheet_module_1.TimesheetModule,
             departments_module_1.DepartmentsModule,
             projects_module_1.ProjectsModule,
             spa_info_module_1.SpaInfoModule,

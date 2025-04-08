@@ -13,13 +13,13 @@ export class TimesheetService {
     private timesheetRepository: Repository<Timesheet>,
     @InjectRepository(TimesheetStatus)
     private timesheetStatusRepository: Repository<TimesheetStatus>,
-  ) {}
+  ) { }
 
   async create(createTimesheetDto: CreateTimesheetDto, userId: number) {
-    const draftStatus = await this.timesheetStatusRepository.findOne({
+    const draftStatus = await this.timesheetStatusRepository.findOneOrFail({
       where: { code: 'DRAFT' },
     });
-
+    console.log('draftStatus', draftStatus)
     const timesheet = this.timesheetRepository.create({
       ...createTimesheetDto,
       creator_id: userId,
