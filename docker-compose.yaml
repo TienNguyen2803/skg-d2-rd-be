@@ -19,9 +19,9 @@ services:
     ports:
       - '54335:5432'
     environment:
-      - DATABASE_USERNAME=skg
-      - DATABASE_PASSWORD=master123
-      - DATABASE_NAME=skg_management
+      - POSTGRES_USER=skg
+      - POSTGRES_PASSWORD=master123
+      - POSTGRES_DB=skg_management
       - TZ=Asia/Ho_Chi_Minh
     volumes:
       - skg_management_data:/var/lib/postgresql/data
