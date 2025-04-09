@@ -85,7 +85,6 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
-    console.log('user', bcrypt.hashSync(user.password, bcrypt.genSaltSync()))
     return user;
   }
 
