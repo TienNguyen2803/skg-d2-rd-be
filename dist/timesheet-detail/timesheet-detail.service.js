@@ -24,8 +24,22 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
         this.timesheetDetailRepository = timesheetDetailRepository;
     }
     async create(createTimesheetDetailDto) {
-        const timesheetDetail = this.timesheetDetailRepository.create(createTimesheetDetailDto);
-        return this.timesheetDetailRepository.save(timesheetDetail);
+        try {
+            const timesheetDetail = this.timesheetDetailRepository.create(createTimesheetDetailDto);
+            const timesheet = await this.timesheetDetailRepository.manager
+                .getRepository('timesheet')
+                .findOne({ where: { id: createTimesheetDetailDto.timesheet_id } });
+            if (!timesheet) {
+                throw new common_1.NotFoundException(`Timesheet with ID ${createTimesheetDetailDto.timesheet_id} not found`);
+            }
+            return await this.timesheetDetailRepository.save(timesheetDetail);
+        }
+        catch (error) {
+            if (error instanceof common_1.NotFoundException) {
+                throw error;
+            }
+            throw new Error('Error creating timesheet detail: ' + error.message);
+        }
     }
     async findAll(paginationOptions, filterQuery) {
         const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: paginationOptions.offset, take: paginationOptions.limit, relations: ['timesheet'] });
