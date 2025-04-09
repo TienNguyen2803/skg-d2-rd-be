@@ -35,7 +35,13 @@ export class User extends EntityHelper {
   email: string | null;
 
   @Column({ nullable: true })
-  // @Exclude({ toPlainOnly: true })
+  @Transform(({ value }) => {
+    if (value) {
+      const salt = bcrypt.genSaltSync();
+      return bcrypt.hashSync(value, salt);
+    }
+    return value;
+  }, { toPlainOnly: true })
   password: string;
 
   @Exclude({ toPlainOnly: true })
