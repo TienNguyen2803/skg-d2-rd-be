@@ -8,4 +8,5 @@ export declare class TimesheetService {
     constructor(timesheetRepository: Repository<Timesheet>, timesheetStatusRepository: Repository<TimesheetStatus>);
     create(createTimesheetDto: CreateTimesheetDto, userId: number): Promise<Timesheet>;
     findAll(creatorId: number): Promise<Timesheet[]>;
+    findOne(id: number): Promise<Timesheet>;
 }

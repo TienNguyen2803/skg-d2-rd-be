@@ -29,11 +29,12 @@ import { RolesGuard } from '../roles/roles.guard';
   version: '1',
 })
 export class TimesheetDetailController {
-  constructor(private readonly timesheetDetailService: TimesheetDetailService) {}
+  constructor(private readonly timesheetDetailService: TimesheetDetailService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createTimesheetDetailDto: CreateTimesheetDetailDto) {
+    console.log('createTimesheetDetailDto', createTimesheetDetailDto)
     return this.timesheetDetailService.create(createTimesheetDetailDto);
   }
 

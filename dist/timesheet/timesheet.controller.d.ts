@@ -5,4 +5,5 @@ export declare class TimesheetController {
     constructor(timesheetService: TimesheetService);
     create(createTimesheetDto: CreateTimesheetDto, user: any): Promise<import("./entities/timesheet.entity").Timesheet>;
     findAll(user: any): Promise<import("./entities/timesheet.entity").Timesheet[]>;
+    findOne(id: number): Promise<import("./entities/timesheet.entity").Timesheet>;
 }

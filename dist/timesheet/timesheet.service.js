@@ -37,6 +37,16 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
             relations: ['creator', 'project', 'department', 'status', 'details'],
         });
     }
+    async findOne(id) {
+        const timesheet = await this.timesheetRepository.findOne({
+            where: { id },
+            relations: ['creator', 'project', 'department', 'status', 'details'],
+        });
+        if (!timesheet) {
+            throw new common_1.NotFoundException(`Timesheet with ID ${id} not found`);
+        }
+        return timesheet;
+    }
 };
 exports.TimesheetService = TimesheetService = __decorate([
     (0, common_1.Injectable)(),

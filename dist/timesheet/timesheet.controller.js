@@ -33,6 +33,9 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     findAll(user) {
         return this.timesheetService.findAll(user.id);
     }
+    findOne(id) {
+        return this.timesheetService.findOne(id);
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -49,6 +52,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], TimesheetController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], TimesheetController.prototype, "findOne", null);
 exports.TimesheetController = TimesheetController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, roles_decorator_1.Roles)(roles_enum_1.RoleEnum.user, roles_enum_1.RoleEnum.admin),
