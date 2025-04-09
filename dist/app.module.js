@@ -43,6 +43,8 @@ const imgs_module_1 = require("./imgs/imgs.module");
 const departments_module_1 = require("./departments/departments.module");
 const projects_module_1 = require("./projects/projects.module");
 const timesheet_module_1 = require("./timesheet/timesheet.module");
+const roles_module_1 = require("./roles/roles.module");
+const statuses_module_1 = require("./statuses/statuses.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -111,6 +113,8 @@ exports.AppModule = AppModule = __decorate([
             portals_module_1.PortalsModule,
             site_configurations_module_1.SiteConfigurationsModule,
             imgs_module_1.ImgsModule,
+            roles_module_1.RolesModule,
+            statuses_module_1.StatusesModule,
         ],
     })
 ], AppModule);
