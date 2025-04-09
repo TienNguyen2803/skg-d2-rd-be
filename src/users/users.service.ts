@@ -19,13 +19,13 @@ export class UsersService {
     const user = this.userRepository.create(createUserDto);
     
     // Handle role relationship
-    if (createUserDto.roleId) {
-      user.role = { id: createUserDto.roleId } as any;
+    if (createUserDto.role_id) {
+      user.role = { id: createUserDto.role_id } as any;
     }
     
     // Handle status relationship
-    if (createUserDto.statusId) {
-      user.status = { id: createUserDto.statusId } as any;
+    if (createUserDto.status_id) {
+      user.status = { id: createUserDto.status_id } as any;
     }
 
     // Handle department relationship
