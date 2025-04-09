@@ -37,4 +37,10 @@ export class TimesheetController {
   findAll(@CurrentUser() user) {
     return this.timesheetService.findAll(user.id);
   }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.timesheetService.findOne(id);
+  }
 }

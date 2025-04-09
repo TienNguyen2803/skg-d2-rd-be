@@ -35,4 +35,17 @@ export class TimesheetService {
       relations: ['creator', 'project', 'department', 'status', 'details'],
     });
   }
+
+  async findOne(id: number) {
+    const timesheet = await this.timesheetRepository.findOne({
+      where: { id },
+      relations: ['creator', 'project', 'department', 'status', 'details'],
+    });
+
+    if (!timesheet) {
+      throw new NotFoundException(`Timesheet with ID ${id} not found`);
+    }
+
+    return timesheet;
+  }
 }
