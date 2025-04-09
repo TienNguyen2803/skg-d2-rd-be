@@ -44,6 +44,7 @@ __decorate([
 ], User.prototype, "email", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
+    (0, class_transformer_1.Exclude)({ toPlainOnly: true }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
@@ -119,7 +120,7 @@ __decorate([
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-        eager: false
+        eager: true
     }),
     (0, typeorm_1.JoinColumn)({ name: 'department_id' }),
     __metadata("design:type", department_entity_1.Department)

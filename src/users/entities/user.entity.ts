@@ -100,7 +100,7 @@ export class User extends EntityHelper {
     cascade: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    eager: false
+    eager: true
   })
   @JoinColumn({ name: 'department_id' })
   department: Department;
