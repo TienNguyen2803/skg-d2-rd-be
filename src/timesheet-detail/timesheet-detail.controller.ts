@@ -31,6 +31,18 @@ import { RolesGuard } from '../roles/roles.guard';
 export class TimesheetDetailController {
   constructor(private readonly timesheetDetailService: TimesheetDetailService) { }
 
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create timesheet detail' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Timesheet detail has been successfully created.',
+    type: TimesheetDetail,
+  })
+  create(@Body() createTimesheetDetailDto: CreateTimesheetDetailDto): Promise<TimesheetDetail> {
+    return this.timesheetDetailService.create(createTimesheetDetailDto);
+  }
+
 
   @Get()
   @HttpCode(HttpStatus.OK)

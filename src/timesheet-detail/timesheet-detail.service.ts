@@ -15,6 +15,15 @@ export class TimesheetDetailService {
     private timesheetDetailRepository: Repository<TimesheetDetail>,
   ) { }
 
+  async create(createTimesheetDetailDto: CreateTimesheetDetailDto): Promise<TimesheetDetail> {
+    try {
+      const timesheetDetail = this.timesheetDetailRepository.create(createTimesheetDetailDto);
+      return await this.timesheetDetailRepository.save(timesheetDetail);
+    } catch (error) {
+      throw new Error('Error creating timesheet detail: ' + error.message); 
+    }
+  }
+
   async findAll(paginationOptions: IPaginationOptions, filterQuery?: string) {
     const findOptions = {
       ...FilterBuilder.buildFilter(filterQuery),
