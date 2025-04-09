@@ -17,32 +17,30 @@ class CreateTimesheetDetailDto {
 exports.CreateTimesheetDetailDto = CreateTimesheetDetailDto;
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '2024-04-09' }),
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateTimesheetDetailDto.prototype, "date", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '09:00' }),
-    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateTimesheetDetailDto.prototype, "start_time", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '17:00' }),
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTimesheetDetailDto.prototype, "end_time", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 2 }),
-    (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], CreateTimesheetDetailDto.prototype, "ot_hours", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Working on feature X' }),
-    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTimesheetDetailDto.prototype, "description", void 0);
 __decorate([

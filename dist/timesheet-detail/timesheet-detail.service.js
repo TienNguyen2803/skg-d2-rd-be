@@ -23,6 +23,15 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
     constructor(timesheetDetailRepository) {
         this.timesheetDetailRepository = timesheetDetailRepository;
     }
+    async create(createTimesheetDetailDto) {
+        try {
+            const timesheetDetail = this.timesheetDetailRepository.create(createTimesheetDetailDto);
+            return await this.timesheetDetailRepository.save(timesheetDetail);
+        }
+        catch (error) {
+            throw new Error('Error creating timesheet detail: ' + error.message);
+        }
+    }
     async findAll(paginationOptions, filterQuery) {
         const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: paginationOptions.offset, take: paginationOptions.limit, relations: ['timesheet'] });
         return (0, standard_pagination_1.standardPagination)(await this.timesheetDetailRepository.find(findOptions), await this.timesheetDetailRepository.count(findOptions));

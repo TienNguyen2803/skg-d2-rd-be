@@ -7,6 +7,7 @@ import { TimesheetDetail } from './entities/timesheet-detail.entity';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { FilterBuilder } from '../utils/filter-builder';
 import { standardPagination } from '../utils/standard-pagination';
+import { CreateTimesheetDetailDto } from './dto/create-timesheet-detail.dto';
 
 @Injectable()
 export class TimesheetDetailService {
