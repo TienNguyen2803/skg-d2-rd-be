@@ -24,6 +24,15 @@ let UsersService = exports.UsersService = class UsersService {
     }
     async create(createUserDto) {
         const user = this.userRepository.create(createUserDto);
+        if (createUserDto.roleId) {
+            user.role = { id: createUserDto.roleId };
+        }
+        if (createUserDto.statusId) {
+            user.status = { id: createUserDto.statusId };
+        }
+        if (createUserDto.department_id) {
+            user.department = { id: createUserDto.department_id };
+        }
         await this.userRepository.save(user);
         return this.userRepository.findOneOrFail({
             where: { id: user.id },

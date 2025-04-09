@@ -5,4 +5,5 @@ export declare class CreateUserDto {
     password: string;
     department_id?: number;
     roleId?: number;
+    statusId?: number;
 }
