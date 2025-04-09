@@ -33,4 +33,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsNumber()
   @IsOptional()
   roleId?: number;
+
+  @ApiProperty({ example: 1 })
+  @IsNumber()
+  @IsOptional()
+  statusId?: number;
 }

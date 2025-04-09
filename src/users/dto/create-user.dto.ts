@@ -31,4 +31,9 @@ export class CreateUserDto {
   @IsNumber()
   @IsOptional()
   roleId?: number;
+
+  @ApiProperty({ example: 1 })
+  @IsNumber()
+  @IsOptional()
+  statusId?: number;
 }

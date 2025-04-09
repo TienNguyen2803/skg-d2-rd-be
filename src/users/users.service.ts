@@ -17,6 +17,22 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
+    
+    // Handle role relationship
+    if (createUserDto.roleId) {
+      user.role = { id: createUserDto.roleId } as any;
+    }
+    
+    // Handle status relationship
+    if (createUserDto.statusId) {
+      user.status = { id: createUserDto.statusId } as any;
+    }
+
+    // Handle department relationship
+    if (createUserDto.department_id) {
+      user.department = { id: createUserDto.department_id } as any;
+    }
+
     await this.userRepository.save(user);
 
     return this.userRepository.findOneOrFail({
