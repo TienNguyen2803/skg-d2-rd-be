@@ -17,12 +17,12 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
-    
+
     // Handle role relationship
     if (createUserDto.role_id) {
       user.role = { id: createUserDto.role_id } as any;
     }
-    
+
     // Handle status relationship
     if (createUserDto.status_id) {
       user.status = { id: createUserDto.status_id } as any;
@@ -114,13 +114,13 @@ export class UsersService {
     Object.assign(user, updateUserDto);
 
     // Handle role relationship
-    if (updateUserDto.roleId) {
-      user.role = { id: updateUserDto.roleId } as any;
+    if (updateUserDto.role_id) {
+      user.role = { id: updateUserDto.role_id } as any;
     }
 
     // Handle status relationship
-    if (updateUserDto.statusId) {
-      user.status = { id: updateUserDto.statusId } as any;
+    if (updateUserDto.status_id) {
+      user.status = { id: updateUserDto.status_id } as any;
     }
 
     // Handle department relationship

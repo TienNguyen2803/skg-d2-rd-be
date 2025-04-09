@@ -40,12 +40,10 @@ __decorate([
 ], User.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: String, unique: true, nullable: true }),
-    (0, class_transformer_1.Expose)({ groups: ['me', 'admin'] }),
     __metadata("design:type", Object)
 ], User.prototype, "email", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
-    (0, class_transformer_1.Exclude)({ toPlainOnly: true }),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([

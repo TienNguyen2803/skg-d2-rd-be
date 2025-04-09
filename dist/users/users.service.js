@@ -24,11 +24,11 @@ let UsersService = exports.UsersService = class UsersService {
     }
     async create(createUserDto) {
         const user = this.userRepository.create(createUserDto);
-        if (createUserDto.roleId) {
-            user.role = { id: createUserDto.roleId };
+        if (createUserDto.role_id) {
+            user.role = { id: createUserDto.role_id };
         }
-        if (createUserDto.statusId) {
-            user.status = { id: createUserDto.statusId };
+        if (createUserDto.status_id) {
+            user.status = { id: createUserDto.status_id };
         }
         if (createUserDto.department_id) {
             user.department = { id: createUserDto.department_id };
@@ -88,11 +88,11 @@ let UsersService = exports.UsersService = class UsersService {
             throw new common_1.NotFoundException(`User with ID ${id} not found`);
         }
         Object.assign(user, updateUserDto);
-        if (updateUserDto.roleId) {
-            user.role = { id: updateUserDto.roleId };
+        if (updateUserDto.role_id) {
+            user.role = { id: updateUserDto.role_id };
         }
-        if (updateUserDto.statusId) {
-            user.status = { id: updateUserDto.statusId };
+        if (updateUserDto.status_id) {
+            user.status = { id: updateUserDto.status_id };
         }
         if (updateUserDto.department_id) {
             user.department = { id: updateUserDto.department_id };
