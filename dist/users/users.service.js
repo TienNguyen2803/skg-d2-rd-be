@@ -25,7 +25,7 @@ let UsersService = exports.UsersService = class UsersService {
     async create(createUserDto) {
         const user = this.userRepository.create(createUserDto);
         await this.userRepository.save(user);
-        return this.userRepository.findOne({
+        return this.userRepository.findOneOrFail({
             where: { id: user.id },
             relations: ['department', 'role', 'status'],
         });
@@ -50,7 +50,17 @@ let UsersService = exports.UsersService = class UsersService {
         const findOptions = filter_builder_1.FilterBuilder.buildFilter(filterQuery);
         return this.userRepository.count(findOptions);
     }
-    async findOne(email) {
+    async findOne(id) {
+        const user = await this.userRepository.findOne({
+            where: { id },
+            relations: ['department', 'role', 'status'],
+        });
+        if (!user) {
+            throw new common_1.NotFoundException(`User with ID ${id} not found`);
+        }
+        return user;
+    }
+    async findByEmail(email) {
         const user = await this.userRepository.findOne({
             where: { email },
             relations: ['department', 'role', 'status'],
@@ -69,7 +79,7 @@ let UsersService = exports.UsersService = class UsersService {
         }
         Object.assign(user, updateUserDto);
         await this.userRepository.save(user);
-        return this.userRepository.findOne({
+        return this.userRepository.findOneOrFail({
             where: { id },
             relations: ['department', 'role', 'status'],
         });

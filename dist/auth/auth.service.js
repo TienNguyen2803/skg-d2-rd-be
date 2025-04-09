@@ -33,7 +33,7 @@ let AuthService = exports.AuthService = class AuthService {
         this.configService = configService;
     }
     async validateLogin(loginDto) {
-        const user = await this.usersService.findOne(loginDto.email);
+        const user = await this.usersService.findByEmail(loginDto.email);
         if (!user) {
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.UNPROCESSABLE_ENTITY,

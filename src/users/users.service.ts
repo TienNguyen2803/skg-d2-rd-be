@@ -19,7 +19,7 @@ export class UsersService {
     const user = this.userRepository.create(createUserDto);
     await this.userRepository.save(user);
 
-    return this.userRepository.findOne({
+    return this.userRepository.findOneOrFail({
       where: { id: user.id },
       relations: ['department', 'role', 'status'],
     });
@@ -58,7 +58,20 @@ export class UsersService {
     return this.userRepository.count(findOptions);
   }
 
-  async findOne(email: string): Promise<User> {
+  async findOne(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['department', 'role', 'status'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return user;
+  }
+
+  async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { email },
       relations: ['department', 'role', 'status'],
@@ -83,7 +96,7 @@ export class UsersService {
     Object.assign(user, updateUserDto);
     await this.userRepository.save(user);
 
-    return this.userRepository.findOne({
+    return this.userRepository.findOneOrFail({
       where: { id },
       relations: ['department', 'role', 'status'],
     });

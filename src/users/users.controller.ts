@@ -26,9 +26,9 @@ import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 
 @ApiTags('Users')
-@ApiBearerAuth()
-@Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+// @ApiBearerAuth()
+// @Roles(RoleEnum.admin)
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'users',
   version: '1',
@@ -76,16 +76,16 @@ export class UsersController {
     );
   }
 
-  @Get(':email')
+  @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get user by email' })
+  @ApiOperation({ summary: 'Get user by id' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get user by id',
     type: User,
   })
-  findOne(@Param('email') email: number) {
-    return this.usersService.findOne(email);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')

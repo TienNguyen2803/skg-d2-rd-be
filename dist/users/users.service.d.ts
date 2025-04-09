@@ -9,7 +9,8 @@ export declare class UsersService {
     create(createUserDto: CreateUserDto): Promise<User>;
     findManyWithPagination({ page, limit, offset }: IPaginationOptions, filterQuery?: string, sort?: string): Promise<User[]>;
     standardCount(filterQuery?: string): Promise<number>;
-    findOne(email: string): Promise<User>;
+    findOne(id: number): Promise<User>;
+    findByEmail(email: string): Promise<User>;
     update(id: number, updateUserDto: UpdateUserDto): Promise<User>;
     softDelete(id: number): Promise<void>;
 }
