@@ -32,6 +32,8 @@ import { ImgsModule } from './imgs/imgs.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { ProjectsModule } from './projects/projects.module';
 import { TimesheetModule } from './timesheet/timesheet.module';
+import { RolesModule } from './roles/roles.module';
+import { StatusesModule } from './statuses/statuses.module';
 
 
 @Module({
@@ -99,6 +101,8 @@ import { TimesheetModule } from './timesheet/timesheet.module';
     PortalsModule,
     SiteConfigurationsModule,
     ImgsModule,
+    RolesModule,
+    StatusesModule,
   ],
 })
 export class AppModule { }
