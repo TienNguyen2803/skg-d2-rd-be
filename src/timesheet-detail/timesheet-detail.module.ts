@@ -1,0 +1,14 @@
+
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TimesheetDetailService } from './timesheet-detail.service';
+import { TimesheetDetailController } from './timesheet-detail.controller';
+import { TimesheetDetail } from './entities/timesheet-detail.entity';
+
+@Module({
+  imports: [TypeOrmModule.forFeature([TimesheetDetail])],
+  controllers: [TimesheetDetailController],
+  providers: [TimesheetDetailService],
+  exports: [TimesheetDetailService],
+})
+export class TimesheetDetailModule {}

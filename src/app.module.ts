@@ -34,11 +34,13 @@ import { ProjectsModule } from './projects/projects.module';
 import { TimesheetModule } from './timesheet/timesheet.module';
 import { RolesModule } from './roles/roles.module';
 import { StatusesModule } from './statuses/statuses.module';
+import { TimesheetDetailModule } from './timesheet-detail/timesheet-detail.module';
 
 
 @Module({
   imports: [
     TimesheetModule,
+    TimesheetDetailModule,
     DepartmentsModule,
     ProjectsModule,
     SpaInfoModule,
