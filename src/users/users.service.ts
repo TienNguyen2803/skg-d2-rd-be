@@ -13,11 +13,16 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
-    return this.userRepository.save(user);
+    await this.userRepository.save(user);
+
+    return this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['department', 'role', 'status'],
+    });
   }
 
   async findManyWithPagination(
@@ -30,7 +35,7 @@ export class UsersService {
       skip: offset,
       take: limit,
       relations: ['department', 'role', 'status'],
-      order: {}
+      order: {},
     };
 
     if (sort) {
@@ -53,14 +58,14 @@ export class UsersService {
     return this.userRepository.count(findOptions);
   }
 
-  async findOne(email: string): Promise<User> {
+  async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { email },
+      where: { id },
       relations: ['department', 'role', 'status'],
     });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${email} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     return user;
@@ -78,7 +83,7 @@ export class UsersService {
     Object.assign(user, updateUserDto);
     await this.userRepository.save(user);
 
-    return this.userRepository.findOneOrFail({
+    return this.userRepository.findOne({
       where: { id },
       relations: ['department', 'role', 'status'],
     });
