@@ -1,68 +1,90 @@
-import { Injectable } from '@nestjs/common';
+
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { DeepPartial, Repository } from 'typeorm';
+import { FilterBuilder } from '../utils/filter-builder';
+import { IPaginationOptions } from '../utils/types/pagination-options';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { NullableType } from '../utils/types/nullable.type';
-import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private mailService: MailService,
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
-  async create(
-    createProfileDto: CreateUserDto,
-    isAdmin: boolean,
-  ): Promise<User> {
-    const newUser = this.usersRepository.save(
-      this.usersRepository.create(createProfileDto),
-    );
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user = this.userRepository.create(createUserDto);
+    return this.userRepository.save(user);
+  }
 
-    if (isAdmin) {
-      await this.mailService.userCreatedByAdmin({
-        to: createProfileDto.email,
-        initialPass: createProfileDto.password,
-      });
+  async findManyWithPagination(
+    { page, limit, offset }: IPaginationOptions,
+    filterQuery?: string,
+    sort?: string,
+  ) {
+    const findOptions = {
+      ...FilterBuilder.buildFilter(filterQuery),
+      skip: offset,
+      take: limit,
+      relations: ['department', 'role', 'status'],
+      order: {}
+    };
+
+    if (sort) {
+      const [field, direction] = sort.split(',');
+      if (field && direction) {
+        const upperDirection = direction.toUpperCase();
+        if (upperDirection === 'ASC' || upperDirection === 'DESC') {
+          findOptions.order = { [field]: upperDirection };
+        }
+      }
+    } else {
+      findOptions.order = { id: 'DESC' };
     }
 
-    return newUser;
+    return this.userRepository.find(findOptions);
   }
 
-  findManyWithPagination(
-    paginationOptions: IPaginationOptions,
-  ): Promise<User[]> {
-    return this.usersRepository.find({
-      skip: paginationOptions.offset,
-      take: paginationOptions.limit,
+  standardCount(filterQuery?: string): Promise<number> {
+    const findOptions = FilterBuilder.buildFilter(filterQuery);
+    return this.userRepository.count(findOptions);
+  }
+
+  async findOne(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['department', 'role', 'status'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    return user;
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    Object.assign(user, updateUserDto);
+    await this.userRepository.save(user);
+
+    return this.userRepository.findOneOrFail({
+      where: { id },
+      relations: ['department', 'role', 'status'],
     });
   }
 
-  standardCount(): Promise<number> {
-    return this.usersRepository.count();
-  }
-
-  findOne(fields: EntityCondition<User>): Promise<NullableType<User>> {
-    return this.usersRepository.findOne({
-      where: fields,
-    });
-  }
-
-  update(id: User['id'], payload: DeepPartial<User>): Promise<User> {
-    return this.usersRepository.save(
-      this.usersRepository.create({
-        id,
-        ...payload,
-      }),
-    );
-  }
-
-  async softDelete(id: User['id']): Promise<void> {
-    await this.usersRepository.softDelete(id);
+  async softDelete(id: number): Promise<void> {
+    await this.userRepository.softDelete(id);
   }
 }

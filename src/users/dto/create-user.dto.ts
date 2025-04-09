@@ -1,49 +1,24 @@
-import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../../roles/entities/role.entity';
-import { IsEmail, IsNotEmpty, MinLength, Validate } from 'class-validator';
-import { Status } from 'src/statuses/entities/status.entity';
-import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
-import { IsExist } from 'src/utils/validators/is-exists.validator';
-import { lowerCaseTransformer } from 'src/utils/transformers/lower-case.transformer';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'test1@example.com' })
-  @Transform(lowerCaseTransformer)
-  @IsNotEmpty()
-  @Validate(IsNotExist, ['User'], {
-    message: 'emailAlreadyExists',
-  })
+  @ApiProperty({ example: 'test@example.com' })
   @IsEmail()
-  email: string | null;
-
-  @ApiProperty()
-  @MinLength(6)
-  password?: string;
-
-  provider?: string;
-
-  socialId?: string | null;
+  @IsNotEmpty()
+  email: string;
 
   @ApiProperty({ example: 'John' })
-  @IsNotEmpty()
-  firstName: string | null;
+  @IsString()
+  @IsOptional()
+  firstName?: string;
 
   @ApiProperty({ example: 'Doe' })
+  @IsString()
+  @IsOptional()
+  lastName?: string;
+
+  @ApiProperty()
+  @IsString()
   @IsNotEmpty()
-  lastName: string | null;
-
-  @ApiProperty({ type: Role })
-  @Validate(IsExist, ['Role', 'id'], {
-    message: 'roleNotExists',
-  })
-  role?: Role | null;
-
-  @ApiProperty({ type: Status })
-  @Validate(IsExist, ['Status', 'id'], {
-    message: 'statusNotExists',
-  })
-  status?: Status;
-
-  hash?: string | null;
+  password: string;
 }

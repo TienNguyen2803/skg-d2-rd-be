@@ -1,3 +1,4 @@
+
 import {
   Controller,
   Get,
@@ -6,30 +7,19 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards,
   Query,
   DefaultValuePipe,
   ParseIntPipe,
   HttpStatus,
   HttpCode,
-  SerializeOptions,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/roles/roles.decorator';
-import { RoleEnum } from 'src/roles/roles.enum';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/roles/roles.guard';
 import { User } from './entities/user.entity';
-import { NullableType } from '../utils/types/nullable.type';
 import { standardPagination } from '../utils/standard-pagination';
-import { StandardPaginationResultType } from '../utils/types/standard-pagination-result.type';
 
-@ApiBearerAuth()
-@Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Users')
 @Controller({
   path: 'users',
@@ -38,63 +28,81 @@ import { StandardPaginationResultType } from '../utils/types/standard-pagination
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @SerializeOptions({
-    groups: ['admin'],
-  })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProfileDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createProfileDto, true);
+  @ApiOperation({ summary: 'Create new user' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'User has been successfully created.',
+    type: User,
+  })
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.create(createUserDto);
   }
 
-  @SerializeOptions({
-    groups: ['admin'],
-  })
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get users list' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get users list',
+    type: [User],
+  })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
-  ): Promise<StandardPaginationResultType<User>> {
-    if (limit > 50) {
-      limit = 50;
-    }
-
+    @Query('s') filterQuery?: string,
+    @Query('sort') sort?: string,
+  ) {
     return standardPagination(
-      await this.usersService.findManyWithPagination({
-        page,
-        limit,
-        offset,
-      }),
-      await this.usersService.standardCount(),
+      await this.usersService.findManyWithPagination(
+        {
+          page,
+          limit,
+          offset: (page - 1) * limit,
+        },
+        filterQuery,
+        sort,
+      ),
+      await this.usersService.standardCount(filterQuery),
     );
   }
 
-  @SerializeOptions({
-    groups: ['admin'],
-  })
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string): Promise<NullableType<User>> {
-    return this.usersService.findOne({ id: +id });
+  @ApiOperation({ summary: 'Get user by id' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get user by id',
+    type: User,
+  })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.findOne(id);
   }
 
-  @SerializeOptions({
-    groups: ['admin'],
-  })
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update user' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User has been successfully updated',
+    type: User,
+  })
   update(
-    @Param('id') id: number,
-    @Body() updateProfileDto: UpdateUserDto,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.usersService.update(id, updateProfileDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: number): Promise<void> {
+  @ApiOperation({ summary: 'Delete user' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'User has been successfully deleted',
+  })
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.softDelete(id);
   }
 }
