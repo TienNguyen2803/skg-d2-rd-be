@@ -76,16 +76,18 @@ export class UsersController {
     );
   }
 
-  @Get(':email')
+  @Get(':identifier')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get user by email' })
+  @ApiOperation({ summary: 'Get user by email or id' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get user by id',
+    description: 'Get user by email or id',
     type: User,
   })
-  findOne(@Param('email') email: number) {
-    return this.usersService.findOne(email);
+  findOne(@Param('identifier') identifier: string) {
+    // Try to parse as number for id lookup, otherwise use as email
+    const id = parseInt(identifier, 10);
+    return this.usersService.findOne(isNaN(id) ? identifier : id);
   }
 
   @Patch(':id')
