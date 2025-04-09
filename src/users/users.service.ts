@@ -103,13 +103,31 @@ export class UsersService {
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
+      relations: ['department', 'role', 'status'],
     });
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
+    // Handle direct properties
     Object.assign(user, updateUserDto);
+
+    // Handle role relationship
+    if (updateUserDto.roleId) {
+      user.role = { id: updateUserDto.roleId } as any;
+    }
+
+    // Handle status relationship
+    if (updateUserDto.statusId) {
+      user.status = { id: updateUserDto.statusId } as any;
+    }
+
+    // Handle department relationship
+    if (updateUserDto.department_id) {
+      user.department = { id: updateUserDto.department_id } as any;
+    }
+
     await this.userRepository.save(user);
 
     return this.userRepository.findOneOrFail({
