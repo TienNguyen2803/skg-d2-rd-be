@@ -45,12 +45,14 @@ const projects_module_1 = require("./projects/projects.module");
 const timesheet_module_1 = require("./timesheet/timesheet.module");
 const roles_module_1 = require("./roles/roles.module");
 const statuses_module_1 = require("./statuses/statuses.module");
+const timesheet_detail_module_1 = require("./timesheet-detail/timesheet-detail.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             timesheet_module_1.TimesheetModule,
+            timesheet_detail_module_1.TimesheetDetailModule,
             departments_module_1.DepartmentsModule,
             projects_module_1.ProjectsModule,
             spa_info_module_1.SpaInfoModule,
