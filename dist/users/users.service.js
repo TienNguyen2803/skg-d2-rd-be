@@ -24,7 +24,11 @@ let UsersService = exports.UsersService = class UsersService {
     }
     async create(createUserDto) {
         const user = this.userRepository.create(createUserDto);
-        return this.userRepository.save(user);
+        await this.userRepository.save(user);
+        return this.userRepository.findOne({
+            where: { id: user.id },
+            relations: ['department', 'role', 'status'],
+        });
     }
     async findManyWithPagination({ page, limit, offset }, filterQuery, sort) {
         const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: offset, take: limit, relations: ['department', 'role', 'status'], order: {} });
@@ -65,7 +69,7 @@ let UsersService = exports.UsersService = class UsersService {
         }
         Object.assign(user, updateUserDto);
         await this.userRepository.save(user);
-        return this.userRepository.findOneOrFail({
+        return this.userRepository.findOne({
             where: { id },
             relations: ['department', 'role', 'status'],
         });

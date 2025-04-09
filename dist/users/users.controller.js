@@ -20,6 +20,10 @@ const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const user_entity_1 = require("./entities/user.entity");
 const standard_pagination_1 = require("../utils/standard-pagination");
+const passport_1 = require("@nestjs/passport");
+const roles_guard_1 = require("../roles/roles.guard");
+const roles_decorator_1 = require("../roles/roles.decorator");
+const roles_enum_1 = require("../roles/roles.enum");
 let UsersController = exports.UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -76,9 +80,9 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
+    (0, common_1.Get)(':email'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, swagger_1.ApiOperation)({ summary: 'Get user by id' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Get user by email' }),
     (0, swagger_1.ApiResponse)({
         status: common_1.HttpStatus.OK,
         description: 'Get user by id',
@@ -86,7 +90,7 @@ __decorate([
     }),
     __param(0, (0, common_1.Param)('email')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findOne", null);
 __decorate([
@@ -119,6 +123,9 @@ __decorate([
 ], UsersController.prototype, "remove", null);
 exports.UsersController = UsersController = __decorate([
     (0, swagger_1.ApiTags)('Users'),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, roles_decorator_1.Roles)(roles_enum_1.RoleEnum.admin),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, common_1.Controller)({
         path: 'users',
         version: '1',

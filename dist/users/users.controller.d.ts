@@ -10,7 +10,7 @@ export declare class UsersController {
         data: User[];
         total: number;
     }>>;
-    findOne(email: string): Promise<User>;
+    findOne(email: number): Promise<User>;
     update(id: number, updateUserDto: UpdateUserDto): Promise<User>;
     remove(id: number): Promise<void>;
 }

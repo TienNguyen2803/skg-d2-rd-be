@@ -34,7 +34,7 @@ import { RoleEnum } from '../roles/roles.enum';
   version: '1',
 })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -76,16 +76,16 @@ export class UsersController {
     );
   }
 
-  @Get(':id')
+  @Get(':email')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get user by id' })
+  @ApiOperation({ summary: 'Get user by email' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get user by id',
     type: User,
   })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
+  findOne(@Param('email') email: number) {
+    return this.usersService.findOne(email);
   }
 
   @Patch(':id')

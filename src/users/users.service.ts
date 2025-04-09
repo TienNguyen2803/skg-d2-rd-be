@@ -13,7 +13,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.userRepository.create(createUserDto);
@@ -58,14 +58,14 @@ export class UsersService {
     return this.userRepository.count(findOptions);
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(email: string): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { id },
+      where: { email },
       relations: ['department', 'role', 'status'],
     });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with ID ${email} not found`);
     }
 
     return user;
