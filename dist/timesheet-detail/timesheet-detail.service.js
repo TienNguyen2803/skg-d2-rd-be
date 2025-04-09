@@ -25,7 +25,7 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
     }
     async create(createTimesheetDetailDto) {
         try {
-            const timesheetDetail = this.timesheetDetailRepository.create(createTimesheetDetailDto);
+            const timesheetDetail = this.timesheetDetailRepository.create(Object.assign(Object.assign({}, createTimesheetDetailDto), { ot_hours: createTimesheetDetailDto.ot_hours ? Number(createTimesheetDetailDto.ot_hours) : 0 }));
             return await this.timesheetDetailRepository.save(timesheetDetail);
         }
         catch (error) {

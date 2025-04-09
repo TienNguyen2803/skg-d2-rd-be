@@ -32,7 +32,7 @@ __decorate([
     __metadata("design:type", String)
 ], TimesheetDetail.prototype, "end_time", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: Number, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
     __metadata("design:type", Number)
 ], TimesheetDetail.prototype, "ot_hours", void 0);
 __decorate([

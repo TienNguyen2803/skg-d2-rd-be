@@ -42,7 +42,7 @@ __decorate([
     __metadata("design:type", String)
 ], Timesheet.prototype, "month_year", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: Number, nullable: true }),
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
     __metadata("design:type", Number)
 ], Timesheet.prototype, "total_hours", void 0);
 __decorate([
