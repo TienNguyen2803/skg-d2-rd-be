@@ -15,19 +15,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TimesheetDetailController = void 0;
 const common_1 = require("@nestjs/common");
 const timesheet_detail_service_1 = require("./timesheet-detail.service");
-const create_timesheet_detail_dto_1 = require("./dto/create-timesheet-detail.dto");
 const update_timesheet_detail_dto_1 = require("./dto/update-timesheet-detail.dto");
 const swagger_1 = require("@nestjs/swagger");
 const passport_1 = require("@nestjs/passport");
 const roles_guard_1 = require("../roles/roles.guard");
-const timesheet_detail_entity_1 = require("./entities/timesheet-detail.entity");
 let TimesheetDetailController = exports.TimesheetDetailController = class TimesheetDetailController {
     constructor(timesheetDetailService) {
         this.timesheetDetailService = timesheetDetailService;
-    }
-    create(createTimesheetDetailDto) {
-        console.log('createTimesheetDetailDto', createTimesheetDetailDto);
-        return this.timesheetDetailService.create(createTimesheetDetailDto);
     }
     async findAll(page, limit, s) {
         return this.timesheetDetailService.findAll({
@@ -46,20 +40,6 @@ let TimesheetDetailController = exports.TimesheetDetailController = class Timesh
         return this.timesheetDetailService.remove(id);
     }
 };
-__decorate([
-    (0, common_1.Post)(),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    (0, swagger_1.ApiOperation)({ summary: 'Create new Timesheet Detail' }),
-    (0, swagger_1.ApiResponse)({
-        status: common_1.HttpStatus.CREATED,
-        description: 'TimesheetDetail has been successfully created.',
-        type: timesheet_detail_entity_1.TimesheetDetail,
-    }),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_timesheet_detail_dto_1.CreateTimesheetDetailDto]),
-    __metadata("design:returntype", Promise)
-], TimesheetDetailController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),

@@ -18,8 +18,8 @@ exports.CreateTimesheetDetailDto = CreateTimesheetDetailDto;
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '2024-04-09' }),
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsDate)(),
-    __metadata("design:type", Date)
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
 ], CreateTimesheetDetailDto.prototype, "date", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: '09:00' }),

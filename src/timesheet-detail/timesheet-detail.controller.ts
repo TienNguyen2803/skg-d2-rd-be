@@ -20,7 +20,6 @@ import { UpdateTimesheetDetailDto } from './dto/update-timesheet-detail.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
-import { TimesheetDetail } from './entities/timesheet-detail.entity';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -32,18 +31,6 @@ import { TimesheetDetail } from './entities/timesheet-detail.entity';
 export class TimesheetDetailController {
   constructor(private readonly timesheetDetailService: TimesheetDetailService) { }
 
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create new Timesheet Detail' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'TimesheetDetail has been successfully created.',
-    type: TimesheetDetail,
-  })
-  create(@Body() createTimesheetDetailDto: CreateTimesheetDetailDto): Promise<TimesheetDetail> {
-    console.log('createTimesheetDetailDto', createTimesheetDetailDto)
-    return this.timesheetDetailService.create(createTimesheetDetailDto);
-  }
 
   @Get()
   @HttpCode(HttpStatus.OK)

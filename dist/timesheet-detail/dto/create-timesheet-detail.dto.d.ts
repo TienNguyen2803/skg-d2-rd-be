@@ -1,5 +1,5 @@
 export declare class CreateTimesheetDetailDto {
-    date: Date;
+    date: string;
     start_time: string;
     end_time: string;
     ot_hours: number;

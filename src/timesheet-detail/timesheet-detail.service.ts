@@ -2,7 +2,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateTimesheetDetailDto } from './dto/create-timesheet-detail.dto';
 import { UpdateTimesheetDetailDto } from './dto/update-timesheet-detail.dto';
 import { TimesheetDetail } from './entities/timesheet-detail.entity';
 import { IPaginationOptions } from '../utils/types/pagination-options';
@@ -14,33 +13,7 @@ export class TimesheetDetailService {
   constructor(
     @InjectRepository(TimesheetDetail)
     private timesheetDetailRepository: Repository<TimesheetDetail>,
-  ) {}
-
-  async create(createTimesheetDetailDto: CreateTimesheetDetailDto): Promise<TimesheetDetail> {
-    try {
-      // Validate timesheet exists before creating
-      const timesheet = await this.timesheetDetailRepository.manager
-        .getRepository('timesheet')
-        .findOne({ where: { id: createTimesheetDetailDto.timesheet_id } });
-      
-      if (!timesheet) {
-        throw new NotFoundException(`Timesheet with ID ${createTimesheetDetailDto.timesheet_id} not found`);
-      }
-
-      // Convert date string to Date object if needed
-      const timesheetDetail = this.timesheetDetailRepository.create({
-        ...createTimesheetDetailDto,
-        date: new Date(createTimesheetDetailDto.date)
-      });
-      
-      return await this.timesheetDetailRepository.save(timesheetDetail);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new Error(`Error creating timesheet detail: ${error.message}`);
-    }
-  }
+  ) { }
 
   async findAll(paginationOptions: IPaginationOptions, filterQuery?: string) {
     const findOptions = {
