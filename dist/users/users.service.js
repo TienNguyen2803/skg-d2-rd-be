@@ -82,11 +82,21 @@ let UsersService = exports.UsersService = class UsersService {
     async update(id, updateUserDto) {
         const user = await this.userRepository.findOne({
             where: { id },
+            relations: ['department', 'role', 'status'],
         });
         if (!user) {
             throw new common_1.NotFoundException(`User with ID ${id} not found`);
         }
         Object.assign(user, updateUserDto);
+        if (updateUserDto.roleId) {
+            user.role = { id: updateUserDto.roleId };
+        }
+        if (updateUserDto.statusId) {
+            user.status = { id: updateUserDto.statusId };
+        }
+        if (updateUserDto.department_id) {
+            user.department = { id: updateUserDto.department_id };
+        }
         await this.userRepository.save(user);
         return this.userRepository.findOneOrFail({
             where: { id },
