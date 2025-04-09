@@ -3,4 +3,6 @@ export declare class CreateUserDto {
     firstName?: string;
     lastName?: string;
     password: string;
+    department_id?: number;
+    roleId?: number;
 }

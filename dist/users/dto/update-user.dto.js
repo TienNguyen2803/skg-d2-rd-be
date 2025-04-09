@@ -41,4 +41,16 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "password", void 0);
+__decorate([
+    (0, swagger_2.ApiProperty)({ example: 1 }),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], UpdateUserDto.prototype, "department_id", void 0);
+__decorate([
+    (0, swagger_2.ApiProperty)({ example: 1 }),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], UpdateUserDto.prototype, "roleId", void 0);
 //# sourceMappingURL=update-user.dto.js.map
