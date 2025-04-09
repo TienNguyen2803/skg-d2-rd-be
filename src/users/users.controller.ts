@@ -26,7 +26,7 @@ import { standardPagination } from '../utils/standard-pagination';
   version: '1',
 })
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -76,8 +76,8 @@ export class UsersController {
     description: 'Get user by id',
     type: User,
   })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findOne(id);
+  findOne(@Param('email') email: string) {
+    return this.usersService.findOne(email);
   }
 
   @Patch(':id')

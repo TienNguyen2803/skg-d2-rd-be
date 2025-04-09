@@ -14,84 +14,91 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const users_service_1 = require("./users.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
-const swagger_1 = require("@nestjs/swagger");
-const roles_decorator_1 = require("../roles/roles.decorator");
-const roles_enum_1 = require("../roles/roles.enum");
-const passport_1 = require("@nestjs/passport");
-const roles_guard_1 = require("../roles/roles.guard");
+const user_entity_1 = require("./entities/user.entity");
 const standard_pagination_1 = require("../utils/standard-pagination");
 let UsersController = exports.UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    create(createProfileDto) {
-        return this.usersService.create(createProfileDto, true);
+    create(createUserDto) {
+        return this.usersService.create(createUserDto);
     }
-    async findAll(page, limit, offset) {
-        if (limit > 50) {
-            limit = 50;
-        }
+    async findAll(page, limit, filterQuery, sort) {
         return (0, standard_pagination_1.standardPagination)(await this.usersService.findManyWithPagination({
             page,
             limit,
-            offset,
-        }), await this.usersService.standardCount());
+            offset: (page - 1) * limit,
+        }, filterQuery, sort), await this.usersService.standardCount(filterQuery));
     }
-    findOne(id) {
-        return this.usersService.findOne({ id: +id });
+    findOne(email) {
+        return this.usersService.findOne(email);
     }
-    update(id, updateProfileDto) {
-        return this.usersService.update(id, updateProfileDto);
+    update(id, updateUserDto) {
+        return this.usersService.update(id, updateUserDto);
     }
     remove(id) {
         return this.usersService.softDelete(id);
     }
 };
 __decorate([
-    (0, common_1.SerializeOptions)({
-        groups: ['admin'],
-    }),
     (0, common_1.Post)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, swagger_1.ApiOperation)({ summary: 'Create new user' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.CREATED,
+        description: 'User has been successfully created.',
+        type: user_entity_1.User,
+    }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "create", null);
 __decorate([
-    (0, common_1.SerializeOptions)({
-        groups: ['admin'],
-    }),
     (0, common_1.Get)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiOperation)({ summary: 'Get users list' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.OK,
+        description: 'Get users list',
+        type: [user_entity_1.User],
+    }),
     __param(0, (0, common_1.Query)('page', new common_1.DefaultValuePipe(1), common_1.ParseIntPipe)),
     __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(10), common_1.ParseIntPipe)),
-    __param(2, (0, common_1.Query)('offset', new common_1.DefaultValuePipe(0), common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Query)('s')),
+    __param(3, (0, common_1.Query)('sort')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number, Number]),
+    __metadata("design:paramtypes", [Number, Number, String, String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.SerializeOptions)({
-        groups: ['admin'],
-    }),
     (0, common_1.Get)(':id'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('id')),
+    (0, swagger_1.ApiOperation)({ summary: 'Get user by id' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.OK,
+        description: 'Get user by id',
+        type: user_entity_1.User,
+    }),
+    __param(0, (0, common_1.Param)('email')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.SerializeOptions)({
-        groups: ['admin'],
-    }),
     (0, common_1.Patch)(':id'),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('id')),
+    (0, swagger_1.ApiOperation)({ summary: 'Update user' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.OK,
+        description: 'User has been successfully updated',
+        type: user_entity_1.User,
+    }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, update_user_dto_1.UpdateUserDto]),
@@ -100,15 +107,17 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(':id'),
     (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
-    __param(0, (0, common_1.Param)('id')),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete user' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.NO_CONTENT,
+        description: 'User has been successfully deleted',
+    }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
+    __metadata("design:returntype", void 0)
 ], UsersController.prototype, "remove", null);
 exports.UsersController = UsersController = __decorate([
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, roles_decorator_1.Roles)(roles_enum_1.RoleEnum.admin),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, swagger_1.ApiTags)('Users'),
     (0, common_1.Controller)({
         path: 'users',

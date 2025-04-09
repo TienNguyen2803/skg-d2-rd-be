@@ -26,7 +26,7 @@ let AuthGoogleController = exports.AuthGoogleController = class AuthGoogleContro
     async login(loginDto) {
         console.log(loginDto);
         const socialData = await this.authGoogleService.getProfileByToken(loginDto);
-        return this.authService.validateSocialLogin('google', socialData);
+        return {};
     }
 };
 __decorate([

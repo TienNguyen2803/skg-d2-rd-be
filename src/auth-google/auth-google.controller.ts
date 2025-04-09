@@ -14,7 +14,7 @@ export class AuthGoogleController {
   constructor(
     private readonly authService: AuthService,
     private readonly authGoogleService: AuthGoogleService,
-  ) {}
+  ) { }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -24,7 +24,7 @@ export class AuthGoogleController {
     console.log(loginDto);
 
     const socialData = await this.authGoogleService.getProfileByToken(loginDto);
-
-    return this.authService.validateSocialLogin('google', socialData);
+    return {} as any;
+    // return this.authService.validateSocialLogin('google', socialData);
   }
 }

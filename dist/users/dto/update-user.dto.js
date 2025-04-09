@@ -12,57 +12,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const create_user_dto_1 = require("./create-user.dto");
-const class_transformer_1 = require("class-transformer");
-const swagger_2 = require("@nestjs/swagger");
-const role_entity_1 = require("../../roles/entities/role.entity");
 const class_validator_1 = require("class-validator");
-const status_entity_1 = require("../../statuses/entities/status.entity");
-const is_not_exists_validator_1 = require("../../utils/validators/is-not-exists.validator");
-const is_exists_validator_1 = require("../../utils/validators/is-exists.validator");
-const lower_case_transformer_1 = require("../../utils/transformers/lower-case.transformer");
+const swagger_2 = require("@nestjs/swagger");
 class UpdateUserDto extends (0, swagger_1.PartialType)(create_user_dto_1.CreateUserDto) {
 }
 exports.UpdateUserDto = UpdateUserDto;
 __decorate([
-    (0, swagger_2.ApiProperty)({ example: 'test1@example.com' }),
-    (0, class_transformer_1.Transform)(lower_case_transformer_1.lowerCaseTransformer),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.Validate)(is_not_exists_validator_1.IsNotExist, ['User'], {
-        message: 'emailAlreadyExists',
-    }),
+    (0, swagger_2.ApiProperty)({ example: 'test@example.com' }),
     (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", Object)
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
 ], UpdateUserDto.prototype, "email", void 0);
 __decorate([
-    (0, swagger_2.ApiProperty)(),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.MinLength)(6),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "password", void 0);
-__decorate([
     (0, swagger_2.ApiProperty)({ example: 'John' }),
+    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Object)
+    __metadata("design:type", String)
 ], UpdateUserDto.prototype, "firstName", void 0);
 __decorate([
     (0, swagger_2.ApiProperty)({ example: 'Doe' }),
+    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", Object)
+    __metadata("design:type", String)
 ], UpdateUserDto.prototype, "lastName", void 0);
 __decorate([
-    (0, swagger_2.ApiProperty)({ type: role_entity_1.Role }),
+    (0, swagger_2.ApiProperty)(),
+    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.Validate)(is_exists_validator_1.IsExist, ['Role', 'id'], {
-        message: 'roleNotExists',
-    }),
-    __metadata("design:type", Object)
-], UpdateUserDto.prototype, "role", void 0);
-__decorate([
-    (0, swagger_2.ApiProperty)({ type: status_entity_1.Status }),
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.Validate)(is_exists_validator_1.IsExist, ['Status', 'id'], {
-        message: 'statusNotExists',
-    }),
-    __metadata("design:type", status_entity_1.Status)
-], UpdateUserDto.prototype, "status", void 0);
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "password", void 0);
 //# sourceMappingURL=update-user.dto.js.map

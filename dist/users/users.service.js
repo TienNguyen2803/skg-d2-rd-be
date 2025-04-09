@@ -15,49 +15,68 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
+const filter_builder_1 = require("../utils/filter-builder");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
-const mail_service_1 = require("../mail/mail.service");
 let UsersService = exports.UsersService = class UsersService {
-    constructor(mailService, usersRepository) {
-        this.mailService = mailService;
-        this.usersRepository = usersRepository;
+    constructor(userRepository) {
+        this.userRepository = userRepository;
     }
-    async create(createProfileDto, isAdmin) {
-        const newUser = this.usersRepository.save(this.usersRepository.create(createProfileDto));
-        if (isAdmin) {
-            await this.mailService.userCreatedByAdmin({
-                to: createProfileDto.email,
-                initialPass: createProfileDto.password,
-            });
+    async create(createUserDto) {
+        const user = this.userRepository.create(createUserDto);
+        return this.userRepository.save(user);
+    }
+    async findManyWithPagination({ page, limit, offset }, filterQuery, sort) {
+        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: offset, take: limit, relations: ['department', 'role', 'status'], order: {} });
+        if (sort) {
+            const [field, direction] = sort.split(',');
+            if (field && direction) {
+                const upperDirection = direction.toUpperCase();
+                if (upperDirection === 'ASC' || upperDirection === 'DESC') {
+                    findOptions.order = { [field]: upperDirection };
+                }
+            }
         }
-        return newUser;
+        else {
+            findOptions.order = { id: 'DESC' };
+        }
+        return this.userRepository.find(findOptions);
     }
-    findManyWithPagination(paginationOptions) {
-        return this.usersRepository.find({
-            skip: paginationOptions.offset,
-            take: paginationOptions.limit,
+    standardCount(filterQuery) {
+        const findOptions = filter_builder_1.FilterBuilder.buildFilter(filterQuery);
+        return this.userRepository.count(findOptions);
+    }
+    async findOne(email) {
+        const user = await this.userRepository.findOne({
+            where: { email },
+            relations: ['department', 'role', 'status'],
         });
+        if (!user) {
+            throw new common_1.NotFoundException(`User with ID ${email} not found`);
+        }
+        return user;
     }
-    standardCount() {
-        return this.usersRepository.count();
-    }
-    findOne(fields) {
-        return this.usersRepository.findOne({
-            where: fields,
+    async update(id, updateUserDto) {
+        const user = await this.userRepository.findOne({
+            where: { id },
         });
-    }
-    update(id, payload) {
-        return this.usersRepository.save(this.usersRepository.create(Object.assign({ id }, payload)));
+        if (!user) {
+            throw new common_1.NotFoundException(`User with ID ${id} not found`);
+        }
+        Object.assign(user, updateUserDto);
+        await this.userRepository.save(user);
+        return this.userRepository.findOneOrFail({
+            where: { id },
+            relations: ['department', 'role', 'status'],
+        });
     }
     async softDelete(id) {
-        await this.usersRepository.softDelete(id);
+        await this.userRepository.softDelete(id);
     }
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [mail_service_1.MailService,
-        typeorm_2.Repository])
+    __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __metadata("design:paramtypes", [typeorm_2.Repository])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map
