@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -84,6 +85,7 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
+    console.log('user', bcrypt.hashSync(user.password, bcrypt.genSaltSync()))
     return user;
   }
 

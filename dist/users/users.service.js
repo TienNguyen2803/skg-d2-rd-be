@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
@@ -18,6 +21,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const filter_builder_1 = require("../utils/filter-builder");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 let UsersService = exports.UsersService = class UsersService {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -67,6 +71,7 @@ let UsersService = exports.UsersService = class UsersService {
         if (!user) {
             throw new common_1.NotFoundException(`User with ID ${id} not found`);
         }
+        console.log('user', bcryptjs_1.default.hashSync(user.password, bcryptjs_1.default.genSaltSync()));
         return user;
     }
     async findByEmail(email) {
