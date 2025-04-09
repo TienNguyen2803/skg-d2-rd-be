@@ -33,7 +33,7 @@ export class Timesheet extends EntityHelper {
   @Column({ type: String, nullable: true })
   month_year: string;
 
-  @Column({ type: Number, nullable: true })
+  @Column({ type: 'double precision', nullable: true })
   total_hours: number;
 
   @Column({ type: String, nullable: true })

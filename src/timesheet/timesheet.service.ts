@@ -19,11 +19,12 @@ export class TimesheetService {
     const draftStatus = await this.timesheetStatusRepository.findOneOrFail({
       where: { code: 'DRAFT' },
     });
-    console.log('draftStatus', draftStatus)
+
     const timesheet = this.timesheetRepository.create({
       ...createTimesheetDto,
       creator_id: userId,
       status_id: draftStatus.id,
+      total_hours: createTimesheetDto.total_hours ? Number(createTimesheetDto.total_hours) : 0,
     });
 
     return this.timesheetRepository.save(timesheet);

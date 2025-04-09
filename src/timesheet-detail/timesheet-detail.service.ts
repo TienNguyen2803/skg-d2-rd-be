@@ -18,7 +18,10 @@ export class TimesheetDetailService {
 
   async create(createTimesheetDetailDto: CreateTimesheetDetailDto): Promise<TimesheetDetail> {
     try {
-      const timesheetDetail = this.timesheetDetailRepository.create(createTimesheetDetailDto);
+      const timesheetDetail = this.timesheetDetailRepository.create({
+        ...createTimesheetDetailDto,
+        ot_hours: createTimesheetDetailDto.ot_hours ? Number(createTimesheetDetailDto.ot_hours) : 0,
+      });
       return await this.timesheetDetailRepository.save(timesheetDetail);
     } catch (error) {
       throw new Error('Error creating timesheet detail: ' + error.message); 

@@ -23,7 +23,7 @@ export class TimesheetDetail extends EntityHelper {
   @Column({ type: String, nullable: true })
   end_time: string;
 
-  @Column({ type: Number, nullable: true })
+  @Column({ type: 'double precision', nullable: true })
   ot_hours: number;
 
   @Column({ type: String, nullable: true })
