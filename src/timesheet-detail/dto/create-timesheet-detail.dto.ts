@@ -5,8 +5,8 @@ import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-valida
 export class CreateTimesheetDetailDto {
   @ApiProperty({ example: '2024-04-09' })
   @IsNotEmpty()
-  @IsDate()
-  date: Date;
+  @IsString()
+  date: string;
 
   @ApiProperty({ example: '09:00' })
   @IsNotEmpty()
