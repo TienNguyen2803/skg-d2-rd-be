@@ -17,8 +17,27 @@ export class TimesheetDetailService {
   ) {}
 
   async create(createTimesheetDetailDto: CreateTimesheetDetailDto): Promise<TimesheetDetail> {
-    const timesheetDetail = this.timesheetDetailRepository.create(createTimesheetDetailDto);
-    return this.timesheetDetailRepository.save(timesheetDetail);
+    try {
+      // Create new timesheet detail instance
+      const timesheetDetail = this.timesheetDetailRepository.create(createTimesheetDetailDto);
+      
+      // Validate timesheet exists before saving
+      const timesheet = await this.timesheetDetailRepository.manager
+        .getRepository('timesheet')
+        .findOne({ where: { id: createTimesheetDetailDto.timesheet_id } });
+      
+      if (!timesheet) {
+        throw new NotFoundException(`Timesheet with ID ${createTimesheetDetailDto.timesheet_id} not found`);
+      }
+      
+      // Save with proper relation
+      return await this.timesheetDetailRepository.save(timesheetDetail);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error('Error creating timesheet detail: ' + error.message);
+    }
   }
 
   async findAll(paginationOptions: IPaginationOptions, filterQuery?: string) {
