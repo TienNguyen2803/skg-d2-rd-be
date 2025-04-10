@@ -47,4 +47,18 @@ export class TimesheetController {
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.timesheetService.findOne(id);
   }
+
+  @Patch(':id/status')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update timesheet status' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Status has been successfully updated.',
+  })
+  async updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateStatusDto: UpdateTimesheetStatusDto,
+  ) {
+    return this.timesheetService.updateStatus(id, updateStatusDto.status_code);
+  }
 }

@@ -49,4 +49,18 @@ export class TimesheetService {
 
     return timesheet;
   }
+
+  async updateStatus(id: number, status_code: string) {
+    const timesheet = await this.findOne(id);
+    const status = await this.timesheetStatusRepository.findOne({
+      where: { code: status_code }
+    });
+
+    if (!status) {
+      throw new NotFoundException(`Status with code ${status_code} not found`);
+    }
+
+    timesheet.status_id = status.id;
+    return this.timesheetRepository.save(timesheet);
+  }
 }
