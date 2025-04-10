@@ -22,6 +22,7 @@ const roles_enum_1 = require("../roles/roles.enum");
 const passport_1 = require("@nestjs/passport");
 const roles_guard_1 = require("../roles/roles.guard");
 const current_user_decorator_1 = require("../decorators/user/current-user.decorator");
+const update_timesheet_status_dto_1 = require("./dto/update-timesheet-status.dto");
 let TimesheetController = exports.TimesheetController = class TimesheetController {
     constructor(timesheetService) {
         this.timesheetService = timesheetService;
@@ -35,6 +36,9 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     }
     findOne(id) {
         return this.timesheetService.findOne(id);
+    }
+    async updateStatus(id, updateStatusDto) {
+        return this.timesheetService.updateStatus(id, updateStatusDto.status_code);
     }
 };
 __decorate([
@@ -60,6 +64,20 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], TimesheetController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Patch)(':id/status'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiOperation)({ summary: 'Update timesheet status' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.OK,
+        description: 'Status has been successfully updated.',
+    }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, update_timesheet_status_dto_1.UpdateTimesheetStatusDto]),
+    __metadata("design:returntype", Promise)
+], TimesheetController.prototype, "updateStatus", null);
 exports.TimesheetController = TimesheetController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, roles_decorator_1.Roles)(roles_enum_1.RoleEnum.user, roles_enum_1.RoleEnum.admin),

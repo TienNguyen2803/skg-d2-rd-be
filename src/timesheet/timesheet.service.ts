@@ -59,8 +59,10 @@ export class TimesheetService {
     if (!status) {
       throw new NotFoundException(`Status with code ${status_code} not found`);
     }
-
-    timesheet.status_id = status.id;
-    return this.timesheetRepository.save(timesheet);
+    const timesheetCreate = this.timesheetRepository.create({
+      ...timesheet,
+      status_id: status.id,
+    });
+    return this.timesheetRepository.save(timesheetCreate);
   }
 }

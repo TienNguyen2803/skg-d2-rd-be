@@ -10,15 +10,17 @@ import {
   Param,
   ParseIntPipe,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { TimesheetService } from './timesheet.service';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { CurrentUser } from '../decorators/user/current-user.decorator';
+import { UpdateTimesheetStatusDto } from './dto/update-timesheet-status.dto';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.user, RoleEnum.admin)

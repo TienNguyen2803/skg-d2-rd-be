@@ -9,4 +9,5 @@ export declare class TimesheetService {
     create(createTimesheetDto: CreateTimesheetDto, userId: number): Promise<Timesheet>;
     findAll(creatorId: number): Promise<Timesheet[]>;
     findOne(id: number): Promise<Timesheet>;
+    updateStatus(id: number, status_code: string): Promise<Timesheet>;
 }

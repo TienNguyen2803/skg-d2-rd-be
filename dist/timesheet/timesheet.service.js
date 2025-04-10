@@ -46,6 +46,17 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
         }
         return timesheet;
     }
+    async updateStatus(id, status_code) {
+        const timesheet = await this.findOne(id);
+        const status = await this.timesheetStatusRepository.findOne({
+            where: { code: status_code }
+        });
+        if (!status) {
+            throw new common_1.NotFoundException(`Status with code ${status_code} not found`);
+        }
+        const timesheetCreate = this.timesheetRepository.create(Object.assign(Object.assign({}, timesheet), { status_id: status.id }));
+        return this.timesheetRepository.save(timesheetCreate);
+    }
 };
 exports.TimesheetService = TimesheetService = __decorate([
     (0, common_1.Injectable)(),
