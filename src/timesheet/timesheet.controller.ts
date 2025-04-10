@@ -11,7 +11,10 @@ import {
   ParseIntPipe,
   HttpStatus,
   Patch,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
+import { ExportTimesheetDto } from './dto/export-timesheet.dto';
 import { TimesheetService } from './timesheet.service';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -77,5 +80,23 @@ export class TimesheetController {
     @Body() updateRejectDto: UpdateTimesheetRejectDto,
   ) {
     return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
+  }
+
+  @Post('export')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Export timesheet to Excel' })
+  async exportToExcel(
+    @Body() exportDto: ExportTimesheetDto,
+    @Res() res: Response,
+  ) {
+    const buffer = await this.timesheetService.exportToExcel(exportDto.data);
+    
+    res.set({
+      'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': 'attachment; filename=timesheet_export.xlsx',
+      'Content-Length': buffer.length,
+    });
+
+    res.end(buffer);
   }
 }
