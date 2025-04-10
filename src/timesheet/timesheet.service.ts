@@ -93,8 +93,9 @@ export class TimesheetService {
   }
 
   async exportToExcel(data: any[]): Promise<Buffer> {
-    const templatePath = path.join(process.cwd(), 'src', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');
-    const workbook = new ExcelJS.Workbook();
+    try {
+      const templatePath = path.join(process.cwd(), 'src', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');
+      const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(templatePath);
     
     const worksheet = workbook.getWorksheet(1);
@@ -132,5 +133,8 @@ export class TimesheetService {
 
     const buffer = await workbook.xlsx.writeBuffer() as Buffer;
     return buffer;
+    } catch (error) {
+      throw new Error(`Failed to export Excel: ${error.message}`);
+    }
   }
 }

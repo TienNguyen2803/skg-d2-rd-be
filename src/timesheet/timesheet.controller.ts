@@ -91,7 +91,7 @@ export class TimesheetController {
   @Get('export-excel')
   @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
   @Header('Content-Disposition', 'attachment; filename=OT_Records.xlsx')
-  async exportExcel(@Res() res: Response) {
+  async exportExcel(@Res({ passthrough: true }) res: Response) {
     try {
       const templatePath = path.join(
         process.cwd(),
