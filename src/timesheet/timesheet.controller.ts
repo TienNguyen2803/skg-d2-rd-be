@@ -108,8 +108,8 @@ export class TimesheetController {
       const worksheetNames = workbook.worksheets.map(ws => ws.name);
       console.log('Available worksheets:', worksheetNames);
 
-      // Get the first worksheet
-      const worksheet = workbook.getWorksheet(1);
+      // Get worksheet by name
+      const worksheet = workbook.getWorksheet('01 Summary');
       if (!worksheet) {
         throw new NotFoundException('Excel worksheet not found');
       }
