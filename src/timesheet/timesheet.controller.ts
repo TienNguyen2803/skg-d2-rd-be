@@ -88,52 +88,56 @@ export class TimesheetController {
     return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
   }
 
-  @Get('export-excel')
-  @Header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-  @Header('Content-Disposition', 'attachment; filename=OT_Records.xlsx')
-  async exportExcel(@Res({ passthrough: true }) res: Response) {
+  @Get('/export-excel/xxx')
+  async exportExcel(@Res() res: Response): Promise<void> {
     try {
+      // Đường dẫn tới file template
       const templatePath = path.join(
         process.cwd(),
         'src',
         'template',
-        '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx',
+        'ot_template.xlsx',
       );
 
+      // Kiểm tra template có tồn tại không
       if (!fs.existsSync(templatePath)) {
         throw new NotFoundException('Template file not found');
       }
 
+      // Đọc file Excel template
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(templatePath);
 
+      // Dữ liệu mẫu
       const data = [
         {
-          'stt': 1,
-          'department': 'Operation',
-          'project': 'S-CORE',
-          'type': 'Fixed Price',
-          'code': 'HauHT',
-          'name': 'Hoàng Thị Hậu',
-          'hour1': 10.0,
-          'hour2': 3.0,
-          'hour3': 5.0,
-          'hour4': 0.0,
-          'total': 31.0,
-          'Sheetname': 'HauHT',
-          'Hyperlink': 'Link',
-          'totalOT': 15.5,
-          'totalOT1': 15.5,
-        }
+          stt: 1,
+          department: 'Operation',
+          project: 'S-CORE',
+          type: 'Fixed Price',
+          code: 'HauHT',
+          name: 'Hoàng Thị Hậu',
+          hour1: 10.0,
+          hour2: 3.0,
+          hour3: 5.0,
+          hour4: 0.0,
+          total: 31.0,
+          Sheetname: 'HauHT',
+          Hyperlink: 'Link',
+          totalOT: 15.5,
+          totalOT1: 15.5,
+        },
       ];
 
+      // Lấy worksheet đầu tiên
       const worksheet = workbook.getWorksheet(1);
       if (!worksheet) {
         throw new NotFoundException('Worksheet not found');
       }
 
+      // Điền dữ liệu vào file Excel
       data.forEach((item, index) => {
-        const rowIndex = index + 2;
+        const rowIndex = index + 2; // Bắt đầu từ hàng thứ 2
         worksheet.getCell(`A${rowIndex}`).value = item.stt;
         worksheet.getCell(`B${rowIndex}`).value = item.department;
         worksheet.getCell(`C${rowIndex}`).value = item.project;
@@ -145,17 +149,19 @@ export class TimesheetController {
         worksheet.getCell(`I${rowIndex}`).value = item.hour3;
         worksheet.getCell(`J${rowIndex}`).value = item.hour4;
         worksheet.getCell(`K${rowIndex}`).value = item.total;
-        worksheet.getCell(`L${rowIndex}`).value = {
-          text: item.Sheetname,
-          hyperlink: item.Hyperlink,
-        };
         worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
         worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
       });
 
+      // Ghi file Excel vào buffer
       const buffer = await workbook.xlsx.writeBuffer();
-      return res.send(buffer);
+
+      // Thiết lập header và gửi file về client
+      res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.end(buffer); // Sử dụng res.end thay vì res.send
     } catch (error) {
+      console.error('Error exporting Excel:', error.message);
       throw new InternalServerErrorException('Failed to export Excel: ' + error.message);
     }
   }

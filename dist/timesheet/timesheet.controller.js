@@ -72,7 +72,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     }
     async exportExcel(res) {
         try {
-            const templatePath = path.join(process.cwd(), 'src', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');
+            const templatePath = path.join(process.cwd(), 'src', 'template', 'ot_template.xlsx');
             if (!fs.existsSync(templatePath)) {
                 throw new common_1.NotFoundException('Template file not found');
             }
@@ -80,22 +80,22 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
             await workbook.xlsx.readFile(templatePath);
             const data = [
                 {
-                    'stt': 1,
-                    'department': 'Operation',
-                    'project': 'S-CORE',
-                    'type': 'Fixed Price',
-                    'code': 'HauHT',
-                    'name': 'Hoàng Thị Hậu',
-                    'hour1': 10.0,
-                    'hour2': 3.0,
-                    'hour3': 5.0,
-                    'hour4': 0.0,
-                    'total': 31.0,
-                    'Sheetname': 'HauHT',
-                    'Hyperlink': 'Link',
-                    'totalOT': 15.5,
-                    'totalOT1': 15.5,
-                }
+                    stt: 1,
+                    department: 'Operation',
+                    project: 'S-CORE',
+                    type: 'Fixed Price',
+                    code: 'HauHT',
+                    name: 'Hoàng Thị Hậu',
+                    hour1: 10.0,
+                    hour2: 3.0,
+                    hour3: 5.0,
+                    hour4: 0.0,
+                    total: 31.0,
+                    Sheetname: 'HauHT',
+                    Hyperlink: 'Link',
+                    totalOT: 15.5,
+                    totalOT1: 15.5,
+                },
             ];
             const worksheet = workbook.getWorksheet(1);
             if (!worksheet) {
@@ -114,17 +114,16 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                 worksheet.getCell(`I${rowIndex}`).value = item.hour3;
                 worksheet.getCell(`J${rowIndex}`).value = item.hour4;
                 worksheet.getCell(`K${rowIndex}`).value = item.total;
-                worksheet.getCell(`L${rowIndex}`).value = {
-                    text: item.Sheetname,
-                    hyperlink: item.Hyperlink,
-                };
                 worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
                 worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
             });
             const buffer = await workbook.xlsx.writeBuffer();
-            return res.send(buffer);
+            res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.end(buffer);
         }
         catch (error) {
+            console.error('Error exporting Excel:', error.message);
             throw new common_1.InternalServerErrorException('Failed to export Excel: ' + error.message);
         }
     }
@@ -181,9 +180,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "updateRejectReason", null);
 __decorate([
-    (0, common_1.Get)('export-excel'),
-    (0, common_1.Header)('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'),
-    (0, common_1.Header)('Content-Disposition', 'attachment; filename=OT_Records.xlsx'),
+    (0, common_1.Get)('/export-excel/xxx'),
     __param(0, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
