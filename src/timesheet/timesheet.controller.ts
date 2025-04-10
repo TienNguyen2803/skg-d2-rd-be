@@ -156,7 +156,8 @@ export class TimesheetController {
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
-        return res.send(buffer);
+        res.end(buffer);
+        return;
       } catch (error) {
         console.error('Error writing Excel data:', error);
         throw new InternalServerErrorException('Error writing Excel data: ' + error.message);
