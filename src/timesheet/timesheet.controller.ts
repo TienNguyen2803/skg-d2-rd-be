@@ -116,156 +116,40 @@ export class TimesheetController {
 
       const data = [
         {
-          "id": 1,
-          "department": "Operation",
-          "project": "S-CORE",
-          "project_type": "Fixed Price",
-          "employee_id": "HauHT",
-          "full_name": "Hoàng Thị Hậu",
-          "weekday_overtime_hours": 10.00,
-          "weekday_night_overtime_hours": 3.00,
-          "sunday_night_overtime_hours": 5.00,
-          "holiday_overtime_hours": 0.00,
-          "total_overtime_hours": 31.00,
-          "sheet_name": "HauHT",
-          "hyperlink": "Link",
-          "paid_overtime_hours": 15.5,
-          "ot_compensatory_hours": 15.5
+          stt: 1,
+          department: 'Operation',
+          project: 'S-CORE',
+          type: 'Fixed Price',
+          code: 'HauHT',
+          name: 'Hoàng Thị Hậu',
+          hour1: 10.0,
+          hour2: 3.0,
+          hour3: 5.0,
+          hour4: 0.0,
+          total: 31.0,
+          Sheetname: 'HauHT',
+          Hyperlink: 'Link',
+          totalOT: 15.5,
+          totalOT1: 15.5,
         },
-        {
-          "id": 2,
-          "department": "Operation",
-          "project": "S-CORE",
-          "project_type": "Fixed Price",
-          "employee_id": "HauHT",
-          "full_name": "Hoàng Thị Hậu",
-          "weekday_overtime_hours": 10.00,
-          "weekday_night_overtime_hours": 3.00,
-          "sunday_night_overtime_hours": 5.00,
-          "holiday_overtime_hours": 0.00,
-          "holiday_overtime_overtime_hours": 0.00,
-          "total_overtime_hours": 31.00,
-          "sheet_name": "HauHT",
-          "hyperlink": "Link",
-          "paid_overtime_hours": 15.5,
-          "ot_compensatory_hours": 15.5
-        },
-        {
-          "id": 2,
-          "department": "Operation",
-          "project": "S-CORE",
-          "project_type": "Fixed Price",
-          "employee_id": "HauHT",
-          "full_name": "Hoàng Thị Hậu",
-          "weekday_overtime_hours": 10.00,
-          "weekday_night_overtime_hours": 3.00,
-          "sunday_night_overtime_hours": 5.00,
-          "holiday_overtime_hours": 0.00,
-          "holiday_overtime_overtime_hours": 0.00,
-          "total_overtime_hours": 31.00,
-          "sheet_name": "HauHT",
-          "hyperlink": "Link",
-          "paid_overtime_hours": 15.5,
-          "ot_compensatory_hours": 15.5
-        },
-        {
-          "id": 2,
-          "department": "Operation",
-          "project": "S-CORE",
-          "project_type": "Fixed Price",
-          "employee_id": "HauHT",
-          "full_name": "Hoàng Thị Hậu",
-          "weekday_overtime_hours": 10.00,
-          "weekday_night_overtime_hours": 3.00,
-          "sunday_night_overtime_hours": 5.00,
-          "holiday_overtime_hours": 0.00,
-          "holiday_overtime_overtime_hours": 0.00,
-          "total_overtime_hours": 31.00,
-          "sheet_name": "HauHT",
-          "hyperlink": "Link",
-          "paid_overtime_hours": 15.5,
-          "ot_compensatory_hours": 15.5
-        },
-        {
-          "id": 2,
-          "department": "Operation",
-          "project": "S-CORE",
-          "project_type": "Fixed Price",
-          "employee_id": "HauHT",
-          "full_name": "Hoàng Thị Hậu",
-          "weekday_overtime_hours": 10.00,
-          "weekday_night_overtime_hours": 3.00,
-          "sunday_night_overtime_hours": 5.00,
-          "holiday_overtime_hours": 0.00,
-          "holiday_overtime_overtime_hours": 0.00,
-          "total_overtime_hours": 31.00,
-          "sheet_name": "HauHT",
-          "hyperlink": "Link",
-          "paid_overtime_hours": 15.5,
-          "ot_compensatory_hours": 15.5
-        }
-
-      ]
+      ];
 
       try {
-        // First, store the total row content
-        const totalRowContent = [];
-        const totalRowNumber = 12; // Current total row position
-        const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
-
-        // Store total row values
-        columns.forEach(col => {
-          const cell = worksheet.getCell(`${col}${totalRowNumber}`);
-          totalRowContent.push({
-            column: col,
-            value: cell.value,
-            formula: cell.formula,
-            style: cell.style
-          });
-        });
-
-        // Clear the old total row
-        columns.forEach(col => {
-          worksheet.getCell(`${col}${totalRowNumber}`).value = null;
-        });
-
-        // Write data rows
         data.forEach((item, index) => {
           const rowIndex = index + 8;
-          worksheet.getCell(`A${rowIndex}`).value = item.id;
+          worksheet.getCell(`A${rowIndex}`).value = item.stt;
           worksheet.getCell(`B${rowIndex}`).value = item.department;
           worksheet.getCell(`C${rowIndex}`).value = item.project;
-          worksheet.getCell(`D${rowIndex}`).value = item.project_type;
-          worksheet.getCell(`E${rowIndex}`).value = item.employee_id;
-          worksheet.getCell(`F${rowIndex}`).value = item.full_name;
-          worksheet.getCell(`G${rowIndex}`).value = item.weekday_overtime_hours;
-          worksheet.getCell(`H${rowIndex}`).value = item.weekday_night_overtime_hours;
-          worksheet.getCell(`I${rowIndex}`).value = item.holiday_overtime_hours;
-          worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
-          worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
-          worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
-          worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours;
-          worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
-          worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
-          worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
-          worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
-        });
-
-        // Calculate new total row position (after last data row)
-        const newTotalRowPosition = data.length + 8;
-
-        // Write the total row in new position
-        totalRowContent.forEach(cell => {
-          const newCell = worksheet.getCell(`${cell.column}${newTotalRowPosition}`);
-          if (cell.formula) {
-            // Update formula to reference new row range
-            const updatedFormula = cell.formula.replace(/8:12/g, `8:${newTotalRowPosition-1}`);
-            newCell.formula = updatedFormula;
-          } else {
-            newCell.value = cell.value;
-          }
-          // Copy styling
-          Object.assign(newCell.style, cell.style);
+          worksheet.getCell(`D${rowIndex}`).value = item.type;
+          worksheet.getCell(`E${rowIndex}`).value = item.code;
+          worksheet.getCell(`F${rowIndex}`).value = item.name;
+          worksheet.getCell(`G${rowIndex}`).value = item.hour1;
+          worksheet.getCell(`H${rowIndex}`).value = item.hour2;
+          worksheet.getCell(`I${rowIndex}`).value = item.hour3;
+          worksheet.getCell(`J${rowIndex}`).value = item.hour4;
+          worksheet.getCell(`K${rowIndex}`).value = item.total;
+          worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
+          worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
@@ -273,7 +157,7 @@ export class TimesheetController {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
         res.end(buffer);
-        return {} as any;
+        return;
       } catch (error) {
         console.error('Error writing Excel data:', error);
         throw new InternalServerErrorException('Error writing Excel data: ' + error.message);
