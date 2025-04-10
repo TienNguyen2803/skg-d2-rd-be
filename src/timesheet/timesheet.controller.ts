@@ -91,20 +91,17 @@ export class TimesheetController {
   @Header('Content-Disposition', 'attachment; filename=OT_Records.xlsx')
   async exportExcel(@Res() res: Response) {
     try {
-      // Đường dẫn tới file template
       const templatePath = path.join(
-        __dirname,
-        '..',
+        process.cwd(),
+        'src',
         'template',
         '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx',
       );
 
-      // Kiểm tra sự tồn tại của file template
       if (!fs.existsSync(templatePath)) {
-        return res.status(HttpStatus.NOT_FOUND).send('Template file not found');
+        throw new NotFoundException('Template file not found');
       }
 
-      // Đọc file template
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(templatePath);
 
@@ -128,38 +125,36 @@ export class TimesheetController {
         }
       ];
 
-      const sheet: any = workbook.getWorksheet(1); // Lấy sheet đầu tiên
+      const worksheet = workbook.getWorksheet(1);
+      if (!worksheet) {
+        throw new NotFoundException('Worksheet not found');
+      }
 
-      // Điền dữ liệu vào sheet
       data.forEach((item, index) => {
-        const rowIndex = index + 2; // Bắt đầu từ hàng thứ 2 (hàng 1 là tiêu đề)
-        sheet.getCell(`A${rowIndex}`).value = item.stt;
-        sheet.getCell(`B${rowIndex}`).value = item.department;
-        sheet.getCell(`C${rowIndex}`).value = item.project;
-        sheet.getCell(`D${rowIndex}`).value = item.type;
-        sheet.getCell(`E${rowIndex}`).value = item.code;
-        sheet.getCell(`F${rowIndex}`).value = item.name;
-        sheet.getCell(`G${rowIndex}`).value = item.hour1;
-        sheet.getCell(`H${rowIndex}`).value = item.hour2;
-        sheet.getCell(`I${rowIndex}`).value = item.hour3;
-        sheet.getCell(`J${rowIndex}`).value = item.hour4;
-        sheet.getCell(`K${rowIndex}`).value = item.total;
-        sheet.getCell(`L${rowIndex}`).value = {
+        const rowIndex = index + 2;
+        worksheet.getCell(`A${rowIndex}`).value = item.stt;
+        worksheet.getCell(`B${rowIndex}`).value = item.department;
+        worksheet.getCell(`C${rowIndex}`).value = item.project;
+        worksheet.getCell(`D${rowIndex}`).value = item.type;
+        worksheet.getCell(`E${rowIndex}`).value = item.code;
+        worksheet.getCell(`F${rowIndex}`).value = item.name;
+        worksheet.getCell(`G${rowIndex}`).value = item.hour1;
+        worksheet.getCell(`H${rowIndex}`).value = item.hour2;
+        worksheet.getCell(`I${rowIndex}`).value = item.hour3;
+        worksheet.getCell(`J${rowIndex}`).value = item.hour4;
+        worksheet.getCell(`K${rowIndex}`).value = item.total;
+        worksheet.getCell(`L${rowIndex}`).value = {
           text: item.Sheetname,
           hyperlink: item.Hyperlink,
-        }; // Hyperlink
-        sheet.getCell(`M${rowIndex}`).value = item.totalOT;
-        sheet.getCell(`N${rowIndex}`).value = item.totalOT1;
+        };
+        worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
+        worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
       });
 
-      // Ghi file Excel tạm trước khi gửi về client
       const buffer = await workbook.xlsx.writeBuffer();
-
-      // Trả file về client
-      res.status(HttpStatus.OK).send(buffer);
+      return res.send(buffer);
     } catch (error) {
-      console.error('Error exporting Excel:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Failed to export Excel');
+      throw new InternalServerErrorException('Failed to export Excel: ' + error.message);
     }
   }
 }
