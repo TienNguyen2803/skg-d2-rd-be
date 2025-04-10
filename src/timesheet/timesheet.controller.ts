@@ -208,6 +208,28 @@ export class TimesheetController {
       ]
 
       try {
+        // First, store the total row content
+        const totalRowContent = [];
+        const totalRowNumber = 12; // Current total row position
+        const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+
+        // Store total row values
+        columns.forEach(col => {
+          const cell = worksheet.getCell(`${col}${totalRowNumber}`);
+          totalRowContent.push({
+            column: col,
+            value: cell.value,
+            formula: cell.formula,
+            style: cell.style
+          });
+        });
+
+        // Clear the old total row
+        columns.forEach(col => {
+          worksheet.getCell(`${col}${totalRowNumber}`).value = null;
+        });
+
+        // Write data rows
         data.forEach((item, index) => {
           const rowIndex = index + 8;
           worksheet.getCell(`A${rowIndex}`).value = item.id;
@@ -222,10 +244,28 @@ export class TimesheetController {
           worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
           worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
           worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
-          worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours; worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
+          worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours;
+          worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
           worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
           worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
           worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
+        });
+
+        // Calculate new total row position (after last data row)
+        const newTotalRowPosition = data.length + 8;
+
+        // Write the total row in new position
+        totalRowContent.forEach(cell => {
+          const newCell = worksheet.getCell(`${cell.column}${newTotalRowPosition}`);
+          if (cell.formula) {
+            // Update formula to reference new row range
+            const updatedFormula = cell.formula.replace(/8:12/g, `8:${newTotalRowPosition-1}`);
+            newCell.formula = updatedFormula;
+          } else {
+            newCell.value = cell.value;
+          }
+          // Copy styling
+          Object.assign(newCell.style, cell.style);
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
