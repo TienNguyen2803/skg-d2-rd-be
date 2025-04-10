@@ -72,7 +72,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     }
     async exportExcel(res) {
         try {
-            const templatePath = path.join(process.cwd(), 'src', 'template', 'ot_template.xlsx');
+            const templatePath = path.join(process.cwd(), 'src', 'template', 'template.xlsx');
             if (!fs.existsSync(templatePath)) {
                 throw new common_1.NotFoundException('Template file not found');
             }
@@ -80,7 +80,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
             await workbook.xlsx.readFile(templatePath);
             const worksheetNames = workbook.worksheets.map(ws => ws.name);
             console.log('Available worksheets:', worksheetNames);
-            const worksheet = workbook.getWorksheet(1);
+            const worksheet = workbook.getWorksheet('01.Summary');
             if (!worksheet) {
                 throw new common_1.NotFoundException('Excel worksheet not found');
             }

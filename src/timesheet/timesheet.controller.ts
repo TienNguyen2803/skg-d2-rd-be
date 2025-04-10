@@ -94,7 +94,7 @@ export class TimesheetController {
         process.cwd(),
         'src',
         'template',
-        'ot_template.xlsx',
+        'template.xlsx',
       );
 
       if (!fs.existsSync(templatePath)) {
@@ -109,7 +109,7 @@ export class TimesheetController {
       console.log('Available worksheets:', worksheetNames);
 
       // Get worksheet by name
-      const worksheet = workbook.getWorksheet('01 Summary');
+      const worksheet = workbook.getWorksheet('01.Summary');
       if (!worksheet) {
         throw new NotFoundException('Excel worksheet not found');
       }
