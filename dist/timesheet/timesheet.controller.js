@@ -72,9 +72,9 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     }
     async exportExcel(res) {
         try {
-            const templatePath = path.join(__dirname, '..', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');
+            const templatePath = path.join(process.cwd(), 'src', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');
             if (!fs.existsSync(templatePath)) {
-                return res.status(common_1.HttpStatus.NOT_FOUND).send('Template file not found');
+                throw new common_1.NotFoundException('Template file not found');
             }
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.readFile(templatePath);
@@ -97,33 +97,35 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     'totalOT1': 15.5,
                 }
             ];
-            const sheet = workbook.getWorksheet(1);
+            const worksheet = workbook.getWorksheet(1);
+            if (!worksheet) {
+                throw new common_1.NotFoundException('Worksheet not found');
+            }
             data.forEach((item, index) => {
                 const rowIndex = index + 2;
-                sheet.getCell(`A${rowIndex}`).value = item.stt;
-                sheet.getCell(`B${rowIndex}`).value = item.department;
-                sheet.getCell(`C${rowIndex}`).value = item.project;
-                sheet.getCell(`D${rowIndex}`).value = item.type;
-                sheet.getCell(`E${rowIndex}`).value = item.code;
-                sheet.getCell(`F${rowIndex}`).value = item.name;
-                sheet.getCell(`G${rowIndex}`).value = item.hour1;
-                sheet.getCell(`H${rowIndex}`).value = item.hour2;
-                sheet.getCell(`I${rowIndex}`).value = item.hour3;
-                sheet.getCell(`J${rowIndex}`).value = item.hour4;
-                sheet.getCell(`K${rowIndex}`).value = item.total;
-                sheet.getCell(`L${rowIndex}`).value = {
+                worksheet.getCell(`A${rowIndex}`).value = item.stt;
+                worksheet.getCell(`B${rowIndex}`).value = item.department;
+                worksheet.getCell(`C${rowIndex}`).value = item.project;
+                worksheet.getCell(`D${rowIndex}`).value = item.type;
+                worksheet.getCell(`E${rowIndex}`).value = item.code;
+                worksheet.getCell(`F${rowIndex}`).value = item.name;
+                worksheet.getCell(`G${rowIndex}`).value = item.hour1;
+                worksheet.getCell(`H${rowIndex}`).value = item.hour2;
+                worksheet.getCell(`I${rowIndex}`).value = item.hour3;
+                worksheet.getCell(`J${rowIndex}`).value = item.hour4;
+                worksheet.getCell(`K${rowIndex}`).value = item.total;
+                worksheet.getCell(`L${rowIndex}`).value = {
                     text: item.Sheetname,
                     hyperlink: item.Hyperlink,
                 };
-                sheet.getCell(`M${rowIndex}`).value = item.totalOT;
-                sheet.getCell(`N${rowIndex}`).value = item.totalOT1;
+                worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
+                worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
             });
             const buffer = await workbook.xlsx.writeBuffer();
-            res.status(common_1.HttpStatus.OK).send(buffer);
+            return res.send(buffer);
         }
         catch (error) {
-            console.error('Error exporting Excel:', error);
-            res.status(common_1.HttpStatus.INTERNAL_SERVER_ERROR).send('Failed to export Excel');
+            throw new common_1.InternalServerErrorException('Failed to export Excel: ' + error.message);
         }
     }
 };
