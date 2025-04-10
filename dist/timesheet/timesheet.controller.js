@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TimesheetController = void 0;
 const common_1 = require("@nestjs/common");
+const export_timesheet_dto_1 = require("./dto/export-timesheet.dto");
 const timesheet_service_1 = require("./timesheet.service");
 const create_timesheet_dto_1 = require("./dto/create-timesheet.dto");
 const swagger_1 = require("@nestjs/swagger");
@@ -43,6 +44,15 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     }
     async updateRejectReason(id, updateRejectDto) {
         return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
+    }
+    async exportToExcel(exportDto, res) {
+        const buffer = await this.timesheetService.exportToExcel(exportDto.data);
+        res.set({
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': 'attachment; filename=timesheet_export.xlsx',
+            'Content-Length': buffer.length,
+        });
+        res.end(buffer);
     }
 };
 __decorate([
@@ -96,6 +106,16 @@ __decorate([
     __metadata("design:paramtypes", [Number, update_timesheet_reject_dto_1.UpdateTimesheetRejectDto]),
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "updateRejectReason", null);
+__decorate([
+    (0, common_1.Post)('export'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiOperation)({ summary: 'Export timesheet to Excel' }),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [export_timesheet_dto_1.ExportTimesheetDto, Object]),
+    __metadata("design:returntype", Promise)
+], TimesheetController.prototype, "exportToExcel", null);
 exports.TimesheetController = TimesheetController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
     (0, roles_decorator_1.Roles)(roles_enum_1.RoleEnum.user, roles_enum_1.RoleEnum.admin),

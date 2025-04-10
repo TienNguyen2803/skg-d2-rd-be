@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { Repository } from 'typeorm';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
 import { Timesheet } from './entities/timesheet.entity';
@@ -11,4 +12,5 @@ export declare class TimesheetService {
     findOne(id: number): Promise<Timesheet>;
     updateStatus(id: number, status_code: string): Promise<Timesheet>;
     updateRejectReason(id: number, reject_reason: string): Promise<Timesheet>;
+    exportToExcel(data: any[]): Promise<Buffer>;
 }
