@@ -105,6 +105,9 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.readFile(templatePath);
         const worksheet = workbook.getWorksheet(1);
+        if (!worksheet) {
+            throw new Error('Worksheet not found');
+        }
         const startRow = 5;
         data.forEach((item, index) => {
             const row = worksheet.getRow(startRow + index);
@@ -127,7 +130,8 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
                 row.getCell(col).numFmt = '0.00';
             });
         });
-        return await workbook.xlsx.writeBuffer();
+        const buffer = await workbook.xlsx.writeBuffer();
+        return buffer;
     }
 };
 exports.TimesheetService = TimesheetService = __decorate([
