@@ -76,6 +76,17 @@ export class TimesheetService {
     }
 
     timesheet.reject_reason = reject_reason;
+
+    const status = await this.timesheetStatusRepository.findOne({
+      where: { code: "REJECT" }
+    });
+
+    if (!status) {
+      throw new NotFoundException(`Status with code REJECT not found`);
+    }
+
+    timesheet.status = { id: status.id } as TimesheetStatus;
+
     return this.timesheetRepository.save(timesheet);
   }
 }

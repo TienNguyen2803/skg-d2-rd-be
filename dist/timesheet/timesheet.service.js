@@ -66,6 +66,13 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
             throw new common_1.NotFoundException(`Timesheet with ID ${id} not found`);
         }
         timesheet.reject_reason = reject_reason;
+        const status = await this.timesheetStatusRepository.findOne({
+            where: { code: "REJECT" }
+        });
+        if (!status) {
+            throw new common_1.NotFoundException(`Status with code REJECT not found`);
+        }
+        timesheet.status = { id: status.id };
         return this.timesheetRepository.save(timesheet);
     }
 };
