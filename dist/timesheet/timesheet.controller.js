@@ -78,6 +78,12 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
             }
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.readFile(templatePath);
+            const worksheetNames = workbook.worksheets.map(ws => ws.name);
+            console.log('Available worksheets:', worksheetNames);
+            const worksheet = workbook.getWorksheet(1);
+            if (!worksheet) {
+                throw new common_1.NotFoundException('Excel worksheet not found');
+            }
             const data = [
                 {
                     stt: 1,
@@ -97,30 +103,32 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     totalOT1: 15.5,
                 },
             ];
-            const worksheet = workbook.getWorksheet(1);
-            if (!worksheet) {
-                throw new common_1.NotFoundException('Worksheet not found');
+            try {
+                data.forEach((item, index) => {
+                    const rowIndex = index + 2;
+                    worksheet.getCell(`A${rowIndex}`).value = item.stt;
+                    worksheet.getCell(`B${rowIndex}`).value = item.department;
+                    worksheet.getCell(`C${rowIndex}`).value = item.project;
+                    worksheet.getCell(`D${rowIndex}`).value = item.type;
+                    worksheet.getCell(`E${rowIndex}`).value = item.code;
+                    worksheet.getCell(`F${rowIndex}`).value = item.name;
+                    worksheet.getCell(`G${rowIndex}`).value = item.hour1;
+                    worksheet.getCell(`H${rowIndex}`).value = item.hour2;
+                    worksheet.getCell(`I${rowIndex}`).value = item.hour3;
+                    worksheet.getCell(`J${rowIndex}`).value = item.hour4;
+                    worksheet.getCell(`K${rowIndex}`).value = item.total;
+                    worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
+                    worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
+                });
+                const buffer = await workbook.xlsx.writeBuffer();
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
+                return res.send(buffer);
             }
-            data.forEach((item, index) => {
-                const rowIndex = index + 2;
-                worksheet.getCell(`A${rowIndex}`).value = item.stt;
-                worksheet.getCell(`B${rowIndex}`).value = item.department;
-                worksheet.getCell(`C${rowIndex}`).value = item.project;
-                worksheet.getCell(`D${rowIndex}`).value = item.type;
-                worksheet.getCell(`E${rowIndex}`).value = item.code;
-                worksheet.getCell(`F${rowIndex}`).value = item.name;
-                worksheet.getCell(`G${rowIndex}`).value = item.hour1;
-                worksheet.getCell(`H${rowIndex}`).value = item.hour2;
-                worksheet.getCell(`I${rowIndex}`).value = item.hour3;
-                worksheet.getCell(`J${rowIndex}`).value = item.hour4;
-                worksheet.getCell(`K${rowIndex}`).value = item.total;
-                worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
-                worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
-            });
-            const buffer = await workbook.xlsx.writeBuffer();
-            res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
-            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            res.end(buffer);
+            catch (error) {
+                console.error('Error writing Excel data:', error);
+                throw new common_1.InternalServerErrorException('Error writing Excel data: ' + error.message);
+            }
         }
         catch (error) {
             console.error('Error exporting Excel:', error.message);
