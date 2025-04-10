@@ -1,4 +1,3 @@
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -66,6 +65,17 @@ export class TimesheetService {
     }
 
     timesheet.status = { id: status.id } as TimesheetStatus;
+    return this.timesheetRepository.save(timesheet);
+  }
+
+  async updateRejectReason(id: number, reject_reason: string) {
+    const timesheet = await this.findOne(id);
+
+    if (!timesheet) {
+      throw new NotFoundException(`Timesheet with ID ${id} not found`);
+    }
+
+    timesheet.reject_reason = reject_reason;
     return this.timesheetRepository.save(timesheet);
   }
 }

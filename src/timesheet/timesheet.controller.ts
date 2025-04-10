@@ -21,6 +21,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../roles/roles.guard';
 import { CurrentUser } from '../decorators/user/current-user.decorator';
 import { UpdateTimesheetStatusDto } from './dto/update-timesheet-status.dto';
+import { UpdateTimesheetRejectDto } from './dto/update-timesheet-reject.dto';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.user, RoleEnum.admin)
@@ -62,5 +63,19 @@ export class TimesheetController {
     @Body() updateStatusDto: UpdateTimesheetStatusDto,
   ) {
     return this.timesheetService.updateStatus(id, updateStatusDto.status_code);
+  }
+
+  @Patch(':id/reject')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Update timesheet reject reason' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Reject reason has been successfully updated.',
+  })
+  async updateRejectReason(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateRejectDto: UpdateTimesheetRejectDto,
+  ) {
+    return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
   }
 }
