@@ -1,4 +1,3 @@
-
 import {
   Controller,
   Get,
@@ -91,7 +90,6 @@ export class TimesheetController {
   @Get('/export-excel/xxx')
   async exportExcel(@Res() res: Response): Promise<void> {
     try {
-      // Đường dẫn tới file template
       const templatePath = path.join(
         process.cwd(),
         'src',
@@ -99,16 +97,23 @@ export class TimesheetController {
         'ot_template.xlsx',
       );
 
-      // Kiểm tra template có tồn tại không
       if (!fs.existsSync(templatePath)) {
         throw new NotFoundException('Template file not found');
       }
 
-      // Đọc file Excel template
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(templatePath);
 
-      // Dữ liệu mẫu
+      // Get all worksheet names for debugging
+      const worksheetNames = workbook.worksheets.map(ws => ws.name);
+      console.log('Available worksheets:', worksheetNames);
+
+      // Get the first worksheet
+      const worksheet = workbook.getWorksheet(1);
+      if (!worksheet) {
+        throw new NotFoundException('Excel worksheet not found');
+      }
+
       const data = [
         {
           stt: 1,
@@ -129,37 +134,33 @@ export class TimesheetController {
         },
       ];
 
-      // Lấy worksheet đầu tiên
-      const worksheet = workbook.getWorksheet(1);
-      if (!worksheet) {
-        throw new NotFoundException('Worksheet not found');
+      try {
+        data.forEach((item, index) => {
+          const rowIndex = index + 2;
+          worksheet.getCell(`A${rowIndex}`).value = item.stt;
+          worksheet.getCell(`B${rowIndex}`).value = item.department;
+          worksheet.getCell(`C${rowIndex}`).value = item.project;
+          worksheet.getCell(`D${rowIndex}`).value = item.type;
+          worksheet.getCell(`E${rowIndex}`).value = item.code;
+          worksheet.getCell(`F${rowIndex}`).value = item.name;
+          worksheet.getCell(`G${rowIndex}`).value = item.hour1;
+          worksheet.getCell(`H${rowIndex}`).value = item.hour2;
+          worksheet.getCell(`I${rowIndex}`).value = item.hour3;
+          worksheet.getCell(`J${rowIndex}`).value = item.hour4;
+          worksheet.getCell(`K${rowIndex}`).value = item.total;
+          worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
+          worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
+        return res.send(buffer);
+      } catch (error) {
+        console.error('Error writing Excel data:', error);
+        throw new InternalServerErrorException('Error writing Excel data: ' + error.message);
       }
-
-      // Điền dữ liệu vào file Excel
-      data.forEach((item, index) => {
-        const rowIndex = index + 2; // Bắt đầu từ hàng thứ 2
-        worksheet.getCell(`A${rowIndex}`).value = item.stt;
-        worksheet.getCell(`B${rowIndex}`).value = item.department;
-        worksheet.getCell(`C${rowIndex}`).value = item.project;
-        worksheet.getCell(`D${rowIndex}`).value = item.type;
-        worksheet.getCell(`E${rowIndex}`).value = item.code;
-        worksheet.getCell(`F${rowIndex}`).value = item.name;
-        worksheet.getCell(`G${rowIndex}`).value = item.hour1;
-        worksheet.getCell(`H${rowIndex}`).value = item.hour2;
-        worksheet.getCell(`I${rowIndex}`).value = item.hour3;
-        worksheet.getCell(`J${rowIndex}`).value = item.hour4;
-        worksheet.getCell(`K${rowIndex}`).value = item.total;
-        worksheet.getCell(`M${rowIndex}`).value = item.totalOT;
-        worksheet.getCell(`N${rowIndex}`).value = item.totalOT1;
-      });
-
-      // Ghi file Excel vào buffer
-      const buffer = await workbook.xlsx.writeBuffer();
-
-      // Thiết lập header và gửi file về client
-      res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
-      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-      res.end(buffer); // Sử dụng res.end thay vì res.send
     } catch (error) {
       console.error('Error exporting Excel:', error.message);
       throw new InternalServerErrorException('Failed to export Excel: ' + error.message);
