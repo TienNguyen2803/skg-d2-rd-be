@@ -52,6 +52,11 @@ export class TimesheetService {
 
   async updateStatus(id: number, status_code: string) {
     const timesheet = await this.findOne(id);
+    
+    if (!timesheet) {
+      throw new NotFoundException(`Timesheet with ID ${id} not found`);
+    }
+
     const status = await this.timesheetStatusRepository.findOne({
       where: { code: status_code }
     });
@@ -59,10 +64,8 @@ export class TimesheetService {
     if (!status) {
       throw new NotFoundException(`Status with code ${status_code} not found`);
     }
-    const timesheetCreate = this.timesheetRepository.create({
-      ...timesheet,
-      status_id: status.id,
-    });
-    return this.timesheetRepository.save(timesheetCreate);
+
+    timesheet.status_id = status.id;
+    return this.timesheetRepository.save(timesheet);
   }
 }
