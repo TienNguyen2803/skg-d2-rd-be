@@ -60,6 +60,14 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
         timesheet.status = { id: status.id };
         return this.timesheetRepository.save(timesheet);
     }
+    async updateRejectReason(id, reject_reason) {
+        const timesheet = await this.findOne(id);
+        if (!timesheet) {
+            throw new common_1.NotFoundException(`Timesheet with ID ${id} not found`);
+        }
+        timesheet.reject_reason = reject_reason;
+        return this.timesheetRepository.save(timesheet);
+    }
 };
 exports.TimesheetService = TimesheetService = __decorate([
     (0, common_1.Injectable)(),

@@ -10,4 +10,5 @@ export declare class TimesheetService {
     findAll(creatorId: number): Promise<Timesheet[]>;
     findOne(id: number): Promise<Timesheet>;
     updateStatus(id: number, status_code: string): Promise<Timesheet>;
+    updateRejectReason(id: number, reject_reason: string): Promise<Timesheet>;
 }
