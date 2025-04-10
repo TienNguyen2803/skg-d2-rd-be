@@ -105,7 +105,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
             ];
             try {
                 data.forEach((item, index) => {
-                    const rowIndex = index + 2;
+                    const rowIndex = index + 8;
                     worksheet.getCell(`A${rowIndex}`).value = item.stt;
                     worksheet.getCell(`B${rowIndex}`).value = item.department;
                     worksheet.getCell(`C${rowIndex}`).value = item.project;
