@@ -88,7 +88,7 @@ export class TimesheetController {
   }
 
   @Get('/export-excel/xxx')
-  async exportExcel(@Res() res: Response): Promise<void> {
+  async exportExcel(@Res() res: Response): Promise<Response> {
     try {
       const templatePath = path.join(
         process.cwd(),
