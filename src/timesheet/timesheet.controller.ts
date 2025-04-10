@@ -87,13 +87,6 @@ export class TimesheetController {
     return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
   }
 
-  interface TotalRowContent {
-    column: string;
-    value: ExcelJS.CellValue;
-    formula?: string;
-    style: Partial<ExcelJS.Style>;
-  }
-
   @Get('/export-excel/xxx')
   async exportExcel(@Res() res: Response): Promise<Response> {
     try {
@@ -216,24 +209,19 @@ export class TimesheetController {
 
       try {
         // First, store the total row content
-        const totalRowContent: TotalRowContent[] = [];
+        const totalRowContent = [];
         const totalRowNumber = 12; // Current total row position
         const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
 
         // Store total row values
         columns.forEach(col => {
           const cell = worksheet.getCell(`${col}${totalRowNumber}`);
-          const content: TotalRowContent = {
+          totalRowContent.push({
             column: col,
             value: cell.value,
+            formula: cell.formula,
             style: cell.style
-          };
-          
-          if (cell.formula) {
-            content.formula = cell.formula;
-          }
-          
-          totalRowContent.push(content);
+          });
         });
 
         // Clear the old total row

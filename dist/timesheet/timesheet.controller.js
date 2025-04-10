@@ -176,21 +176,6 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                 }
             ];
             try {
-                const totalRowContent = [];
-                const totalRowNumber = 12;
-                const columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
-                columns.forEach(col => {
-                    const cell = worksheet.getCell(`${col}${totalRowNumber}`);
-                    totalRowContent.push({
-                        column: col,
-                        value: cell.value,
-                        formula: cell.formula,
-                        style: cell.style
-                    });
-                });
-                columns.forEach(col => {
-                    worksheet.getCell(`${col}${totalRowNumber}`).value = null;
-                });
                 data.forEach((item, index) => {
                     const rowIndex = index + 8;
                     worksheet.getCell(`A${rowIndex}`).value = item.id;
@@ -210,18 +195,6 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
                     worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
                     worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
-                });
-                const newTotalRowPosition = data.length + 8;
-                totalRowContent.forEach(cell => {
-                    const newCell = worksheet.getCell(`${cell.column}${newTotalRowPosition}`);
-                    if (cell.formula) {
-                        const updatedFormula = cell.formula.replace(/8:12/g, `8:${newTotalRowPosition - 1}`);
-                        newCell.formula = updatedFormula;
-                    }
-                    else {
-                        newCell.value = cell.value;
-                    }
-                    Object.assign(newCell.style, cell.style);
                 });
                 const buffer = await workbook.xlsx.writeBuffer();
                 res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
