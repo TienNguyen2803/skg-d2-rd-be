@@ -48,14 +48,17 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
     }
     async updateStatus(id, status_code) {
         const timesheet = await this.findOne(id);
+        if (!timesheet) {
+            throw new common_1.NotFoundException(`Timesheet with ID ${id} not found`);
+        }
         const status = await this.timesheetStatusRepository.findOne({
             where: { code: status_code }
         });
         if (!status) {
             throw new common_1.NotFoundException(`Status with code ${status_code} not found`);
         }
-        const timesheetCreate = this.timesheetRepository.create(Object.assign(Object.assign({}, timesheet), { status_id: status.id }));
-        return this.timesheetRepository.save(timesheetCreate);
+        timesheet.status = { id: status.id };
+        return this.timesheetRepository.save(timesheet);
     }
 };
 exports.TimesheetService = TimesheetService = __decorate([
