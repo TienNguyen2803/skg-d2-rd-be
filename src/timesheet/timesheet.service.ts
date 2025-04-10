@@ -98,6 +98,9 @@ export class TimesheetService {
     await workbook.xlsx.readFile(templatePath);
     
     const worksheet = workbook.getWorksheet(1);
+    if (!worksheet) {
+      throw new Error('Worksheet not found');
+    }
     
     // Start from row 5 (after header)
     const startRow = 5;
@@ -127,6 +130,7 @@ export class TimesheetService {
       });
     });
 
-    return await workbook.xlsx.writeBuffer();
+    const buffer = await workbook.xlsx.writeBuffer() as Buffer;
+    return buffer;
   }
 }
