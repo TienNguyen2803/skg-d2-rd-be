@@ -208,20 +208,25 @@ export class TimesheetController {
       ]
 
       try {
-        // Calculate number of records needed
         const recordCount = data.length;
         const startRow = 8;  // Starting row for data
+        const templateRow = worksheet.getRow(startRow);
+        const templateStyle = {};
+        
+        // Store template row styles
+        ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q'].forEach(col => {
+          templateStyle[col] = templateRow.getCell(col).style;
+        });
 
-        // Duplicate rows based on data length
-        for (let i = 0; i < recordCount - 1; i++) {
-          const targetRow = startRow + i + 1;
-          worksheet.duplicateRow(startRow, targetRow, true);
-        }
-
-        // Populate data into duplicated rows
+        // Add rows with template formatting
         data.forEach((item, index) => {
           const rowIndex = startRow + index;
           const row = worksheet.getRow(rowIndex);
+
+          // Copy template styles
+          Object.entries(templateStyle).forEach(([col, style]) => {
+            row.getCell(col).style = style;
+          });
 
           // Set values for each cell
           row.getCell('A').value = item.id;
@@ -241,6 +246,11 @@ export class TimesheetController {
           row.getCell('O').value = item.hyperlink;
           row.getCell('P').value = item.paid_overtime_hours;
           row.getCell('Q').value = item.ot_compensatory_hours;
+
+          // Apply number format
+          ['G','H','I','J','K','L','M','P','Q'].forEach(col => {
+            row.getCell(col).numFmt = '#,##0.00';
+          });
 
           // // Apply number format for numeric cells
           // ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
