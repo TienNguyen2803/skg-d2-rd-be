@@ -272,11 +272,13 @@ export class TimesheetController {
             }
             
             // Copy merges if any
+            // Handle merged cells if needed
             if (cell.isMerged) {
-              const mergeGroup = worksheet.getCell(cell.address).master.address;
-              const mergeCells = worksheet.getMergeCellsInRange(mergeGroup);
-              if (mergeCells) {
-                worksheet.mergeCells(newCell.address, worksheet.getCell(mergeCells.end).address);
+              const masterCell = worksheet.getCell(cell.master.address);
+              if (masterCell) {
+                const startCell = newCell.address;
+                const endCell = startCell.replace(/\d+/, (row) => (parseInt(row) + 1).toString());
+                worksheet.mergeCells(startCell, endCell);
               }
             }
           });
