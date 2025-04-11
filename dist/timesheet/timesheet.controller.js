@@ -178,7 +178,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
             try {
                 const recordCount = data.length;
                 const startRow = 8;
-                worksheet.insertRows(startRow, recordCount, 'n');
+                worksheet.insertRows(startRow, recordCount, Array(recordCount).fill({}));
                 data.forEach((item, index) => {
                     const rowIndex = startRow + index;
                     const templateRow = worksheet.getRow(startRow - 1);
