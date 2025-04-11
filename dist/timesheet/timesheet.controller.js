@@ -176,8 +176,15 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                 }
             ];
             try {
+                const recordCount = data.length;
+                const startRow = 8;
+                worksheet.insertRows(startRow, recordCount, 'n');
                 data.forEach((item, index) => {
-                    const rowIndex = index + 8;
+                    const rowIndex = startRow + index;
+                    const templateRow = worksheet.getRow(startRow - 1);
+                    const currentRow = worksheet.getRow(rowIndex);
+                    currentRow.height = templateRow.height;
+                    currentRow.getCell('A').style = templateRow.getCell('A').style;
                     worksheet.getCell(`A${rowIndex}`).value = item.id;
                     worksheet.getCell(`B${rowIndex}`).value = item.department;
                     worksheet.getCell(`C${rowIndex}`).value = item.project;
@@ -195,6 +202,9 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
                     worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
                     worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
+                    ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
+                        worksheet.getCell(`${col}${rowIndex}`).numFmt = '0.00';
+                    });
                 });
                 const buffer = await workbook.xlsx.writeBuffer();
                 res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
