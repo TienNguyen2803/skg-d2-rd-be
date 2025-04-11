@@ -218,7 +218,27 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                 const endRow = startRow + data.length - 1;
                 const templateRow = worksheet.getRow(startRow);
                 const rowHeight = templateRow.height;
-                for (let i = startRow + 1; i <= endRow; i++) {
+                const lastRowNum = worksheet.lastRow.number;
+                if (lastRowNum >= startRow) {
+                    for (let i = lastRowNum; i >= startRow; i--) {
+                        const currentRow = worksheet.getRow(i);
+                        const targetRow = worksheet.getRow(i + data.length);
+                        currentRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                            const targetCell = targetRow.getCell(colNumber);
+                            targetCell.value = cell.value;
+                            targetCell.style = JSON.parse(JSON.stringify(cell.style));
+                            if (cell.formula) {
+                                const newFormula = cell.formula.replace(/(\d+)/g, (match) => {
+                                    const rowNum = parseInt(match);
+                                    return (rowNum >= startRow) ? (rowNum + data.length).toString() : match;
+                                });
+                                targetCell.value = { formula: newFormula };
+                            }
+                        });
+                        targetRow.height = currentRow.height;
+                    }
+                }
+                for (let i = startRow; i < startRow + data.length; i++) {
                     const newRow = worksheet.getRow(i);
                     newRow.height = rowHeight;
                     templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
