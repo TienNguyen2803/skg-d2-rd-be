@@ -210,25 +210,25 @@ export class TimesheetController {
       try {
         // Get the number of records
         const recordCount = data.length;
-        const startRow = 8;  // Starting row for data
+        const startRow = 9;  // Starting row for data
 
         // Insert new rows for the data
         for (let i = 0; i < recordCount; i++) {
           worksheet.insertRow(startRow + i, {}, 'i');
         }
-
+        const startRowX = 8;
         // Now populate the data into the newly inserted rows
         data.forEach((item, index) => {
-          const rowIndex = startRow + index;
-          
+          const rowIndex = startRowX + index;
+
           // Get the template row style
-          const templateRow = worksheet.getRow(startRow - 1);
+          const templateRow = worksheet.getRow(startRowX - 1);
           const currentRow = worksheet.getRow(rowIndex);
-          
+
           // Copy template row styles
           currentRow.height = templateRow.height;
           currentRow.getCell('A').style = templateRow.getCell('A').style;
-          
+
           // Populate data
           worksheet.getCell(`A${rowIndex}`).value = item.id;
           worksheet.getCell(`B${rowIndex}`).value = item.department;
@@ -247,7 +247,7 @@ export class TimesheetController {
           worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
           worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
           worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
-          
+
           // Apply number format for numeric cells
           ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
             worksheet.getCell(`${col}${rowIndex}`).numFmt = '0.00';
