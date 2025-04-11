@@ -215,17 +215,24 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
             try {
                 console.log(`Total records: ${data.length}`);
                 const startRow = 8;
+                const endRow = startRow + data.length - 1;
                 const templateRow = worksheet.getRow(startRow);
-                for (let i = 1; i < data.length; i++) {
-                    const newRowNumber = startRow + i;
-                    const newRow = worksheet.getRow(newRowNumber);
-                    templateRow.eachCell((cell, colNumber) => {
+                const rowHeight = templateRow.height;
+                for (let i = startRow + 1; i <= endRow; i++) {
+                    const newRow = worksheet.getRow(i);
+                    newRow.height = rowHeight;
+                    templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                         const newCell = newRow.getCell(colNumber);
                         newCell.style = JSON.parse(JSON.stringify(cell.style));
                         if (cell.formula) {
-                            worksheet.getCell(newCell.address).value = {
-                                formula: cell.formula
-                            };
+                            worksheet.getCell(newCell.address).value = { formula: cell.formula };
+                        }
+                        if (cell.isMerged) {
+                            const mergeGroup = worksheet.getCell(cell.address).master.address;
+                            const mergeCells = worksheet.getMergeCellsInRange(mergeGroup);
+                            if (mergeCells) {
+                                worksheet.mergeCells(newCell.address, worksheet.getCell(mergeCells.end).address);
+                            }
                         }
                     });
                 }
