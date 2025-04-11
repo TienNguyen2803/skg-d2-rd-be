@@ -252,31 +252,23 @@ export class TimesheetController {
         const templateRow = worksheet.getRow(startRow);
         const rowHeight = templateRow.height;
 
-        // First, move existing data down if there's any
+        // Get the last row with data
         const lastRowNum = worksheet.lastRow?.number || startRow;
-        if (lastRowNum >= startRow) {
-          for (let i = lastRowNum; i >= startRow; i--) {
-            const currentRow = worksheet.getRow(i);
-            const targetRow = worksheet.getRow(i + data.length);
 
-            // Copy all cell values and properties
-            currentRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-              const targetCell = targetRow.getCell(colNumber);
-              targetCell.value = cell.value;
-              targetCell.style = JSON.parse(JSON.stringify(cell.style));
+        // Insert new rows at startRow position
+        worksheet.spliceRows(startRow, 0, ...Array(data.length).fill(null));
 
-              if (cell.formula) {
-                // Update formula row reference if exists
-                const newFormula = cell.formula.replace(/(\d+)/g, (match) => {
-                  const rowNum = parseInt(match);
-                  return (rowNum >= startRow) ? (rowNum + data.length).toString() : match;
-                });
-                targetCell.value = { formula: newFormula };
-              }
-            });
+        // If there's existing data after startRow, it will be automatically shifted down
+        // Now copy template formatting to the newly inserted rows
+        for (let i = startRow; i < startRow + data.length; i++) {
+          const newRow = worksheet.getRow(i);
+          newRow.height = rowHeight;
 
-            targetRow.height = currentRow.height;
-          }
+          // Copy template row formatting
+          templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+            const newCell = newRow.getCell(colNumber);
+            newCell.style = JSON.parse(JSON.stringify(cell.style));
+          });
         }
 
         // Now insert new rows
