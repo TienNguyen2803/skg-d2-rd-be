@@ -70,6 +70,9 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     async updateRejectReason(id, updateRejectDto) {
         return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
     }
+    async remove(id) {
+        await this.timesheetService.remove(id);
+    }
     async exportExcel(res) {
         try {
             const templatePath = path.join(process.cwd(), 'src', 'template', 'template.xlsx');
@@ -264,6 +267,19 @@ __decorate([
     __metadata("design:paramtypes", [Number, update_timesheet_reject_dto_1.UpdateTimesheetRejectDto]),
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "updateRejectReason", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
+    (0, swagger_1.ApiOperation)({ summary: 'Delete timesheet and related details' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.NO_CONTENT,
+        description: 'Timesheet has been successfully deleted',
+    }),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], TimesheetController.prototype, "remove", null);
 __decorate([
     (0, common_1.Get)('/export-excel/xxx'),
     __param(0, (0, common_1.Res)()),

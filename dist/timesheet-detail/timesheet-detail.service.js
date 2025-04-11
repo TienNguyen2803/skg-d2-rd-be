@@ -63,7 +63,6 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
         return this.timesheetDetailRepository.save(timesheetDetail);
     }
     async remove(id) {
-        const timesheetDetail = await this.findOne(id);
         await this.timesheetDetailRepository.softDelete(id);
     }
 };

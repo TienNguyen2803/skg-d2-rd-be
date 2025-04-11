@@ -100,6 +100,21 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
         timesheet.status = { id: status.id };
         return this.timesheetRepository.save(timesheet);
     }
+    async remove(id) {
+        const timesheet = await this.findOne(id);
+        if (!timesheet) {
+            throw new common_1.NotFoundException(`Timesheet with ID ${id} not found`);
+        }
+        await this.timesheetRepository.manager.transaction(async (manager) => {
+            await manager
+                .createQueryBuilder()
+                .softDelete()
+                .from('timesheet_detail')
+                .where('timesheet_id = :id', { id })
+                .execute();
+            await manager.softDelete('timesheet', { id });
+        });
+    }
     async exportToExcel(data) {
         try {
             const templatePath = path.join(process.cwd(), 'src', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');

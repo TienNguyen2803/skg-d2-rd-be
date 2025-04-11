@@ -12,5 +12,6 @@ export declare class TimesheetService {
     findOne(id: number): Promise<Timesheet>;
     updateStatus(id: number, status_code: string): Promise<Timesheet>;
     updateRejectReason(id: number, reject_reason: string): Promise<Timesheet>;
+    remove(id: number): Promise<void>;
     exportToExcel(data: any[]): Promise<Buffer>;
 }

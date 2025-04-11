@@ -11,5 +11,6 @@ export declare class TimesheetController {
     findOne(id: number): Promise<import("./entities/timesheet.entity").Timesheet>;
     updateStatus(id: number, updateStatusDto: UpdateTimesheetStatusDto): Promise<import("./entities/timesheet.entity").Timesheet>;
     updateRejectReason(id: number, updateRejectDto: UpdateTimesheetRejectDto): Promise<import("./entities/timesheet.entity").Timesheet>;
+    remove(id: number): Promise<void>;
     exportExcel(res: Response): Promise<Response>;
 }

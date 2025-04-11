@@ -83,7 +83,6 @@ export class TimesheetDetailService {
   }
 
   async remove(id: number): Promise<void> {
-    const timesheetDetail = await this.findOne(id);
     await this.timesheetDetailRepository.softDelete(id);
   }
 }
