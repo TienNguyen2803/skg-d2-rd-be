@@ -19,14 +19,25 @@ const typeorm_2 = require("typeorm");
 const timesheet_detail_entity_1 = require("./entities/timesheet-detail.entity");
 const filter_builder_1 = require("../utils/filter-builder");
 const standard_pagination_1 = require("../utils/standard-pagination");
+const timesheet_entity_1 = require("../timesheet/entities/timesheet.entity");
 let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDetailService {
-    constructor(timesheetDetailRepository) {
+    constructor(timesheetDetailRepository, timesheetRepository) {
         this.timesheetDetailRepository = timesheetDetailRepository;
+        this.timesheetRepository = timesheetRepository;
     }
     async create(createTimesheetDetailDto) {
         try {
             const timesheetDetail = this.timesheetDetailRepository.create(Object.assign(Object.assign({}, createTimesheetDetailDto), { ot_hours: createTimesheetDetailDto.ot_hours ? Number(createTimesheetDetailDto.ot_hours) : 0 }));
-            return await this.timesheetDetailRepository.save(timesheetDetail);
+            const savedDetail = await this.timesheetDetailRepository.save(timesheetDetail);
+            const timesheet = await this.timesheetRepository.findOne({
+                where: { id: createTimesheetDetailDto.timesheet_id },
+            });
+            if (!timesheet) {
+                throw new common_1.NotFoundException(`Timesheet with ID ${createTimesheetDetailDto.timesheet_id} not found`);
+            }
+            timesheet.total_hours = (timesheet.total_hours || 0) + (savedDetail.ot_hours || 0);
+            await this.timesheetRepository.save(timesheet);
+            return savedDetail;
         }
         catch (error) {
             throw new Error('Error creating timesheet detail: ' + error.message);
@@ -59,6 +70,8 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
 exports.TimesheetDetailService = TimesheetDetailService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(timesheet_detail_entity_1.TimesheetDetail)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(timesheet_entity_1.Timesheet)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], TimesheetDetailService);
 //# sourceMappingURL=timesheet-detail.service.js.map

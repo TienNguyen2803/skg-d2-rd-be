@@ -12,11 +12,12 @@ const typeorm_1 = require("@nestjs/typeorm");
 const timesheet_detail_service_1 = require("./timesheet-detail.service");
 const timesheet_detail_controller_1 = require("./timesheet-detail.controller");
 const timesheet_detail_entity_1 = require("./entities/timesheet-detail.entity");
+const timesheet_entity_1 = require("../timesheet/entities/timesheet.entity");
 let TimesheetDetailModule = exports.TimesheetDetailModule = class TimesheetDetailModule {
 };
 exports.TimesheetDetailModule = TimesheetDetailModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([timesheet_detail_entity_1.TimesheetDetail])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([timesheet_detail_entity_1.TimesheetDetail, timesheet_entity_1.Timesheet])],
         controllers: [timesheet_detail_controller_1.TimesheetDetailController],
         providers: [timesheet_detail_service_1.TimesheetDetailService],
         exports: [timesheet_detail_service_1.TimesheetDetailService],
