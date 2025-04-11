@@ -86,6 +86,10 @@ __decorate([
     __metadata("design:type", Object)
 ], User.prototype, "lastName", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: String, nullable: true }),
+    __metadata("design:type", Object)
+], User.prototype, "short_name", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => role_entity_1.Role, {
         eager: true,
     }),

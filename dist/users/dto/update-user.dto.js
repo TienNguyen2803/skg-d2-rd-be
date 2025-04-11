@@ -36,6 +36,12 @@ __decorate([
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "lastName", void 0);
 __decorate([
+    (0, swagger_2.ApiProperty)({ example: 'John D', required: false }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "short_name", void 0);
+__decorate([
     (0, swagger_2.ApiProperty)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),

@@ -15,6 +15,7 @@ export declare class User extends EntityHelper {
     socialId: string | null;
     firstName: string | null;
     lastName: string | null;
+    short_name: string | null;
     role?: Role | null;
     status?: Status;
     hash: string | null;
