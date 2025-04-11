@@ -252,27 +252,47 @@ export class TimesheetController {
         const templateRow = worksheet.getRow(startRow);
         const rowHeight = templateRow.height;
 
-        // Duplicate rows with all formatting
-        for (let i = startRow + 1; i <= endRow; i++) {
+        // First, move existing data down if there's any
+        const lastRowNum = worksheet.lastRow.number;
+        if (lastRowNum >= startRow) {
+          for (let i = lastRowNum; i >= startRow; i--) {
+            const currentRow = worksheet.getRow(i);
+            const targetRow = worksheet.getRow(i + data.length);
+
+            // Copy all cell values and properties
+            currentRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+              const targetCell = targetRow.getCell(colNumber);
+              targetCell.value = cell.value;
+              targetCell.style = JSON.parse(JSON.stringify(cell.style));
+
+              if (cell.formula) {
+                // Update formula row reference if exists
+                const newFormula = cell.formula.replace(/(\d+)/g, (match) => {
+                  const rowNum = parseInt(match);
+                  return (rowNum >= startRow) ? (rowNum + data.length).toString() : match;
+                });
+                targetCell.value = { formula: newFormula };
+              }
+            });
+
+            targetRow.height = currentRow.height;
+          }
+        }
+
+        // Now insert new rows
+        for (let i = startRow; i < startRow + data.length; i++) {
           const newRow = worksheet.getRow(i);
-          
-          // Copy row properties
           newRow.height = rowHeight;
-          
+
           // Copy cell properties from template
           templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
             const newCell = newRow.getCell(colNumber);
-            
-            // Copy style
             newCell.style = JSON.parse(JSON.stringify(cell.style));
-            
-            // Copy formula if exists
+
             if (cell.formula) {
               worksheet.getCell(newCell.address).value = { formula: cell.formula };
             }
-            
-            // Copy merges if any
-            // Handle merged cells if needed
+
             if (cell.isMerged) {
               const masterCell = worksheet.getCell(cell.master.address);
               if (masterCell) {
