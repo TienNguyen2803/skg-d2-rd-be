@@ -220,8 +220,9 @@ export class TimesheetController {
           const newRow = worksheet.insertRow(startRow + i, {}, 'i');
           // Copy template row styles
           newRow.height = templateRow.height;
-          Object.keys(templateRow.cellRefs).forEach(cellRef => {
-            newRow.getCell(cellRef).style = templateRow.getCell(cellRef).style;
+          // Copy styles from each cell A through Q
+          ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q'].forEach(col => {
+            newRow.getCell(col).style = templateRow.getCell(col).style;
           });
         }
 
@@ -229,8 +230,8 @@ export class TimesheetController {
         data.forEach((item, index) => {
           const rowIndex = startRow + index;
 
-          // Get the template row style
-          const templateRow = worksheet.getRow(startRowX - 1);
+          // Get the template row style 
+          const templateRow = worksheet.getRow(startRow - 1);
           const currentRow = worksheet.getRow(rowIndex);
 
           // Copy template row styles
