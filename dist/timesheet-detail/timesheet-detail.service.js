@@ -63,7 +63,26 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
         return this.timesheetDetailRepository.save(timesheetDetail);
     }
     async remove(id) {
-        await this.timesheetDetailRepository.softDelete(id);
+        try {
+            const detail = await this.timesheetDetailRepository.findOne({
+                where: { id },
+            });
+            if (!detail) {
+                throw new common_1.NotFoundException(`Timesheet detail with ID ${id} not found`);
+            }
+            const timesheet = await this.timesheetRepository.findOne({
+                where: { id: detail.timesheet_id },
+            });
+            if (!timesheet) {
+                throw new common_1.NotFoundException(`Timesheet with ID ${detail.timesheet_id} not found`);
+            }
+            timesheet.total_hours = (timesheet.total_hours || 0) - (detail.ot_hours || 0);
+            await this.timesheetRepository.save(timesheet);
+            await this.timesheetDetailRepository.softDelete(id);
+        }
+        catch (error) {
+            throw new Error('Error deleting timesheet detail: ' + error.message);
+        }
     }
 };
 exports.TimesheetDetailService = TimesheetDetailService = __decorate([
