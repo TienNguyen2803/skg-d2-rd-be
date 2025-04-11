@@ -28,8 +28,6 @@ let TimesheetDetailController = exports.TimesheetDetailController = class Timesh
         this.timesheetDetailService = timesheetDetailService;
     }
     create(createTimesheetDetailDto) {
-        console.error(createTimesheetDetailDto);
-        console.log('ddddddd', createTimesheetDetailDto);
         return this.timesheetDetailService.create(createTimesheetDetailDto);
     }
     async findAll(page, limit, s) {

@@ -44,8 +44,6 @@ export class TimesheetDetailController {
     type: TimesheetDetail,
   })
   create(@Body() createTimesheetDetailDto: CreateTimesheetDetailDto): Promise<TimesheetDetail> {
-    console.error(createTimesheetDetailDto)
-    console.log('ddddddd', createTimesheetDetailDto);
     return this.timesheetDetailService.create(createTimesheetDetailDto);
   }
 
