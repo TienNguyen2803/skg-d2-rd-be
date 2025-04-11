@@ -83,6 +83,33 @@ export class TimesheetDetailService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.timesheetDetailRepository.softDelete(id);
+    try {
+      // Find the detail before deleting
+      const detail = await this.timesheetDetailRepository.findOne({
+        where: { id },
+      });
+
+      if (!detail) {
+        throw new NotFoundException(`Timesheet detail with ID ${id} not found`);
+      }
+
+      // Find the related timesheet
+      const timesheet = await this.timesheetRepository.findOne({
+        where: { id: detail.timesheet_id },
+      });
+
+      if (!timesheet) {
+        throw new NotFoundException(`Timesheet with ID ${detail.timesheet_id} not found`);
+      }
+
+      // Update timesheet total_hours by subtracting detail's ot_hours
+      timesheet.total_hours = (timesheet.total_hours || 0) - (detail.ot_hours || 0);
+      await this.timesheetRepository.save(timesheet);
+
+      // Soft delete the detail
+      await this.timesheetDetailRepository.softDelete(id);
+    } catch (error) {
+      throw new Error('Error deleting timesheet detail: ' + error.message);
+    }
   }
 }
