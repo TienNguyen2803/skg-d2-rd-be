@@ -208,8 +208,26 @@ export class TimesheetController {
       ]
 
       try {
+        // Get the number of records
+        const recordCount = data.length;
+        const startRow = 8;  // Starting row for data
+
+        // Insert new rows for the data
+        worksheet.insertRows(startRow, recordCount, 'n');
+
+        // Now populate the data into the newly inserted rows
         data.forEach((item, index) => {
-          const rowIndex = index + 8;
+          const rowIndex = startRow + index;
+          
+          // Get the template row style
+          const templateRow = worksheet.getRow(startRow - 1);
+          const currentRow = worksheet.getRow(rowIndex);
+          
+          // Copy template row styles
+          currentRow.height = templateRow.height;
+          currentRow.getCell('A').style = templateRow.getCell('A').style;
+          
+          // Populate data
           worksheet.getCell(`A${rowIndex}`).value = item.id;
           worksheet.getCell(`B${rowIndex}`).value = item.department;
           worksheet.getCell(`C${rowIndex}`).value = item.project;
@@ -222,10 +240,16 @@ export class TimesheetController {
           worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
           worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
           worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
-          worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours; worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
+          worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours;
+          worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
           worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
           worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
           worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
+          
+          // Apply number format for numeric cells
+          ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
+            worksheet.getCell(`${col}${rowIndex}`).numFmt = '0.00';
+          });
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
