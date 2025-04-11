@@ -182,13 +182,13 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                 for (let i = 0; i < recordCount; i++) {
                     const newRow = worksheet.insertRow(startRow + i, {}, 'i');
                     newRow.height = templateRow.height;
-                    Object.keys(templateRow.cellRefs).forEach(cellRef => {
-                        newRow.getCell(cellRef).style = templateRow.getCell(cellRef).style;
+                    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'].forEach(col => {
+                        newRow.getCell(col).style = templateRow.getCell(col).style;
                     });
                 }
                 data.forEach((item, index) => {
                     const rowIndex = startRow + index;
-                    const templateRow = worksheet.getRow(startRowX - 1);
+                    const templateRow = worksheet.getRow(startRow - 1);
                     const currentRow = worksheet.getRow(rowIndex);
                     currentRow.height = templateRow.height;
                     currentRow.getCell('A').style = templateRow.getCell('A').style;
