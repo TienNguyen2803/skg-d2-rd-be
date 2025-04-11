@@ -208,80 +208,25 @@ export class TimesheetController {
       ]
 
       try {
-        // Get the number of records
-        const recordCount = data.length;
-        const startRow = 8;  // Starting row for data
-        const templateRow = worksheet.getRow(8);
-
-        // Save sum row data and styles
-        const sumRow = worksheet.getRow(9);
-        const sumRowStyle = {};
-        ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'].forEach(col => {
-          sumRowStyle[col] = sumRow.getCell(col).style;
-        });
-
-        // Remove sum row temporarily
-        worksheet.spliceRows(9, 1);
-
-        // Duplicate template row for each record
-        for (let i = 0; i < recordCount - 1; i++) {
-          const targetRow = startRow + i + 1;
-          worksheet.duplicateRow(startRow, targetRow, true);
-        }
-
-        // Add sum row at the bottom
-        const newSumRowNumber = startRow + recordCount;
-        worksheet.addRow({}, newSumRowNumber);
-        const newSumRow = worksheet.getRow(newSumRowNumber);
-
-        // Apply saved sum row styles
-        Object.entries(sumRowStyle).forEach(([col, style]) => {
-          newSumRow.getCell(col).style = style;
-        });
-
-        // Populate data into rows
         data.forEach((item, index) => {
-          const rowIndex = startRow + index;
-          const row = worksheet.getRow(rowIndex);
-
-          row.values = {
-            1: item.id,
-            2: item.department,
-            3: item.project,
-            4: item.project_type,
-            5: item.employee_id,
-            6: item.full_name,
-            7: item.weekday_overtime_hours,
-            8: item.weekday_night_overtime_hours,
-            9: item.holiday_overtime_hours,
-            10: item.holiday_overtime_overtime_hours,
-            11: item.sunday_night_overtime_hours,
-            12: item.holiday_overtime_hours,
-            13: item.total_overtime_hours,
-            14: item.sheet_name,
-            15: item.hyperlink,
-            16: item.paid_overtime_hours,
-            17: item.ot_compensatory_hours
-          };
-
-          // Apply number format for numeric cells
-          ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
-            row.getCell(col).numFmt = '0.00';
-          });
+          const rowIndex = index + 8;
+          worksheet.getCell(`A${rowIndex}`).value = item.id;
+          worksheet.getCell(`B${rowIndex}`).value = item.department;
+          worksheet.getCell(`C${rowIndex}`).value = item.project;
+          worksheet.getCell(`D${rowIndex}`).value = item.project_type;
+          worksheet.getCell(`E${rowIndex}`).value = item.employee_id;
+          worksheet.getCell(`F${rowIndex}`).value = item.full_name;
+          worksheet.getCell(`G${rowIndex}`).value = item.weekday_overtime_hours;
+          worksheet.getCell(`H${rowIndex}`).value = item.weekday_night_overtime_hours;
+          worksheet.getCell(`I${rowIndex}`).value = item.holiday_overtime_hours;
+          worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
+          worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
+          worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
+          worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours; worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
+          worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
+          worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
+          worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
         });
-
-        // Add sum formulas
-        const sumRowNumber = startRow + recordCount;
-        worksheet.getCell(`F${sumRowNumber}`).value = 'Total';
-
-        // Update formulas with correct ranges
-        const formulaColumns = ['G', 'H', 'I', 'K', 'M', 'P', 'Q'];
-        formulaColumns.forEach(col => {
-          worksheet.getCell(`${col}${sumRowNumber}`).value = {
-            formula: `SUM(${col}${startRow}:${col}${sumRowNumber-1})`
-          };
-        });
-
 
         const buffer = await workbook.xlsx.writeBuffer();
 

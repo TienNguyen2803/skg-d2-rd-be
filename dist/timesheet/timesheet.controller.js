@@ -176,16 +176,26 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                 }
             ];
             try {
-                const recordCount = data.length;
-                const startRow = 8;
-                const templateRow = worksheet.getRow(8);
-                for (let i = 0; i < recordCount; i++) {
-                    const newRow = worksheet.insertRow(startRow + i, {}, 'i');
-                    newRow.height = templateRow.height;
-                    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'].forEach(col => {
-                        newRow.getCell(col).style = templateRow.getCell(col).style;
-                    });
-                }
+                data.forEach((item, index) => {
+                    const rowIndex = index + 8;
+                    worksheet.getCell(`A${rowIndex}`).value = item.id;
+                    worksheet.getCell(`B${rowIndex}`).value = item.department;
+                    worksheet.getCell(`C${rowIndex}`).value = item.project;
+                    worksheet.getCell(`D${rowIndex}`).value = item.project_type;
+                    worksheet.getCell(`E${rowIndex}`).value = item.employee_id;
+                    worksheet.getCell(`F${rowIndex}`).value = item.full_name;
+                    worksheet.getCell(`G${rowIndex}`).value = item.weekday_overtime_hours;
+                    worksheet.getCell(`H${rowIndex}`).value = item.weekday_night_overtime_hours;
+                    worksheet.getCell(`I${rowIndex}`).value = item.holiday_overtime_hours;
+                    worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
+                    worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
+                    worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
+                    worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours;
+                    worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
+                    worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
+                    worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
+                    worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
+                });
                 const buffer = await workbook.xlsx.writeBuffer();
                 res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
