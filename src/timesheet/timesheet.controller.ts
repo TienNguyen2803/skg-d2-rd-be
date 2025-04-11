@@ -210,16 +210,24 @@ export class TimesheetController {
       try {
         // Get the number of records
         const recordCount = data.length;
-        const startRow = 9;  // Starting row for data
+        const startRow = 10;  // Starting row for data (after sum row)
 
+        // First duplicate the template row style
+        const templateRow = worksheet.getRow(8);
+        
         // Insert new rows for the data
         for (let i = 0; i < recordCount; i++) {
-          worksheet.insertRow(startRow + i, {}, 'i');
+          const newRow = worksheet.insertRow(startRow + i, {}, 'i');
+          // Copy template row styles
+          newRow.height = templateRow.height;
+          Object.keys(templateRow.cellRefs).forEach(cellRef => {
+            newRow.getCell(cellRef).style = templateRow.getCell(cellRef).style;
+          });
         }
-        const startRowX = 8;
+
         // Now populate the data into the newly inserted rows
         data.forEach((item, index) => {
-          const rowIndex = startRowX + index;
+          const rowIndex = startRow + index;
 
           // Get the template row style
           const templateRow = worksheet.getRow(startRowX - 1);
