@@ -150,7 +150,9 @@ export class TimesheetController {
             const newCell = newRow.getCell(colNumber);
             newCell.style = JSON.parse(JSON.stringify(cell.style)); // Deep copy style
             if (cell.formula) {
-              newCell.formula = cell.formula;
+              worksheet.getCell(newCell.address).value = {
+                formula: cell.formula
+              };
             }
           });
         }
