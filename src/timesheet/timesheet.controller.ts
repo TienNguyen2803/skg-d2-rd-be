@@ -212,9 +212,6 @@ export class TimesheetController {
         const recordCount = data.length;
         const startRow = 8;  // Starting row for data
 
-        // Get template row to duplicate
-        const templateRow = worksheet.getRow(startRow);
-        
         // Duplicate rows based on data length
         for (let i = 0; i < recordCount - 1; i++) {
           const targetRow = startRow + i + 1;
@@ -245,10 +242,10 @@ export class TimesheetController {
           row.getCell('P').value = item.paid_overtime_hours;
           row.getCell('Q').value = item.ot_compensatory_hours;
 
-          // Apply number format for numeric cells
-          ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
-            row.getCell(col).numFmt = '0.00';
-          });
+          // // Apply number format for numeric cells
+          // ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
+          //   row.getCell(col).numFmt = '0.00';
+          // });
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
