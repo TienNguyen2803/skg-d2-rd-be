@@ -213,7 +213,9 @@ export class TimesheetController {
         const startRow = 8;  // Starting row for data
 
         // Insert new rows for the data
-        worksheet.insertRows(startRow, recordCount, Array(recordCount).fill({}));
+        for (let i = 0; i < recordCount; i++) {
+          worksheet.insertRow(startRow + i, {}, 'i');
+        }
 
         // Now populate the data into the newly inserted rows
         data.forEach((item, index) => {
