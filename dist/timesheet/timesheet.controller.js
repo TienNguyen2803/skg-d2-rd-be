@@ -220,24 +220,14 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                 const templateRow = worksheet.getRow(startRow);
                 const rowHeight = templateRow.height;
                 const lastRowNum = ((_a = worksheet.lastRow) === null || _a === void 0 ? void 0 : _a.number) || startRow;
-                if (lastRowNum >= startRow) {
-                    for (let i = lastRowNum; i >= startRow; i--) {
-                        const currentRow = worksheet.getRow(i);
-                        const targetRow = worksheet.getRow(i + data.length);
-                        currentRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                            const targetCell = targetRow.getCell(colNumber);
-                            targetCell.value = cell.value;
-                            targetCell.style = JSON.parse(JSON.stringify(cell.style));
-                            if (cell.formula) {
-                                const newFormula = cell.formula.replace(/(\d+)/g, (match) => {
-                                    const rowNum = parseInt(match);
-                                    return (rowNum >= startRow) ? (rowNum + data.length).toString() : match;
-                                });
-                                targetCell.value = { formula: newFormula };
-                            }
-                        });
-                        targetRow.height = currentRow.height;
-                    }
+                worksheet.spliceRows(startRow, 0, ...Array(data.length).fill(null));
+                for (let i = startRow; i < startRow + data.length; i++) {
+                    const newRow = worksheet.getRow(i);
+                    newRow.height = rowHeight;
+                    templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                        const newCell = newRow.getCell(colNumber);
+                        newCell.style = JSON.parse(JSON.stringify(cell.style));
+                    });
                 }
                 for (let i = startRow; i < startRow + data.length; i++) {
                     const newRow = worksheet.getRow(i);
