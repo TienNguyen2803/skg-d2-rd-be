@@ -104,16 +104,13 @@ export class TimesheetController {
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(templatePath);
 
-      // Get all worksheet names for debugging
-      const worksheetNames = workbook.worksheets.map(ws => ws.name);
-      console.log('Available worksheets:', worksheetNames);
-
       // Get worksheet by name
       const worksheet = workbook.getWorksheet('01.Summary');
       if (!worksheet) {
         throw new NotFoundException('Excel worksheet not found');
       }
 
+      // Sample data - replace this with your actual data source
       const data = [
         {
           "id": 1,
@@ -244,91 +241,95 @@ export class TimesheetController {
       ]
 
       try {
-        console.log(`Total records: ${data.length}`);
+        console.log(`Total records to process: ${data.length}`);
         const startRow = 8;
-        const endRow = startRow + data.length - 1;
-
-        // Get template row and its height
         const templateRow = worksheet.getRow(startRow);
         const rowHeight = templateRow.height;
 
-        // Get the last row with data
+        // Get the last row number before making changes
         const lastRowNum = worksheet.lastRow?.number || startRow;
+        console.log(`Last row number before changes: ${lastRowNum}`);
 
-        // Insert new rows at startRow position
-        worksheet.spliceRows(startRow, 0, ...Array(data.length).fill(null));
+        // Calculate how many rows we need to insert
+        const rowsToInsert = data.length;
+        console.log(`Rows to insert: ${rowsToInsert}`);
 
-        // If there's existing data after startRow, it will be automatically shifted down
-        // Now copy template formatting to the newly inserted rows
-        for (let i = startRow; i < startRow + data.length; i++) {
-          const newRow = worksheet.getRow(i);
-          newRow.height = rowHeight;
+        if (rowsToInsert > 0) {
+          // Insert new rows and shift existing data down
+          worksheet.spliceRows(startRow, 0, ...Array(rowsToInsert).fill(null));
+          console.log(`Inserted ${rowsToInsert} rows starting at row ${startRow}`);
 
-          // Copy template row formatting
-          templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-            const newCell = newRow.getCell(colNumber);
-            newCell.style = JSON.parse(JSON.stringify(cell.style));
-          });
-        }
+          // First pass: Copy formatting and properties
+          for (let i = 0; i < rowsToInsert; i++) {
+            const currentRowNum = startRow + i;
+            const newRow = worksheet.getRow(currentRowNum);
+            newRow.height = rowHeight;
 
-        // Now insert new rows
-        for (let i = startRow; i < startRow + data.length; i++) {
-          const newRow = worksheet.getRow(i);
-          newRow.height = rowHeight;
+            // Copy cell properties from template row
+            templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+              const newCell = newRow.getCell(colNumber);
+              // Deep copy of cell style
+              newCell.style = JSON.parse(JSON.stringify(cell.style));
 
-          // Copy cell properties from template
-          templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-            const newCell = newRow.getCell(colNumber);
-            newCell.style = JSON.parse(JSON.stringify(cell.style));
-
-            if (cell.formula) {
-              worksheet.getCell(newCell.address).value = { formula: cell.formula };
-            }
-
-            if (cell.isMerged) {
-              const masterCell = worksheet.getCell(cell.master.address);
-              if (masterCell) {
-                const startCell = newCell.address;
-                const endCell = startCell.replace(/\d+/, (row) => (parseInt(row) + 1).toString());
-                worksheet.mergeCells(startCell, endCell);
+              // Handle formulas
+              if (cell.formula) {
+                const formulaRow = currentRowNum;
+                const newFormula = cell.formula.replace(/\d+/g, match => {
+                  const rowNum = parseInt(match);
+                  return rowNum >= startRow ? (rowNum + i).toString() : match;
+                });
+                newCell.value = { formula: newFormula };
               }
-            }
+
+              // Handle merged cells
+              if (cell.isMerged) {
+                const masterCell = worksheet.getCell(cell.master.address);
+                if (masterCell) {
+                  const startCell = newCell.address;
+                  const endCell = worksheet.getCell(currentRowNum, colNumber + 1).address;
+                  worksheet.mergeCells(startCell + ':' + endCell);
+                }
+              }
+            });
+          }
+
+        // Second pass: Populate data
+          console.log('Populating data into rows...');
+          data.forEach((item, index) => {
+            const currentRowNum = startRow + index;
+            const row = worksheet.getRow(currentRowNum);
+            
+            // Mapping of data to columns while preserving formatting
+            const cellValues = {
+              'A': item.id,
+              'B': item.department,
+              'C': item.project,
+              'D': item.project_type,
+              'E': item.employee_id,
+              'F': item.full_name,
+              'G': item.weekday_overtime_hours,
+              'H': item.weekday_night_overtime_hours,
+              'I': item.holiday_overtime_hours,
+              'J': item.holiday_overtime_overtime_hours,
+              'K': item.sunday_night_overtime_hours,
+              'L': item.holiday_overtime_hours,
+              'M': item.total_overtime_hours,
+              'N': item.sheet_name,
+              'O': item.hyperlink,
+              'P': item.paid_overtime_hours,
+              'Q': item.ot_compensatory_hours
+            };
+
+            // Populate each cell while maintaining formatting
+            Object.entries(cellValues).forEach(([col, value]) => {
+              const cell = row.getCell(col);
+              const existingStyle = cell.style;
+              cell.value = value;
+              cell.style = existingStyle;
+            });
+
+            console.log(`Populated row ${currentRowNum} with data`);
           });
-        }
-
-        // Fill data after duplicating rows
-        data.forEach((item, index) => {
-          const rowIndex = index + 8;
-          const row = worksheet.getRow(rowIndex);
-
-          // Fill data while preserving cell formatting
-          const cellValues = {
-            'A': item.id,
-            'B': item.department,
-            'C': item.project,
-            'D': item.project_type,
-            'E': item.employee_id,
-            'F': item.full_name,
-            'G': item.weekday_overtime_hours,
-            'H': item.weekday_night_overtime_hours,
-            'I': item.holiday_overtime_hours,
-            'J': item.holiday_overtime_overtime_hours,
-            'K': item.sunday_night_overtime_hours,
-            'L': item.holiday_overtime_hours,
-            'M': item.total_overtime_hours,
-            'N': item.sheet_name,
-            'O': item.hyperlink,
-            'P': item.paid_overtime_hours,
-            'Q': item.ot_compensatory_hours
-          };
-
-          Object.entries(cellValues).forEach(([col, value]) => {
-            const cell = row.getCell(col);
-            const existingStyle = cell.style;
-            cell.value = value;
-            cell.style = existingStyle; // Preserve formatting
-          });
-        });
 
         const buffer = await workbook.xlsx.writeBuffer();
 
