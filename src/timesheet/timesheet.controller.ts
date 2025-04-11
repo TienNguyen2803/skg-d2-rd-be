@@ -4,20 +4,17 @@ import {
   Post,
   Body,
   UseGuards,
-  Query,
   HttpCode,
   Param,
   ParseIntPipe,
   HttpStatus,
   Patch,
   Res,
-  Header,
   NotFoundException,
   InternalServerErrorException,
   Delete,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ExportTimesheetDto } from './dto/export-timesheet.dto';
 import { TimesheetService } from './timesheet.service';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -45,7 +42,6 @@ export class TimesheetController {
 
   @Post()
   create(@Body() createTimesheetDto: CreateTimesheetDto, @CurrentUser() user) {
-    console.log('user', user)
     return this.timesheetService.create(createTimesheetDto, user.id);
   }
 

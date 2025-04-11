@@ -55,7 +55,6 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
         this.timesheetService = timesheetService;
     }
     create(createTimesheetDto, user) {
-        console.log('user', user);
         return this.timesheetService.create(createTimesheetDto, user.id);
     }
     findAll(user) {
