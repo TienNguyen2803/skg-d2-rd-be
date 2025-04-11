@@ -208,24 +208,47 @@ export class TimesheetController {
       ]
 
       try {
+        // Calculate number of records needed
+        const recordCount = data.length;
+        const startRow = 8;  // Starting row for data
+
+        // Get template row to duplicate
+        const templateRow = worksheet.getRow(startRow);
+        
+        // Duplicate rows based on data length
+        for (let i = 0; i < recordCount - 1; i++) {
+          const targetRow = startRow + i + 1;
+          worksheet.duplicateRow(startRow, targetRow, true);
+        }
+
+        // Populate data into duplicated rows
         data.forEach((item, index) => {
-          const rowIndex = index + 8;
-          worksheet.getCell(`A${rowIndex}`).value = item.id;
-          worksheet.getCell(`B${rowIndex}`).value = item.department;
-          worksheet.getCell(`C${rowIndex}`).value = item.project;
-          worksheet.getCell(`D${rowIndex}`).value = item.project_type;
-          worksheet.getCell(`E${rowIndex}`).value = item.employee_id;
-          worksheet.getCell(`F${rowIndex}`).value = item.full_name;
-          worksheet.getCell(`G${rowIndex}`).value = item.weekday_overtime_hours;
-          worksheet.getCell(`H${rowIndex}`).value = item.weekday_night_overtime_hours;
-          worksheet.getCell(`I${rowIndex}`).value = item.holiday_overtime_hours;
-          worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
-          worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
-          worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
-          worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours; worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
-          worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
-          worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
-          worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
+          const rowIndex = startRow + index;
+          const row = worksheet.getRow(rowIndex);
+
+          // Set values for each cell
+          row.getCell('A').value = item.id;
+          row.getCell('B').value = item.department;
+          row.getCell('C').value = item.project;
+          row.getCell('D').value = item.project_type;
+          row.getCell('E').value = item.employee_id;
+          row.getCell('F').value = item.full_name;
+          row.getCell('G').value = item.weekday_overtime_hours;
+          row.getCell('H').value = item.weekday_night_overtime_hours;
+          row.getCell('I').value = item.holiday_overtime_hours;
+          row.getCell('J').value = item.holiday_overtime_overtime_hours;
+          row.getCell('K').value = item.sunday_night_overtime_hours;
+          row.getCell('L').value = item.holiday_overtime_hours;
+          row.getCell('M').value = item.total_overtime_hours;
+          row.getCell('N').value = item.sheet_name;
+          row.getCell('O').value = item.hyperlink;
+          row.getCell('P').value = item.paid_overtime_hours;
+          row.getCell('Q').value = item.ot_compensatory_hours;
+
+          // Apply number format for numeric cells
+          ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
+            row.getCell(col).numFmt = '0.00';
+          });
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
