@@ -299,7 +299,7 @@ export class TimesheetController {
         
         // Copy styles from template
         newSumRow.height = sumRowTemplate.height;
-        Object.keys(sumRowTemplate.cells).forEach(col => {
+        ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q'].forEach(col => {
           newSumRow.getCell(col).style = sumRowTemplate.getCell(col).style;
         });
 
@@ -310,13 +310,13 @@ export class TimesheetController {
         const firstDataRow = startRow;
         const lastDataRow = sumRowNumber - 1;
         
-        worksheet.getCell(`G${sumRowNumber}`).formula = `SUM(G${firstDataRow}:G${lastDataRow})`;
-        worksheet.getCell(`H${sumRowNumber}`).formula = `SUM(H${firstDataRow}:H${lastDataRow})`;
-        worksheet.getCell(`I${sumRowNumber}`).formula = `SUM(I${firstDataRow}:I${lastDataRow})`;
-        worksheet.getCell(`K${sumRowNumber}`).formula = `SUM(K${firstDataRow}:K${lastDataRow})`;
-        worksheet.getCell(`M${sumRowNumber}`).formula = `SUM(M${firstDataRow}:M${lastDataRow})`;
-        worksheet.getCell(`P${sumRowNumber}`).formula = `SUM(P${firstDataRow}:P${lastDataRow})`;
-        worksheet.getCell(`Q${sumRowNumber}`).formula = `SUM(Q${firstDataRow}:Q${lastDataRow})`;
+        // Set sum formulas using value property
+        const columns = ['G', 'H', 'I', 'K', 'M', 'P', 'Q'];
+        columns.forEach(col => {
+          worksheet.getCell(`${col}${sumRowNumber}`).value = {
+            formula: `SUM(${col}${firstDataRow}:${col}${lastDataRow})`
+          };
+        });
 
         // Apply formatting
         ['G', 'H', 'I', 'K', 'M', 'P', 'Q'].forEach(col => {
