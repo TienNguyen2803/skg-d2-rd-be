@@ -246,21 +246,38 @@ export class TimesheetController {
       try {
         console.log(`Total records: ${data.length}`);
         const startRow = 8;
+        const endRow = startRow + data.length - 1;
 
-        // First, duplicate the template row based on data length
+        // Get template row and its height
         const templateRow = worksheet.getRow(startRow);
-        for (let i = 1; i < data.length; i++) {
-          const newRowNumber = startRow + i;
-          const newRow = worksheet.getRow(newRowNumber);
+        const rowHeight = templateRow.height;
 
-          // Copy formatting and formulas from template row
-          templateRow.eachCell((cell, colNumber) => {
+        // Duplicate rows with all formatting
+        for (let i = startRow + 1; i <= endRow; i++) {
+          const newRow = worksheet.getRow(i);
+          
+          // Copy row properties
+          newRow.height = rowHeight;
+          
+          // Copy cell properties from template
+          templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
             const newCell = newRow.getCell(colNumber);
-            newCell.style = JSON.parse(JSON.stringify(cell.style)); // Deep copy style
+            
+            // Copy style
+            newCell.style = JSON.parse(JSON.stringify(cell.style));
+            
+            // Copy formula if exists
             if (cell.formula) {
-              worksheet.getCell(newCell.address).value = {
-                formula: cell.formula
-              };
+              worksheet.getCell(newCell.address).value = { formula: cell.formula };
+            }
+            
+            // Copy merges if any
+            if (cell.isMerged) {
+              const mergeGroup = worksheet.getCell(cell.address).master.address;
+              const mergeCells = worksheet.getMergeCellsInRange(mergeGroup);
+              if (mergeCells) {
+                worksheet.mergeCells(newCell.address, worksheet.getCell(mergeCells.end).address);
+              }
             }
           });
         }
