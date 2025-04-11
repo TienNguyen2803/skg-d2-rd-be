@@ -31,11 +31,19 @@ export class TimesheetService {
     return this.timesheetRepository.save(timesheet);
   }
 
-  async findAll(creatorId: number) {
-    return this.timesheetRepository.find({
-      where: { creator_id: creatorId },
+  async findAll(creatorId: number, isAdmin: boolean) {
+    const baseQuery = {
       relations: ['creator', 'project', 'department', 'status', 'details'],
-    });
+    };
+
+    if (!isAdmin) {
+      return this.timesheetRepository.find({
+        ...baseQuery,
+        where: { creator_id: creatorId },
+      });
+    }
+
+    return this.timesheetRepository.find(baseQuery);
   }
 
   async findOne(id: number) {

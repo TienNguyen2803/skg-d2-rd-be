@@ -47,7 +47,8 @@ export class TimesheetController {
 
   @Get()
   findAll(@CurrentUser() user) {
-    return this.timesheetService.findAll(user.id);
+    const isAdmin = user.role?.id === RoleEnum.admin;
+    return this.timesheetService.findAll(user.id, isAdmin);
   }
 
   @Get(':id')
