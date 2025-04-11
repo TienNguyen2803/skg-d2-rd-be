@@ -210,7 +210,8 @@ export class TimesheetController {
       try {
         // Get the number of records
         const recordCount = data.length;
-        const startRow = 10;  // Starting row for data (after sum row)
+        const startRow = 8;  // Starting row for data
+        const sumRow = startRow + recordCount; // Sum row will be after all data
 
         // First duplicate the template row style
         const templateRow = worksheet.getRow(8);
@@ -225,6 +226,14 @@ export class TimesheetController {
             newRow.getCell(col).style = templateRow.getCell(col).style;
           });
         }
+
+        let totalWeekdayOT = 0;
+        let totalWeekdayNightOT = 0;
+        let totalSundayNightOT = 0;
+        let totalHolidayOT = 0;
+        let totalOTHours = 0;
+        let totalPaidOT = 0;
+        let totalCompensatoryOT = 0;
 
         // Now populate the data into the newly inserted rows
         data.forEach((item, index) => {
@@ -257,10 +266,38 @@ export class TimesheetController {
           worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
           worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
 
+          // Update totals
+          totalWeekdayOT += item.weekday_overtime_hours || 0;
+          totalWeekdayNightOT += item.weekday_night_overtime_hours || 0;
+          totalSundayNightOT += item.sunday_night_overtime_hours || 0;
+          totalHolidayOT += item.holiday_overtime_hours || 0;
+          totalOTHours += item.total_overtime_hours || 0;
+          totalPaidOT += item.paid_overtime_hours || 0;
+          totalCompensatoryOT += item.ot_compensatory_hours || 0;
+
           // Apply number format for numeric cells
           ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
             worksheet.getCell(`${col}${rowIndex}`).numFmt = '0.00';
           });
+        });
+
+        // Add sum row
+        const sumRowNumber = startRow + recordCount;
+        worksheet.getCell(`F${sumRowNumber}`).value = 'Total';
+        worksheet.getCell(`G${sumRowNumber}`).value = totalWeekdayOT;
+        worksheet.getCell(`H${sumRowNumber}`).value = totalWeekdayNightOT;
+        worksheet.getCell(`I${sumRowNumber}`).value = totalHolidayOT;
+        worksheet.getCell(`K${sumRowNumber}`).value = totalSundayNightOT;
+        worksheet.getCell(`M${sumRowNumber}`).value = totalOTHours;
+        worksheet.getCell(`P${sumRowNumber}`).value = totalPaidOT;
+        worksheet.getCell(`Q${sumRowNumber}`).value = totalCompensatoryOT;
+
+        // Apply number format and style to sum row
+        ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
+          const cell = worksheet.getCell(`${col}${sumRowNumber}`);
+          cell.numFmt = '0.00';
+          cell.style = templateRow.getCell(col).style;
+          cell.font = { bold: true };
         });
 
         const buffer = await workbook.xlsx.writeBuffer();
