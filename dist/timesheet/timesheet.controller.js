@@ -71,7 +71,6 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
         return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
     }
     async exportExcel(res) {
-        var _a;
         try {
             const templatePath = path.join(process.cwd(), 'src', 'template', 'template.xlsx');
             if (!fs.existsSync(templatePath)) {
@@ -97,7 +96,6 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     "weekday_night_overtime_hours": 3.00,
                     "sunday_night_overtime_hours": 5.00,
                     "holiday_overtime_hours": 0.00,
-                    "holiday_overtime_overtime_hours": 0.00,
                     "total_overtime_hours": 31.00,
                     "sheet_name": "HauHT",
                     "hyperlink": "Link",
@@ -105,7 +103,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     "ot_compensatory_hours": 15.5
                 },
                 {
-                    "id": 1,
+                    "id": 2,
                     "department": "Operation",
                     "project": "S-CORE",
                     "project_type": "Fixed Price",
@@ -123,7 +121,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     "ot_compensatory_hours": 15.5
                 },
                 {
-                    "id": 1,
+                    "id": 2,
                     "department": "Operation",
                     "project": "S-CORE",
                     "project_type": "Fixed Price",
@@ -141,7 +139,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     "ot_compensatory_hours": 15.5
                 },
                 {
-                    "id": 1,
+                    "id": 2,
                     "department": "Operation",
                     "project": "S-CORE",
                     "project_type": "Fixed Price",
@@ -159,7 +157,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     "ot_compensatory_hours": 15.5
                 },
                 {
-                    "id": 1,
+                    "id": 2,
                     "department": "Operation",
                     "project": "S-CORE",
                     "project_type": "Fixed Price",
@@ -175,107 +173,28 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     "hyperlink": "Link",
                     "paid_overtime_hours": 15.5,
                     "ot_compensatory_hours": 15.5
-                },
-                {
-                    "id": 1,
-                    "department": "Operation",
-                    "project": "S-CORE",
-                    "project_type": "Fixed Price",
-                    "employee_id": "HauHT",
-                    "full_name": "Hoàng Thị Hậu",
-                    "weekday_overtime_hours": 10.00,
-                    "weekday_night_overtime_hours": 3.00,
-                    "sunday_night_overtime_hours": 5.00,
-                    "holiday_overtime_hours": 0.00,
-                    "holiday_overtime_overtime_hours": 0.00,
-                    "total_overtime_hours": 31.00,
-                    "sheet_name": "HauHT",
-                    "hyperlink": "Link",
-                    "paid_overtime_hours": 15.5,
-                    "ot_compensatory_hours": 15.5
-                },
-                {
-                    "id": 1,
-                    "department": "Operation",
-                    "project": "S-CORE",
-                    "project_type": "Fixed Price",
-                    "employee_id": "HauHT",
-                    "full_name": "Hoàng Thị Hậu",
-                    "weekday_overtime_hours": 10.00,
-                    "weekday_night_overtime_hours": 3.00,
-                    "sunday_night_overtime_hours": 5.00,
-                    "holiday_overtime_hours": 0.00,
-                    "holiday_overtime_overtime_hours": 0.00,
-                    "total_overtime_hours": 31.00,
-                    "sheet_name": "HauHT",
-                    "hyperlink": "Link",
-                    "paid_overtime_hours": 15.5,
-                    "ot_compensatory_hours": 15.5
-                },
+                }
             ];
             try {
-                console.log(`Total records: ${data.length}`);
-                const startRow = 8;
-                const endRow = startRow + data.length - 1;
-                const templateRow = worksheet.getRow(startRow);
-                const rowHeight = templateRow.height;
-                const lastRowNum = ((_a = worksheet.lastRow) === null || _a === void 0 ? void 0 : _a.number) || startRow;
-                worksheet.spliceRows(startRow, 0, ...Array(data.length).fill(null));
-                for (let i = startRow; i < startRow + data.length; i++) {
-                    const newRow = worksheet.getRow(i);
-                    newRow.height = rowHeight;
-                    templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                        const newCell = newRow.getCell(colNumber);
-                        newCell.style = JSON.parse(JSON.stringify(cell.style));
-                    });
-                }
-                for (let i = startRow; i < startRow + data.length; i++) {
-                    const newRow = worksheet.getRow(i);
-                    newRow.height = rowHeight;
-                    templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                        const newCell = newRow.getCell(colNumber);
-                        newCell.style = JSON.parse(JSON.stringify(cell.style));
-                        if (cell.formula) {
-                            worksheet.getCell(newCell.address).value = { formula: cell.formula };
-                        }
-                        if (cell.isMerged) {
-                            const masterCell = worksheet.getCell(cell.master.address);
-                            if (masterCell) {
-                                const startCell = newCell.address;
-                                const endCell = startCell.replace(/\d+/, (row) => (parseInt(row) + 1).toString());
-                                worksheet.mergeCells(startCell, endCell);
-                            }
-                        }
-                    });
-                }
                 data.forEach((item, index) => {
                     const rowIndex = index + 8;
-                    const row = worksheet.getRow(rowIndex);
-                    const cellValues = {
-                        'A': item.id,
-                        'B': item.department,
-                        'C': item.project,
-                        'D': item.project_type,
-                        'E': item.employee_id,
-                        'F': item.full_name,
-                        'G': item.weekday_overtime_hours,
-                        'H': item.weekday_night_overtime_hours,
-                        'I': item.holiday_overtime_hours,
-                        'J': item.holiday_overtime_overtime_hours,
-                        'K': item.sunday_night_overtime_hours,
-                        'L': item.holiday_overtime_hours,
-                        'M': item.total_overtime_hours,
-                        'N': item.sheet_name,
-                        'O': item.hyperlink,
-                        'P': item.paid_overtime_hours,
-                        'Q': item.ot_compensatory_hours
-                    };
-                    Object.entries(cellValues).forEach(([col, value]) => {
-                        const cell = row.getCell(col);
-                        const existingStyle = cell.style;
-                        cell.value = value;
-                        cell.style = existingStyle;
-                    });
+                    worksheet.getCell(`A${rowIndex}`).value = item.id;
+                    worksheet.getCell(`B${rowIndex}`).value = item.department;
+                    worksheet.getCell(`C${rowIndex}`).value = item.project;
+                    worksheet.getCell(`D${rowIndex}`).value = item.project_type;
+                    worksheet.getCell(`E${rowIndex}`).value = item.employee_id;
+                    worksheet.getCell(`F${rowIndex}`).value = item.full_name;
+                    worksheet.getCell(`G${rowIndex}`).value = item.weekday_overtime_hours;
+                    worksheet.getCell(`H${rowIndex}`).value = item.weekday_night_overtime_hours;
+                    worksheet.getCell(`I${rowIndex}`).value = item.holiday_overtime_hours;
+                    worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
+                    worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
+                    worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
+                    worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours;
+                    worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
+                    worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
+                    worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
+                    worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
                 });
                 const buffer = await workbook.xlsx.writeBuffer();
                 res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
