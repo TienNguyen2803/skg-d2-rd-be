@@ -6,7 +6,7 @@ import { TimesheetDetailController } from './timesheet-detail.controller';
 import { TimesheetDetail } from './entities/timesheet-detail.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TimesheetDetail])],
+  imports: [TypeOrmModule.forFeature([TimesheetDetail, Timesheet])],
   controllers: [TimesheetDetailController],
   providers: [TimesheetDetailService],
   exports: [TimesheetDetailService],

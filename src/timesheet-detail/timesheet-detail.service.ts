@@ -8,23 +8,44 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { FilterBuilder } from '../utils/filter-builder';
 import { standardPagination } from '../utils/standard-pagination';
 import { CreateTimesheetDetailDto } from './dto/create-timesheet-detail.dto';
+import { Timesheet } from '../timesheet/entities/timesheet.entity';
 
 @Injectable()
 export class TimesheetDetailService {
   constructor(
     @InjectRepository(TimesheetDetail)
     private timesheetDetailRepository: Repository<TimesheetDetail>,
+    @InjectRepository(Timesheet)
+    private timesheetRepository: Repository<Timesheet>,
   ) { }
 
   async create(createTimesheetDetailDto: CreateTimesheetDetailDto): Promise<TimesheetDetail> {
     try {
+      // Create new timesheet detail
       const timesheetDetail = this.timesheetDetailRepository.create({
         ...createTimesheetDetailDto,
         ot_hours: createTimesheetDetailDto.ot_hours ? Number(createTimesheetDetailDto.ot_hours) : 0,
       });
-      return await this.timesheetDetailRepository.save(timesheetDetail);
+      
+      // Save the timesheet detail
+      const savedDetail = await this.timesheetDetailRepository.save(timesheetDetail);
+
+      // Find the related timesheet
+      const timesheet = await this.timesheetRepository.findOne({
+        where: { id: createTimesheetDetailDto.timesheet_id },
+      });
+
+      if (!timesheet) {
+        throw new NotFoundException(`Timesheet with ID ${createTimesheetDetailDto.timesheet_id} not found`);
+      }
+
+      // Update timesheet total_hours
+      timesheet.total_hours = (timesheet.total_hours || 0) + (savedDetail.ot_hours || 0);
+      await this.timesheetRepository.save(timesheet);
+
+      return savedDetail;
     } catch (error) {
-      throw new Error('Error creating timesheet detail: ' + error.message); 
+      throw new Error('Error creating timesheet detail: ' + error.message);
     }
   }
 
