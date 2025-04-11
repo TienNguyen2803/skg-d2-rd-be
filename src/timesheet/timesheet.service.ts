@@ -92,6 +92,27 @@ export class TimesheetService {
     return this.timesheetRepository.save(timesheet);
   }
 
+  async remove(id: number): Promise<void> {
+    const timesheet = await this.findOne(id);
+    if (!timesheet) {
+      throw new NotFoundException(`Timesheet with ID ${id} not found`);
+    }
+
+    // First delete all related timesheet details
+    await this.timesheetRepository.manager.transaction(async (manager) => {
+      // Soft delete timesheet details
+      await manager
+        .createQueryBuilder()
+        .softDelete()
+        .from('timesheet_detail')
+        .where('timesheet_id = :id', { id })
+        .execute();
+
+      // Soft delete the timesheet
+      await manager.softDelete('timesheet', { id });
+    });
+  }
+
   async exportToExcel(data: any[]): Promise<Buffer> {
     try {
       const templatePath = path.join(process.cwd(), 'src', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');

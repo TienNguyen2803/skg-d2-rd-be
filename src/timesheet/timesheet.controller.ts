@@ -14,6 +14,7 @@ import {
   Header,
   NotFoundException,
   InternalServerErrorException,
+  Delete,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ExportTimesheetDto } from './dto/export-timesheet.dto';
@@ -85,6 +86,17 @@ export class TimesheetController {
     @Body() updateRejectDto: UpdateTimesheetRejectDto,
   ) {
     return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete timesheet and related details' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Timesheet has been successfully deleted',
+  })
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    await this.timesheetService.remove(id);
   }
 
   @Get('/export-excel/xxx')
