@@ -208,12 +208,24 @@ export class TimesheetController {
       ]
 
       try {
-        // Get the number of records
+        // Get the number of records and calculate rows
         const recordCount = data.length;
         const startRow = 8;  // Starting row for data
-        const sumRow = startRow + recordCount; // Sum row will be after all data
-
-        // First duplicate the template row style
+        const sumRowTemplate = worksheet.getRow(9); // Store sum row template
+        const sumFormulas = {
+          G: sumRowTemplate.getCell('G').formula,
+          H: sumRowTemplate.getCell('H').formula,
+          I: sumRowTemplate.getCell('I').formula,
+          K: sumRowTemplate.getCell('K').formula,
+          M: sumRowTemplate.getCell('M').formula,
+          P: sumRowTemplate.getCell('P').formula,
+          Q: sumRowTemplate.getCell('Q').formula
+        };
+        
+        // Remove the sum row temporarily
+        worksheet.spliceRows(9, 1);
+        
+        // Get template row for data
         const templateRow = worksheet.getRow(8);
         
         // Insert new rows for the data
@@ -281,22 +293,35 @@ export class TimesheetController {
           });
         });
 
-        // Add sum row
+        // Add sum row at the bottom
         const sumRowNumber = startRow + recordCount;
-        worksheet.getCell(`F${sumRowNumber}`).value = 'Total';
-        worksheet.getCell(`G${sumRowNumber}`).value = totalWeekdayOT;
-        worksheet.getCell(`H${sumRowNumber}`).value = totalWeekdayNightOT;
-        worksheet.getCell(`I${sumRowNumber}`).value = totalHolidayOT;
-        worksheet.getCell(`K${sumRowNumber}`).value = totalSundayNightOT;
-        worksheet.getCell(`M${sumRowNumber}`).value = totalOTHours;
-        worksheet.getCell(`P${sumRowNumber}`).value = totalPaidOT;
-        worksheet.getCell(`Q${sumRowNumber}`).value = totalCompensatoryOT;
+        const newSumRow = worksheet.insertRow(sumRowNumber, undefined);
+        
+        // Copy styles from template
+        newSumRow.height = sumRowTemplate.height;
+        Object.keys(sumRowTemplate.cells).forEach(col => {
+          newSumRow.getCell(col).style = sumRowTemplate.getCell(col).style;
+        });
 
-        // Apply number format and style to sum row
-        ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
+        // Set values and formulas
+        worksheet.getCell(`F${sumRowNumber}`).value = 'Total';
+        
+        // Update formula ranges for the new row positions
+        const firstDataRow = startRow;
+        const lastDataRow = sumRowNumber - 1;
+        
+        worksheet.getCell(`G${sumRowNumber}`).formula = `SUM(G${firstDataRow}:G${lastDataRow})`;
+        worksheet.getCell(`H${sumRowNumber}`).formula = `SUM(H${firstDataRow}:H${lastDataRow})`;
+        worksheet.getCell(`I${sumRowNumber}`).formula = `SUM(I${firstDataRow}:I${lastDataRow})`;
+        worksheet.getCell(`K${sumRowNumber}`).formula = `SUM(K${firstDataRow}:K${lastDataRow})`;
+        worksheet.getCell(`M${sumRowNumber}`).formula = `SUM(M${firstDataRow}:M${lastDataRow})`;
+        worksheet.getCell(`P${sumRowNumber}`).formula = `SUM(P${firstDataRow}:P${lastDataRow})`;
+        worksheet.getCell(`Q${sumRowNumber}`).formula = `SUM(Q${firstDataRow}:Q${lastDataRow})`;
+
+        // Apply formatting
+        ['G', 'H', 'I', 'K', 'M', 'P', 'Q'].forEach(col => {
           const cell = worksheet.getCell(`${col}${sumRowNumber}`);
           cell.numFmt = '0.00';
-          cell.style = templateRow.getCell(col).style;
           cell.font = { bold: true };
         });
 
