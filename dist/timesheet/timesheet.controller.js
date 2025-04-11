@@ -71,6 +71,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
         return this.timesheetService.updateRejectReason(id, updateRejectDto.reject_reason);
     }
     async exportExcel(res) {
+        var _a;
         try {
             const templatePath = path.join(process.cwd(), 'src', 'template', 'template.xlsx');
             if (!fs.existsSync(templatePath)) {
@@ -218,7 +219,7 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                 const endRow = startRow + data.length - 1;
                 const templateRow = worksheet.getRow(startRow);
                 const rowHeight = templateRow.height;
-                const lastRowNum = worksheet.lastRow.number;
+                const lastRowNum = ((_a = worksheet.lastRow) === null || _a === void 0 ? void 0 : _a.number) || startRow;
                 if (lastRowNum >= startRow) {
                     for (let i = lastRowNum; i >= startRow; i--) {
                         const currentRow = worksheet.getRow(i);
