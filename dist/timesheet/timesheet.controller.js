@@ -177,7 +177,8 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
             ];
             try {
                 const recordCount = data.length;
-                const startRow = 10;
+                const startRow = 8;
+                const sumRow = startRow + recordCount;
                 const templateRow = worksheet.getRow(8);
                 for (let i = 0; i < recordCount; i++) {
                     const newRow = worksheet.insertRow(startRow + i, {}, 'i');
@@ -186,6 +187,13 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                         newRow.getCell(col).style = templateRow.getCell(col).style;
                     });
                 }
+                let totalWeekdayOT = 0;
+                let totalWeekdayNightOT = 0;
+                let totalSundayNightOT = 0;
+                let totalHolidayOT = 0;
+                let totalOTHours = 0;
+                let totalPaidOT = 0;
+                let totalCompensatoryOT = 0;
                 data.forEach((item, index) => {
                     const rowIndex = startRow + index;
                     const templateRow = worksheet.getRow(startRow - 1);
@@ -209,9 +217,31 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
                     worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
                     worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
+                    totalWeekdayOT += item.weekday_overtime_hours || 0;
+                    totalWeekdayNightOT += item.weekday_night_overtime_hours || 0;
+                    totalSundayNightOT += item.sunday_night_overtime_hours || 0;
+                    totalHolidayOT += item.holiday_overtime_hours || 0;
+                    totalOTHours += item.total_overtime_hours || 0;
+                    totalPaidOT += item.paid_overtime_hours || 0;
+                    totalCompensatoryOT += item.ot_compensatory_hours || 0;
                     ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
                         worksheet.getCell(`${col}${rowIndex}`).numFmt = '0.00';
                     });
+                });
+                const sumRowNumber = startRow + recordCount;
+                worksheet.getCell(`F${sumRowNumber}`).value = 'Total';
+                worksheet.getCell(`G${sumRowNumber}`).value = totalWeekdayOT;
+                worksheet.getCell(`H${sumRowNumber}`).value = totalWeekdayNightOT;
+                worksheet.getCell(`I${sumRowNumber}`).value = totalHolidayOT;
+                worksheet.getCell(`K${sumRowNumber}`).value = totalSundayNightOT;
+                worksheet.getCell(`M${sumRowNumber}`).value = totalOTHours;
+                worksheet.getCell(`P${sumRowNumber}`).value = totalPaidOT;
+                worksheet.getCell(`Q${sumRowNumber}`).value = totalCompensatoryOT;
+                ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
+                    const cell = worksheet.getCell(`${col}${sumRowNumber}`);
+                    cell.numFmt = '0.00';
+                    cell.style = templateRow.getCell(col).style;
+                    cell.font = { bold: true };
                 });
                 const buffer = await workbook.xlsx.writeBuffer();
                 res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
