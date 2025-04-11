@@ -208,122 +208,60 @@ export class TimesheetController {
       ]
 
       try {
-        // Get the number of records and calculate rows
+        // Get the number of records
         const recordCount = data.length;
-        const startRow = 8;  // Starting row for data
-        const sumRowTemplate = worksheet.getRow(9); // Store sum row template
-        const sumFormulas = {
-          G: sumRowTemplate.getCell('G').formula,
-          H: sumRowTemplate.getCell('H').formula,
-          I: sumRowTemplate.getCell('I').formula,
-          K: sumRowTemplate.getCell('K').formula,
-          M: sumRowTemplate.getCell('M').formula,
-          P: sumRowTemplate.getCell('P').formula,
-          Q: sumRowTemplate.getCell('Q').formula
-        };
-        
-        // Remove the sum row temporarily
-        worksheet.spliceRows(9, 1);
-        
-        // Get template row for data
+        const startRow = 8;  // Starting row for data (after sum row)
+
+        // First duplicate the template row style
         const templateRow = worksheet.getRow(8);
-        
+
         // Insert new rows for the data
         for (let i = 0; i < recordCount; i++) {
           const newRow = worksheet.insertRow(startRow + i, {}, 'i');
           // Copy template row styles
           newRow.height = templateRow.height;
           // Copy styles from each cell A through Q
-          ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q'].forEach(col => {
+          ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'].forEach(col => {
             newRow.getCell(col).style = templateRow.getCell(col).style;
           });
         }
 
-        let totalWeekdayOT = 0;
-        let totalWeekdayNightOT = 0;
-        let totalSundayNightOT = 0;
-        let totalHolidayOT = 0;
-        let totalOTHours = 0;
-        let totalPaidOT = 0;
-        let totalCompensatoryOT = 0;
+        // // Now populate the data into the newly inserted rows
+        // data.forEach((item, index) => {
+        //   const rowIndex = startRow + index;
 
-        // Now populate the data into the newly inserted rows
-        data.forEach((item, index) => {
-          const rowIndex = startRow + index;
+        //   // Get the template row style 
+        //   const templateRow = worksheet.getRow(startRow - 1);
+        //   const currentRow = worksheet.getRow(rowIndex);
 
-          // Get the template row style 
-          const templateRow = worksheet.getRow(startRow - 1);
-          const currentRow = worksheet.getRow(rowIndex);
+        //   // Copy template row styles
+        //   currentRow.height = templateRow.height;
+        //   currentRow.getCell('A').style = templateRow.getCell('A').style;
 
-          // Copy template row styles
-          currentRow.height = templateRow.height;
-          currentRow.getCell('A').style = templateRow.getCell('A').style;
+        //   // Populate data
+        //   worksheet.getCell(`A${rowIndex}`).value = item.id;
+        //   worksheet.getCell(`B${rowIndex}`).value = item.department;
+        //   worksheet.getCell(`C${rowIndex}`).value = item.project;
+        //   worksheet.getCell(`D${rowIndex}`).value = item.project_type;
+        //   worksheet.getCell(`E${rowIndex}`).value = item.employee_id;
+        //   worksheet.getCell(`F${rowIndex}`).value = item.full_name;
+        //   worksheet.getCell(`G${rowIndex}`).value = item.weekday_overtime_hours;
+        //   worksheet.getCell(`H${rowIndex}`).value = item.weekday_night_overtime_hours;
+        //   worksheet.getCell(`I${rowIndex}`).value = item.holiday_overtime_hours;
+        //   worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
+        //   worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
+        //   worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
+        //   worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours;
+        //   worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
+        //   worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
+        //   worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
+        //   worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
 
-          // Populate data
-          worksheet.getCell(`A${rowIndex}`).value = item.id;
-          worksheet.getCell(`B${rowIndex}`).value = item.department;
-          worksheet.getCell(`C${rowIndex}`).value = item.project;
-          worksheet.getCell(`D${rowIndex}`).value = item.project_type;
-          worksheet.getCell(`E${rowIndex}`).value = item.employee_id;
-          worksheet.getCell(`F${rowIndex}`).value = item.full_name;
-          worksheet.getCell(`G${rowIndex}`).value = item.weekday_overtime_hours;
-          worksheet.getCell(`H${rowIndex}`).value = item.weekday_night_overtime_hours;
-          worksheet.getCell(`I${rowIndex}`).value = item.holiday_overtime_hours;
-          worksheet.getCell(`J${rowIndex}`).value = item.holiday_overtime_overtime_hours;
-          worksheet.getCell(`K${rowIndex}`).value = item.sunday_night_overtime_hours;
-          worksheet.getCell(`L${rowIndex}`).value = item.holiday_overtime_hours;
-          worksheet.getCell(`M${rowIndex}`).value = item.total_overtime_hours;
-          worksheet.getCell(`N${rowIndex}`).value = item.sheet_name;
-          worksheet.getCell(`O${rowIndex}`).value = item.hyperlink;
-          worksheet.getCell(`P${rowIndex}`).value = item.paid_overtime_hours;
-          worksheet.getCell(`Q${rowIndex}`).value = item.ot_compensatory_hours;
-
-          // Update totals
-          totalWeekdayOT += item.weekday_overtime_hours || 0;
-          totalWeekdayNightOT += item.weekday_night_overtime_hours || 0;
-          totalSundayNightOT += item.sunday_night_overtime_hours || 0;
-          totalHolidayOT += item.holiday_overtime_hours || 0;
-          totalOTHours += item.total_overtime_hours || 0;
-          totalPaidOT += item.paid_overtime_hours || 0;
-          totalCompensatoryOT += item.ot_compensatory_hours || 0;
-
-          // Apply number format for numeric cells
-          ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
-            worksheet.getCell(`${col}${rowIndex}`).numFmt = '0.00';
-          });
-        });
-
-        // Add sum row at the bottom
-        const sumRowNumber = startRow + recordCount;
-        const newSumRow = worksheet.insertRow(sumRowNumber, undefined);
-        
-        // Copy styles from template
-        newSumRow.height = sumRowTemplate.height;
-        ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q'].forEach(col => {
-          newSumRow.getCell(col).style = sumRowTemplate.getCell(col).style;
-        });
-
-        // Set values and formulas
-        worksheet.getCell(`F${sumRowNumber}`).value = 'Total';
-        
-        // Update formula ranges for the new row positions
-        const firstDataRow = startRow;
-        const lastDataRow = sumRowNumber - 1;
-        
-        // Set sum formulas using value property
-        const columns = ['G', 'H', 'I', 'K', 'M', 'P', 'Q'];
-        columns.forEach(col => {
-          worksheet.getCell(`${col}${sumRowNumber}`).value = {
-            formula: `SUM(${col}${firstDataRow}:${col}${lastDataRow})`
-          };
-        });
-
-        // Apply formatting
-        ['G', 'H', 'I', 'K', 'M', 'P', 'Q'].forEach(col => {
-          const cell = worksheet.getCell(`${col}${sumRowNumber}`);
-          cell.numFmt = '0.00';
-          cell.font = { bold: true };
-        });
+        //   // Apply number format for numeric cells
+        //   ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'P', 'Q'].forEach(col => {
+        //     worksheet.getCell(`${col}${rowIndex}`).numFmt = '0.00';
+        //   });
+        // });
 
         const buffer = await workbook.xlsx.writeBuffer();
 
