@@ -72,6 +72,9 @@ export class User extends EntityHelper {
   @Column({ type: String, nullable: true })
   lastName: string | null;
 
+  @Column({ type: String, nullable: true })
+  short_name: string | null;
+
   @ManyToOne(() => Role, {
     eager: true,
   })

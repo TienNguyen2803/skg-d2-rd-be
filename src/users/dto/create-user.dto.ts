@@ -18,6 +18,11 @@ export class CreateUserDto {
   @IsOptional()
   lastName?: string;
 
+  @ApiProperty({ example: 'John D', required: false })
+  @IsString()
+  @IsOptional()
+  short_name?: string;
+
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
