@@ -177,13 +177,17 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
             ];
             try {
                 const recordCount = data.length;
-                const startRow = 9;
+                const startRow = 10;
+                const templateRow = worksheet.getRow(8);
                 for (let i = 0; i < recordCount; i++) {
-                    worksheet.insertRow(startRow + i, {}, 'i');
+                    const newRow = worksheet.insertRow(startRow + i, {}, 'i');
+                    newRow.height = templateRow.height;
+                    Object.keys(templateRow.cellRefs).forEach(cellRef => {
+                        newRow.getCell(cellRef).style = templateRow.getCell(cellRef).style;
+                    });
                 }
-                const startRowX = 8;
                 data.forEach((item, index) => {
-                    const rowIndex = startRowX + index;
+                    const rowIndex = startRow + index;
                     const templateRow = worksheet.getRow(startRowX - 1);
                     const currentRow = worksheet.getRow(rowIndex);
                     currentRow.height = templateRow.height;
