@@ -253,7 +253,7 @@ export class TimesheetController {
         const rowHeight = templateRow.height;
 
         // First, move existing data down if there's any
-        const lastRowNum = worksheet.lastRow.number;
+        const lastRowNum = worksheet.lastRow?.number || startRow;
         if (lastRowNum >= startRow) {
           for (let i = lastRowNum; i >= startRow; i--) {
             const currentRow = worksheet.getRow(i);
