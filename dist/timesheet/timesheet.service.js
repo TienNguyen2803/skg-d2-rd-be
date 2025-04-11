@@ -55,11 +55,14 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
         const timesheet = this.timesheetRepository.create(Object.assign(Object.assign({}, createTimesheetDto), { creator_id: userId, status_id: draftStatus.id, total_hours: createTimesheetDto.total_hours ? Number(createTimesheetDto.total_hours) : 0 }));
         return this.timesheetRepository.save(timesheet);
     }
-    async findAll(creatorId) {
-        return this.timesheetRepository.find({
-            where: { creator_id: creatorId },
+    async findAll(creatorId, isAdmin) {
+        const baseQuery = {
             relations: ['creator', 'project', 'department', 'status', 'details'],
-        });
+        };
+        if (!isAdmin) {
+            return this.timesheetRepository.find(Object.assign(Object.assign({}, baseQuery), { where: { creator_id: creatorId } }));
+        }
+        return this.timesheetRepository.find(baseQuery);
     }
     async findOne(id) {
         const timesheet = await this.timesheetRepository.findOne({

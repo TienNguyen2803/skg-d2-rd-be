@@ -58,7 +58,9 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
         return this.timesheetService.create(createTimesheetDto, user.id);
     }
     findAll(user) {
-        return this.timesheetService.findAll(user.id);
+        var _a;
+        const isAdmin = ((_a = user.role) === null || _a === void 0 ? void 0 : _a.id) === roles_enum_1.RoleEnum.admin;
+        return this.timesheetService.findAll(user.id, isAdmin);
     }
     findOne(id) {
         return this.timesheetService.findOne(id);
