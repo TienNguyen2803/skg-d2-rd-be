@@ -35,7 +35,6 @@ export class User extends EntityHelper {
   email: string | null;
 
   @Column({ nullable: true })
-  @Exclude({ toPlainOnly: true })
   password: string;
 
   @Exclude({ toPlainOnly: true })
