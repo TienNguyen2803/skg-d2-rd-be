@@ -103,6 +103,114 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                     "paid_overtime_hours": 15.5,
                     "ot_compensatory_hours": 15.5
                 },
+                {
+                    "id": 1,
+                    "department": "Operation",
+                    "project": "S-CORE",
+                    "project_type": "Fixed Price",
+                    "employee_id": "HauHT",
+                    "full_name": "Hoàng Thị Hậu",
+                    "weekday_overtime_hours": 10.00,
+                    "weekday_night_overtime_hours": 3.00,
+                    "sunday_night_overtime_hours": 5.00,
+                    "holiday_overtime_hours": 0.00,
+                    "holiday_overtime_overtime_hours": 0.00,
+                    "total_overtime_hours": 31.00,
+                    "sheet_name": "HauHT",
+                    "hyperlink": "Link",
+                    "paid_overtime_hours": 15.5,
+                    "ot_compensatory_hours": 15.5
+                },
+                {
+                    "id": 1,
+                    "department": "Operation",
+                    "project": "S-CORE",
+                    "project_type": "Fixed Price",
+                    "employee_id": "HauHT",
+                    "full_name": "Hoàng Thị Hậu",
+                    "weekday_overtime_hours": 10.00,
+                    "weekday_night_overtime_hours": 3.00,
+                    "sunday_night_overtime_hours": 5.00,
+                    "holiday_overtime_hours": 0.00,
+                    "holiday_overtime_overtime_hours": 0.00,
+                    "total_overtime_hours": 31.00,
+                    "sheet_name": "HauHT",
+                    "hyperlink": "Link",
+                    "paid_overtime_hours": 15.5,
+                    "ot_compensatory_hours": 15.5
+                },
+                {
+                    "id": 1,
+                    "department": "Operation",
+                    "project": "S-CORE",
+                    "project_type": "Fixed Price",
+                    "employee_id": "HauHT",
+                    "full_name": "Hoàng Thị Hậu",
+                    "weekday_overtime_hours": 10.00,
+                    "weekday_night_overtime_hours": 3.00,
+                    "sunday_night_overtime_hours": 5.00,
+                    "holiday_overtime_hours": 0.00,
+                    "holiday_overtime_overtime_hours": 0.00,
+                    "total_overtime_hours": 31.00,
+                    "sheet_name": "HauHT",
+                    "hyperlink": "Link",
+                    "paid_overtime_hours": 15.5,
+                    "ot_compensatory_hours": 15.5
+                },
+                {
+                    "id": 1,
+                    "department": "Operation",
+                    "project": "S-CORE",
+                    "project_type": "Fixed Price",
+                    "employee_id": "HauHT",
+                    "full_name": "Hoàng Thị Hậu",
+                    "weekday_overtime_hours": 10.00,
+                    "weekday_night_overtime_hours": 3.00,
+                    "sunday_night_overtime_hours": 5.00,
+                    "holiday_overtime_hours": 0.00,
+                    "holiday_overtime_overtime_hours": 0.00,
+                    "total_overtime_hours": 31.00,
+                    "sheet_name": "HauHT",
+                    "hyperlink": "Link",
+                    "paid_overtime_hours": 15.5,
+                    "ot_compensatory_hours": 15.5
+                },
+                {
+                    "id": 1,
+                    "department": "Operation",
+                    "project": "S-CORE",
+                    "project_type": "Fixed Price",
+                    "employee_id": "HauHT",
+                    "full_name": "Hoàng Thị Hậu",
+                    "weekday_overtime_hours": 10.00,
+                    "weekday_night_overtime_hours": 3.00,
+                    "sunday_night_overtime_hours": 5.00,
+                    "holiday_overtime_hours": 0.00,
+                    "holiday_overtime_overtime_hours": 0.00,
+                    "total_overtime_hours": 31.00,
+                    "sheet_name": "HauHT",
+                    "hyperlink": "Link",
+                    "paid_overtime_hours": 15.5,
+                    "ot_compensatory_hours": 15.5
+                },
+                {
+                    "id": 1,
+                    "department": "Operation",
+                    "project": "S-CORE",
+                    "project_type": "Fixed Price",
+                    "employee_id": "HauHT",
+                    "full_name": "Hoàng Thị Hậu",
+                    "weekday_overtime_hours": 10.00,
+                    "weekday_night_overtime_hours": 3.00,
+                    "sunday_night_overtime_hours": 5.00,
+                    "holiday_overtime_hours": 0.00,
+                    "holiday_overtime_overtime_hours": 0.00,
+                    "total_overtime_hours": 31.00,
+                    "sheet_name": "HauHT",
+                    "hyperlink": "Link",
+                    "paid_overtime_hours": 15.5,
+                    "ot_compensatory_hours": 15.5
+                },
             ];
             try {
                 console.log(`Total records: ${data.length}`);
@@ -115,7 +223,9 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
                         const newCell = newRow.getCell(colNumber);
                         newCell.style = JSON.parse(JSON.stringify(cell.style));
                         if (cell.formula) {
-                            newCell.formula = cell.formula;
+                            worksheet.getCell(newCell.address).value = {
+                                formula: cell.formula
+                            };
                         }
                     });
                 }
