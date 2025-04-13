@@ -48,8 +48,8 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     async remove(id) {
         await this.timesheetService.remove(id);
     }
-    async exportExcel(res) {
-        return this.timesheetService.exportToExcel(res);
+    async exportExcel(month_year, res) {
+        return this.timesheetService.exportToExcel(res, month_year);
     }
 };
 __decorate([
@@ -117,10 +117,11 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "remove", null);
 __decorate([
-    (0, common_1.Get)('/export-excel/xxx'),
-    __param(0, (0, common_1.Res)()),
+    (0, common_1.Get)('/export-excel/:month_year'),
+    __param(0, (0, common_1.Param)('month_year')),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "exportExcel", null);
 exports.TimesheetController = TimesheetController = __decorate([

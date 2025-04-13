@@ -91,11 +91,11 @@ export class TimesheetController {
     await this.timesheetService.remove(id);
   }
 
-  @Get('/export-excel/:month_date')
+  @Get('/export-excel/:month_year')
   async exportExcel(
-    @Param('month_date') month_date: string,
+    @Param('month_year') month_year: string,
     @Res() res: Response
   ): Promise<Response> {
-    return this.timesheetService.exportToExcel(res, month_date);
+    return this.timesheetService.exportToExcel(res, month_year);
   }
 }

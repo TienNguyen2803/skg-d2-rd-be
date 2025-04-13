@@ -153,7 +153,7 @@ export class TimesheetService {
   }
 
 
-  async exportToExcel(res: Response, month_date: string): Promise<Response> {
+  async exportToExcel(res: Response, month_year: string): Promise<Response> {
     try {
       const templatePath = path.join(
         process.cwd(),
@@ -180,14 +180,14 @@ export class TimesheetService {
       }
 
       // Filter timesheets by month_date
-      const datax = await this.timesheetRepository.find({
-        where: { month_year: month_date },
+      const timesheets = await this.timesheetRepository.find({
+        where: { month_year },
         relations: ['creator', 'project', 'department', 'status', 'details']
       });
-      console.log(datax)
-      worksheet.getCell(`B5`).value = `${datax[0].month_year}-25`;
+      console.log(timesheets)
+      worksheet.getCell(`B5`).value = `${timesheets[0].month_year}-25`;
       try {
-        datax.forEach((item, index) => {
+        timesheets.forEach((item, index) => {
           console.log('item', item.details);
           const { weekdayBeforeHours, weekdayAfterHours, sundayBeforeHours, sundayAfterHours } = this.calculateOvertimeHours(item.details);
 
@@ -221,6 +221,9 @@ export class TimesheetService {
 
         const buffer = await workbook.xlsx.writeBuffer();
 
+        // loại bỏ dòng bị thừa từ 14 tới dòng 24 trong sheet
+ 
+        
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
         res.end(buffer);

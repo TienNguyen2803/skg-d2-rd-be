@@ -19,5 +19,5 @@ export declare class TimesheetService {
         sundayBeforeHours: number;
         sundayAfterHours: number;
     };
-    exportToExcel(res: Response): Promise<Response>;
+    exportToExcel(res: Response, month_year: string): Promise<Response>;
 }

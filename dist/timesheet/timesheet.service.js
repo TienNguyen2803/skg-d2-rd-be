@@ -147,7 +147,7 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
         });
         return { weekdayBeforeHours, weekdayAfterHours, sundayBeforeHours, sundayAfterHours };
     }
-    async exportToExcel(res) {
+    async exportToExcel(res, month_year) {
         try {
             const templatePath = path.join(process.cwd(), 'src', 'template', 'template.xlsx');
             if (!fs.existsSync(templatePath)) {
@@ -161,11 +161,14 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
             if (!worksheet) {
                 throw new common_1.NotFoundException('Excel worksheet not found');
             }
-            const datax = await this.findAll(0, true);
-            console.log(datax);
-            worksheet.getCell(`B5`).value = `${datax[0].month_year}-25`;
+            const timesheets = await this.timesheetRepository.find({
+                where: { month_year },
+                relations: ['creator', 'project', 'department', 'status', 'details']
+            });
+            console.log(timesheets);
+            worksheet.getCell(`B5`).value = `${timesheets[0].month_year}-25`;
             try {
-                datax.forEach((item, index) => {
+                timesheets.forEach((item, index) => {
                     console.log('item', item.details);
                     const { weekdayBeforeHours, weekdayAfterHours, sundayBeforeHours, sundayAfterHours } = this.calculateOvertimeHours(item.details);
                     const rowIndex = index + 8;
