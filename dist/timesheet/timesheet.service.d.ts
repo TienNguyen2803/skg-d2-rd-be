@@ -13,5 +13,11 @@ export declare class TimesheetService {
     updateStatus(id: number, status_code: string): Promise<Timesheet>;
     updateRejectReason(id: number, reject_reason: string): Promise<Timesheet>;
     remove(id: number): Promise<void>;
+    calculateOvertimeHours(details: any[]): {
+        weekdayBeforeHours: number;
+        weekdayAfterHours: number;
+        sundayBeforeHours: number;
+        sundayAfterHours: number;
+    };
     exportToExcel(res: Response): Promise<Response>;
 }

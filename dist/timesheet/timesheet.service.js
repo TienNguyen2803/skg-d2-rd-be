@@ -119,6 +119,34 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
             await manager.softDelete('timesheet', { id });
         });
     }
+    calculateOvertimeHours(details) {
+        let weekdayBeforeHours = 0;
+        let weekdayAfterHours = 0;
+        let sundayBeforeHours = 0;
+        let sundayAfterHours = 0;
+        details.forEach(detail => {
+            const date = new Date(detail.date);
+            const dayOfWeek = date.getDay();
+            const endTime = parseInt(detail.end_time.split(':')[0]);
+            if (dayOfWeek === 0) {
+                if (endTime < 22) {
+                    sundayBeforeHours += detail.ot_hours;
+                }
+                else {
+                    sundayAfterHours += detail.ot_hours;
+                }
+            }
+            else if (dayOfWeek >= 1 && dayOfWeek <= 6) {
+                if (endTime < 22) {
+                    weekdayBeforeHours += detail.ot_hours;
+                }
+                else {
+                    weekdayAfterHours += detail.ot_hours;
+                }
+            }
+        });
+        return { weekdayBeforeHours, weekdayAfterHours, sundayBeforeHours, sundayAfterHours };
+    }
     async exportToExcel(res) {
         try {
             const templatePath = path.join(process.cwd(), 'src', 'template', 'template.xlsx');
@@ -138,6 +166,7 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
             try {
                 datax.forEach((item, index) => {
                     console.log('item', item.details);
+                    const { weekdayBeforeHours, weekdayAfterHours, sundayBeforeHours, sundayAfterHours } = this.calculateOvertimeHours(item.details);
                     const rowIndex = index + 8;
                     worksheet.getCell(`A${rowIndex}`).value = index + 1;
                     worksheet.getCell(`B${rowIndex}`).value = "Operation";
@@ -145,10 +174,10 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
                     worksheet.getCell(`D${rowIndex}`).value = "Fixed Price";
                     worksheet.getCell(`E${rowIndex}`).value = item.creator.short_name;
                     worksheet.getCell(`F${rowIndex}`).value = item.creator.firstName + " " + item.creator.lastName;
-                    worksheet.getCell(`G${rowIndex}`).value = 0;
-                    worksheet.getCell(`H${rowIndex}`).value = 0;
-                    worksheet.getCell(`I${rowIndex}`).value = 0;
-                    worksheet.getCell(`J${rowIndex}`).value = 0;
+                    worksheet.getCell(`G${rowIndex}`).value = weekdayBeforeHours;
+                    worksheet.getCell(`H${rowIndex}`).value = weekdayAfterHours;
+                    worksheet.getCell(`I${rowIndex}`).value = sundayBeforeHours;
+                    worksheet.getCell(`J${rowIndex}`).value = sundayAfterHours;
                     worksheet.getCell(`K${rowIndex}`).value = 0;
                     worksheet.getCell(`L${rowIndex}`).value = 0;
                     worksheet.getCell(`M${rowIndex}`).value = 0;
