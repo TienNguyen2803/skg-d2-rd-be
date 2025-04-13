@@ -43,6 +43,7 @@ const ExcelJS = __importStar(require("exceljs"));
 const path = __importStar(require("path"));
 const timesheet_entity_1 = require("./entities/timesheet.entity");
 const timesheet_status_entity_1 = require("../timesheet-status/entities/timesheet-status.entity");
+const fs = __importStar(require("fs"));
 let TimesheetService = exports.TimesheetService = class TimesheetService {
     constructor(timesheetRepository, timesheetStatusRepository) {
         this.timesheetRepository = timesheetRepository;
@@ -118,42 +119,58 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
             await manager.softDelete('timesheet', { id });
         });
     }
-    async exportToExcel(data) {
+    async exportToExcel(res) {
         try {
-            const templatePath = path.join(process.cwd(), 'src', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');
+            const templatePath = path.join(process.cwd(), 'src', 'template', 'template.xlsx');
+            if (!fs.existsSync(templatePath)) {
+                throw new common_1.NotFoundException('Template file not found');
+            }
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.readFile(templatePath);
-            const worksheet = workbook.getWorksheet(1);
+            const worksheetNames = workbook.worksheets.map(ws => ws.name);
+            console.log('Available worksheets:', worksheetNames);
+            const worksheet = workbook.getWorksheet('01.Summary');
             if (!worksheet) {
-                throw new Error('Worksheet not found');
+                throw new common_1.NotFoundException('Excel worksheet not found');
             }
-            const startRow = 5;
-            data.forEach((item, index) => {
-                const row = worksheet.getRow(startRow + index);
-                row.getCell(1).value = item.STT;
-                row.getCell(2).value = item.Phòng;
-                row.getCell(3).value = item['Dự án'];
-                row.getCell(4).value = item['Loại dự án'];
-                row.getCell(5).value = item['Mã nhân viên'];
-                row.getCell(6).value = item['Họ và tên'];
-                row.getCell(7).value = item['Số giờ làm thêm từ T2-T7'];
-                row.getCell(8).value = item['Số giờ làm thêm đêm từ T2-T7 (Sau 22h00)'];
-                row.getCell(9).value = item['Số giờ làm thêm đêm CN (Sau 22h00)'];
-                row.getCell(10).value = item['Số giờ làm thêm ngày lễ (Sau 22h00)'];
-                row.getCell(11).value = item['Tổng số giờ làm thêm'];
-                row.getCell(12).value = item['Sheet name'];
-                row.getCell(13).value = { text: 'Link', hyperlink: item['Hyperlink'] };
-                row.getCell(14).value = item['Số giờ lương OT'];
-                row.getCell(15).value = item['Số giờ nghỉ bù OT'];
-                [7, 8, 9, 10, 11, 14, 15].forEach(col => {
-                    row.getCell(col).numFmt = '0.00';
+            const datax = await this.findAll(0, true);
+            console.log(datax);
+            try {
+                datax.forEach((item, index) => {
+                    console.log('item', item.details);
+                    const rowIndex = index + 8;
+                    worksheet.getCell(`A${rowIndex}`).value = index + 1;
+                    worksheet.getCell(`B${rowIndex}`).value = "Operation";
+                    worksheet.getCell(`C${rowIndex}`).value = item.project.name;
+                    worksheet.getCell(`D${rowIndex}`).value = "Fixed Price";
+                    worksheet.getCell(`E${rowIndex}`).value = item.creator.short_name;
+                    worksheet.getCell(`F${rowIndex}`).value = item.creator.firstName + " " + item.creator.lastName;
+                    worksheet.getCell(`G${rowIndex}`).value = 0;
+                    worksheet.getCell(`H${rowIndex}`).value = 0;
+                    worksheet.getCell(`I${rowIndex}`).value = 0;
+                    worksheet.getCell(`J${rowIndex}`).value = 0;
+                    worksheet.getCell(`K${rowIndex}`).value = 0;
+                    worksheet.getCell(`L${rowIndex}`).value = 0;
+                    worksheet.getCell(`M${rowIndex}`).value = 0;
+                    worksheet.getCell(`N${rowIndex}`).value = item.creator.short_name;
+                    worksheet.getCell(`O${rowIndex}`).value = "Link";
+                    worksheet.getCell(`P${rowIndex}`).value = 0;
+                    worksheet.getCell(`Q${rowIndex}`).value = 0;
                 });
-            });
-            const buffer = await workbook.xlsx.writeBuffer();
-            return buffer;
+                const buffer = await workbook.xlsx.writeBuffer();
+                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
+                res.end(buffer);
+                return {};
+            }
+            catch (error) {
+                console.error('Error writing Excel data:', error);
+                throw new common_1.InternalServerErrorException('Error writing Excel data: ' + error.message);
+            }
         }
         catch (error) {
-            throw new Error(`Failed to export Excel: ${error.message}`);
+            console.error('Error exporting Excel:', error.message);
+            throw new common_1.InternalServerErrorException('Failed to export Excel: ' + error.message);
         }
     }
 };

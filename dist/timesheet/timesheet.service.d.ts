@@ -1,8 +1,8 @@
-/// <reference types="node" />
 import { Repository } from 'typeorm';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
 import { Timesheet } from './entities/timesheet.entity';
 import { TimesheetStatus } from '../timesheet-status/entities/timesheet-status.entity';
+import { Response } from 'express';
 export declare class TimesheetService {
     private timesheetRepository;
     private timesheetStatusRepository;
@@ -13,5 +13,5 @@ export declare class TimesheetService {
     updateStatus(id: number, status_code: string): Promise<Timesheet>;
     updateRejectReason(id: number, reject_reason: string): Promise<Timesheet>;
     remove(id: number): Promise<void>;
-    exportToExcel(data: any[]): Promise<Buffer>;
+    exportToExcel(res: Response): Promise<Response>;
 }

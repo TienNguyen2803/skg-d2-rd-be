@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as ExcelJS from 'exceljs';
@@ -6,6 +6,8 @@ import * as path from 'path';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
 import { Timesheet } from './entities/timesheet.entity';
 import { TimesheetStatus } from '../timesheet-status/entities/timesheet-status.entity';
+import { Response } from 'express';
+import * as fs from 'fs';
 
 @Injectable()
 export class TimesheetService {
@@ -121,49 +123,164 @@ export class TimesheetService {
     });
   }
 
-  async exportToExcel(data: any[]): Promise<Buffer> {
+  async exportToExcel(res: Response): Promise<Response> {
     try {
-      const templatePath = path.join(process.cwd(), 'src', 'template', '【D2】_ Phieu theo doi lam them gio _ OT Records _ 202501.xlsx');
+      const templatePath = path.join(
+        process.cwd(),
+        'src',
+        'template',
+        'template.xlsx',
+      );
+
+      if (!fs.existsSync(templatePath)) {
+        throw new NotFoundException('Template file not found');
+      }
+
       const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(templatePath);
-    
-    const worksheet = workbook.getWorksheet(1);
-    if (!worksheet) {
-      throw new Error('Worksheet not found');
-    }
-    
-    // Start from row 5 (after header)
-    const startRow = 5;
-    
-    data.forEach((item, index) => {
-      const row = worksheet.getRow(startRow + index);
-      
-      row.getCell(1).value = item.STT;
-      row.getCell(2).value = item.Phòng;
-      row.getCell(3).value = item['Dự án'];
-      row.getCell(4).value = item['Loại dự án'];
-      row.getCell(5).value = item['Mã nhân viên'];
-      row.getCell(6).value = item['Họ và tên'];
-      row.getCell(7).value = item['Số giờ làm thêm từ T2-T7'];
-      row.getCell(8).value = item['Số giờ làm thêm đêm từ T2-T7 (Sau 22h00)'];
-      row.getCell(9).value = item['Số giờ làm thêm đêm CN (Sau 22h00)'];
-      row.getCell(10).value = item['Số giờ làm thêm ngày lễ (Sau 22h00)'];
-      row.getCell(11).value = item['Tổng số giờ làm thêm'];
-      row.getCell(12).value = item['Sheet name'];
-      row.getCell(13).value = { text: 'Link', hyperlink: item['Hyperlink'] };
-      row.getCell(14).value = item['Số giờ lương OT'];
-      row.getCell(15).value = item['Số giờ nghỉ bù OT'];
+      await workbook.xlsx.readFile(templatePath);
 
-      // Apply number format
-      [7,8,9,10,11,14,15].forEach(col => {
-        row.getCell(col).numFmt = '0.00';
-      });
-    });
+      // Get all worksheet names for debugging
+      const worksheetNames = workbook.worksheets.map(ws => ws.name);
+      console.log('Available worksheets:', worksheetNames);
 
-    const buffer = await workbook.xlsx.writeBuffer() as Buffer;
-    return buffer;
+      // Get worksheet by name
+      const worksheet = workbook.getWorksheet('01.Summary');
+      if (!worksheet) {
+        throw new NotFoundException('Excel worksheet not found');
+      }
+
+      const datax = await this.findAll(0, true);
+      console.log(datax)
+      // const data = [
+      //   {
+      //     "id": 1,
+      //     "department": "Operation",
+      //     "project": "S-CORE",
+      //     "project_type": "Fixed Price",
+      //     "employee_id": "HauHT",
+      //     "full_name": "Hoàng Thị Hậu",
+      //     "weekday_overtime_hours": 10.00,
+      //     "weekday_night_overtime_hours": 3.00,
+      //     "sunday_night_overtime_hours": 5.00,
+      //     "holiday_overtime_hours": 0.00,
+      //     "total_overtime_hours": 31.00,
+      //     "sheet_name": "HauHT",
+      //     "hyperlink": "Link",
+      //     "paid_overtime_hours": 15.5,
+      //     "ot_compensatory_hours": 15.5
+      //   },
+      //   {
+      //     "id": 2,
+      //     "department": "Operation",
+      //     "project": "S-CORE",
+      //     "project_type": "Fixed Price",
+      //     "employee_id": "HauHT",
+      //     "full_name": "Hoàng Thị Hậu",
+      //     "weekday_overtime_hours": 10.00,
+      //     "weekday_night_overtime_hours": 3.00,
+      //     "sunday_night_overtime_hours": 5.00,
+      //     "holiday_overtime_hours": 0.00,
+      //     "holiday_overtime_overtime_hours": 0.00,
+      //     "total_overtime_hours": 31.00,
+      //     "sheet_name": "HauHT",
+      //     "hyperlink": "Link",
+      //     "paid_overtime_hours": 15.5,
+      //     "ot_compensatory_hours": 15.5
+      //   },
+      //   {
+      //     "id": 2,
+      //     "department": "Operation",
+      //     "project": "S-CORE",
+      //     "project_type": "Fixed Price",
+      //     "employee_id": "HauHT",
+      //     "full_name": "Hoàng Thị Hậu",
+      //     "weekday_overtime_hours": 10.00,
+      //     "weekday_night_overtime_hours": 3.00,
+      //     "sunday_night_overtime_hours": 5.00,
+      //     "holiday_overtime_hours": 0.00,
+      //     "holiday_overtime_overtime_hours": 0.00,
+      //     "total_overtime_hours": 31.00,
+      //     "sheet_name": "HauHT",
+      //     "hyperlink": "Link",
+      //     "paid_overtime_hours": 15.5,
+      //     "ot_compensatory_hours": 15.5
+      //   },
+      //   {
+      //     "id": 2,
+      //     "department": "Operation",
+      //     "project": "S-CORE",
+      //     "project_type": "Fixed Price",
+      //     "employee_id": "HauHT",
+      //     "full_name": "Hoàng Thị Hậu",
+      //     "weekday_overtime_hours": 10.00,
+      //     "weekday_night_overtime_hours": 3.00,
+      //     "sunday_night_overtime_hours": 5.00,
+      //     "holiday_overtime_hours": 0.00,
+      //     "holiday_overtime_overtime_hours": 0.00,
+      //     "total_overtime_hours": 31.00,
+      //     "sheet_name": "HauHT",
+      //     "hyperlink": "Link",
+      //     "paid_overtime_hours": 15.5,
+      //     "ot_compensatory_hours": 15.5
+      //   },
+      //   {
+      //     "id": 2,
+      //     "department": "Operation",
+      //     "project": "S-CORE",
+      //     "project_type": "Fixed Price",
+      //     "employee_id": "HauHT",
+      //     "full_name": "Hoàng Thị Hậu",
+      //     "weekday_overtime_hours": 10.00,
+      //     "weekday_night_overtime_hours": 3.00,
+      //     "sunday_night_overtime_hours": 5.00,
+      //     "holiday_overtime_hours": 0.00,
+      //     "holiday_overtime_overtime_hours": 0.00,
+      //     "total_overtime_hours": 31.00,
+      //     "sheet_name": "HauHT",
+      //     "hyperlink": "Link",
+      //     "paid_overtime_hours": 15.5,
+      //     "ot_compensatory_hours": 15.5
+      //   }
+
+      // ]
+
+      try {
+        datax.forEach((item, index) => {
+          // kiểm tra item details có khung giờ endtime từ T2-T7 trước 22h00, T2-T7 sau 22h00, CN trước 22h00, CN sau 22h00 
+          console.log('item', item.details)
+          const rowIndex = index + 8;
+          worksheet.getCell(`A${rowIndex}`).value = index + 1;
+          worksheet.getCell(`B${rowIndex}`).value = "Operation";
+          worksheet.getCell(`C${rowIndex}`).value = item.project.name;
+          worksheet.getCell(`D${rowIndex}`).value = "Fixed Price";
+          worksheet.getCell(`E${rowIndex}`).value = item.creator.short_name;
+          worksheet.getCell(`F${rowIndex}`).value = item.creator.firstName + " " + item.creator.lastName;
+          worksheet.getCell(`G${rowIndex}`).value = 0;
+          worksheet.getCell(`H${rowIndex}`).value = 0;
+          worksheet.getCell(`I${rowIndex}`).value = 0;
+          worksheet.getCell(`J${rowIndex}`).value = 0;
+          worksheet.getCell(`K${rowIndex}`).value = 0;
+          worksheet.getCell(`L${rowIndex}`).value = 0;
+          worksheet.getCell(`M${rowIndex}`).value = 0;
+          worksheet.getCell(`N${rowIndex}`).value = item.creator.short_name;
+          worksheet.getCell(`O${rowIndex}`).value = "Link";
+          worksheet.getCell(`P${rowIndex}`).value = 0;
+          worksheet.getCell(`Q${rowIndex}`).value = 0;
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
+        res.end(buffer);
+        return {} as any;
+      } catch (error) {
+        console.error('Error writing Excel data:', error);
+        throw new InternalServerErrorException('Error writing Excel data: ' + error.message);
+      }
     } catch (error) {
-      throw new Error(`Failed to export Excel: ${error.message}`);
+      console.error('Error exporting Excel:', error.message);
+      throw new InternalServerErrorException('Failed to export Excel: ' + error.message);
     }
   }
 }
