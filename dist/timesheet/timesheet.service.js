@@ -180,11 +180,15 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
                     worksheet.getCell(`J${rowIndex}`).value = sundayAfterHours;
                     worksheet.getCell(`K${rowIndex}`).value = 0;
                     worksheet.getCell(`L${rowIndex}`).value = 0;
-                    worksheet.getCell(`M${rowIndex}`).formula = `=SUM(G${rowIndex}:L${rowIndex})`;
+                    worksheet.getCell(`M${rowIndex}`).value = weekdayBeforeHours * 1.5 + weekdayAfterHours * 2 + sundayBeforeHours * 2 + sundayAfterHours * 2.5;
                     worksheet.getCell(`N${rowIndex}`).value = item.creator.short_name;
                     worksheet.getCell(`O${rowIndex}`).value = "Link";
-                    worksheet.getCell(`P${rowIndex}`).value = 0;
-                    worksheet.getCell(`Q${rowIndex}`).value = 0;
+                    worksheet.getCell(`P${rowIndex}`).value = {
+                        formula: `M${rowIndex}/2`
+                    };
+                    worksheet.getCell(`Q${rowIndex}`).value = {
+                        formula: `M${rowIndex}/2`
+                    };
                 });
                 const buffer = await workbook.xlsx.writeBuffer();
                 res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
