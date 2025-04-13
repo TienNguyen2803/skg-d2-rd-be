@@ -221,8 +221,12 @@ export class TimesheetService {
 
         const buffer = await workbook.xlsx.writeBuffer();
 
-        // loại bỏ dòng bị thừa từ 14 tới dòng 24 trong sheet
- 
+        // Remove excess rows from 14 to 24
+        for (let i = 14; i <= 24; i++) {
+          const row = worksheet.getRow(i);
+          row.hidden = true;
+          row.outlineLevel = 1;
+        }
         
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', 'attachment; filename=OT_Records.xlsx');
