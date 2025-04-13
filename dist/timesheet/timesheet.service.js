@@ -180,7 +180,7 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
                     worksheet.getCell(`J${rowIndex}`).value = sundayAfterHours;
                     worksheet.getCell(`K${rowIndex}`).value = 0;
                     worksheet.getCell(`L${rowIndex}`).value = 0;
-                    worksheet.getCell(`M${rowIndex}`).value = 0;
+                    worksheet.getCell(`M${rowIndex}`).formula = `=SUM(G${rowIndex}:L${rowIndex})`;
                     worksheet.getCell(`N${rowIndex}`).value = item.creator.short_name;
                     worksheet.getCell(`O${rowIndex}`).value = "Link";
                     worksheet.getCell(`P${rowIndex}`).value = 0;
