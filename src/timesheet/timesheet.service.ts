@@ -153,7 +153,7 @@ export class TimesheetService {
   }
 
 
-  async exportToExcel(res: Response): Promise<Response> {
+  async exportToExcel(res: Response, month_date: string): Promise<Response> {
     try {
       const templatePath = path.join(
         process.cwd(),
@@ -179,7 +179,11 @@ export class TimesheetService {
         throw new NotFoundException('Excel worksheet not found');
       }
 
-      const datax = await this.findAll(0, true);
+      // Filter timesheets by month_date
+      const datax = await this.timesheetRepository.find({
+        where: { month_year: month_date },
+        relations: ['creator', 'project', 'department', 'status', 'details']
+      });
       console.log(datax)
       worksheet.getCell(`B5`).value = `${datax[0].month_year}-25`;
       try {
