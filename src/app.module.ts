@@ -35,6 +35,7 @@ import { TimesheetModule } from './timesheet/timesheet.module';
 import { RolesModule } from './roles/roles.module';
 import { StatusesModule } from './statuses/statuses.module';
 import { TimesheetDetailModule } from './timesheet-detail/timesheet-detail.module';
+import { ProjectTypesModule } from './project-types/project-types.module';
 
 
 @Module({
@@ -105,6 +106,7 @@ import { TimesheetDetailModule } from './timesheet-detail/timesheet-detail.modul
     ImgsModule,
     RolesModule,
     StatusesModule,
+    ProjectTypesModule,
   ],
 })
 export class AppModule { }

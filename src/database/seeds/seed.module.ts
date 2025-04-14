@@ -9,6 +9,7 @@ import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
 import { TimesheetStatusSeedModule } from './timesheet-status/timesheet-status-seed.module';
+import { ProjectTypeSeedModule } from './project-type/project-type-seed.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TimesheetStatusSeedModule } from './timesheet-status/timesheet-status-s
     StatusSeedModule,
     UserSeedModule,
     TimesheetStatusSeedModule,
+    ProjectTypeSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
