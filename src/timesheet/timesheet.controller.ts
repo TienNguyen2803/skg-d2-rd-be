@@ -11,7 +11,10 @@ import {
   Patch,
   Res,
   Delete,
+  Query,
+  DefaultValuePipe,
 } from '@nestjs/common';
+import { standardPagination } from '../utils/standard-pagination';
 import { Response } from 'express';
 import { TimesheetService } from './timesheet.service';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
@@ -41,9 +44,35 @@ export class TimesheetController {
   }
 
   @Get()
-  findAll(@CurrentUser() user) {
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get timesheets list' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get timesheets list',
+    type: [Timesheet],
+  })
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('s') filterQuery?: string,
+    @Query('sort') sort?: string,
+    @CurrentUser() user?,
+  ) {
     const isAdmin = user.role?.id === RoleEnum.admin;
-    return this.timesheetService.findAll(user.id, isAdmin);
+    return standardPagination(
+      await this.timesheetService.findManyWithPagination(
+        {
+          page,
+          limit,
+          offset: (page - 1) * limit,
+        },
+        filterQuery,
+        sort,
+        user.id,
+        isAdmin,
+      ),
+      await this.timesheetService.standardCount(filterQuery, user.id, isAdmin),
+    );
   }
 
   @Get(':id')

@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsWhere, ILike, FindManyOptions } from 'typeorm';
+import { IPaginationOptions } from '../utils/types/pagination-options';
 import * as ExcelJS from 'exceljs';
 import * as path from 'path';
 import { CreateTimesheetDto } from './dto/create-timesheet.dto';
@@ -33,19 +34,58 @@ export class TimesheetService {
     return this.timesheetRepository.save(timesheet);
   }
 
-  async findAll(creatorId: number, isAdmin: boolean) {
-    const baseQuery = {
+  async findManyWithPagination(
+    paginationOptions: IPaginationOptions,
+    filterQuery?: string,
+    sort?: string,
+    creatorId?: number,
+    isAdmin?: boolean,
+  ) {
+    const where: FindOptionsWhere<Timesheet> = {};
+    
+    if (!isAdmin) {
+      where.creator_id = creatorId;
+    }
+
+    if (filterQuery) {
+      where.month_year = ILike(`%${filterQuery}%`);
+    }
+
+    const order: Record<string, 'ASC' | 'DESC'> = {};
+    if (sort) {
+      const [field, direction] = sort.split(',');
+      order[field] = direction.toUpperCase() as 'ASC' | 'DESC';
+    } else {
+      order.id = 'DESC';
+    }
+
+    const findOptions: FindManyOptions<Timesheet> = {
+      where,
+      order,
+      skip: paginationOptions.offset,
+      take: paginationOptions.limit,
       relations: ['creator', 'project', 'department', 'status', 'details'],
     };
 
+    return this.timesheetRepository.find(findOptions);
+  }
+
+  async standardCount(
+    filterQuery?: string,
+    creatorId?: number,
+    isAdmin?: boolean,
+  ): Promise<number> {
+    const where: FindOptionsWhere<Timesheet> = {};
+    
     if (!isAdmin) {
-      return this.timesheetRepository.find({
-        ...baseQuery,
-        where: { creator_id: creatorId },
-      });
+      where.creator_id = creatorId;
     }
 
-    return this.timesheetRepository.find(baseQuery);
+    if (filterQuery) {
+      where.month_year = ILike(`%${filterQuery}%`);
+    }
+
+    return this.timesheetRepository.count({ where });
   }
 
   async findOne(id: number) {
