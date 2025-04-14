@@ -121,9 +121,14 @@ export class TimesheetController {
     await this.timesheetService.remove(id);
   }
 
-  @Get('/export-excel/:month_year')
+  @Get('/export-excel')
+  @ApiOperation({ summary: 'Export timesheet to Excel' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Export timesheet to Excel file',
+  })
   async exportExcel(
-    @Param('month_year') month_year: string,
+    @Query('month_year') month_year: string,
     @Res() res: Response
   ): Promise<Response> {
     return this.timesheetService.exportToExcel(res, month_year);
