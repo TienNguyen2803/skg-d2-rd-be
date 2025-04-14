@@ -134,8 +134,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "remove", null);
 __decorate([
-    (0, common_1.Get)('/export-excel/:month_year'),
-    __param(0, (0, common_1.Param)('month_year')),
+    (0, common_1.Get)('/export-excel'),
+    (0, swagger_1.ApiOperation)({ summary: 'Export timesheet to Excel' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.OK,
+        description: 'Export timesheet to Excel file',
+    }),
+    __param(0, (0, common_1.Query)('month_year')),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
