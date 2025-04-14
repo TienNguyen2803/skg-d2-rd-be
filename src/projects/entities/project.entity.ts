@@ -11,9 +11,18 @@ import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '../../users/entities/user.entity';
 import { Department } from '../../departments/entities/department.entity';
 import { Timesheet } from 'src/timesheet/entities/timesheet.entity';
+import { ProjectType } from '../../project-types/entities/project-type.entity';
 
 @Entity()
 export class Project extends EntityHelper {
+  @ManyToOne(() => ProjectType, {
+    eager: false
+  })
+  @JoinColumn({ name: 'project_type_id' })
+  project_type: ProjectType;
+
+  @Column({ type: Number, nullable: true })
+  project_type_id: number;
   @PrimaryGeneratedColumn()
   id: number;
 

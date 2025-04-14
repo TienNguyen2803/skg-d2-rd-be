@@ -24,4 +24,9 @@ export class UpdateProjectDto extends PartialType(CreateProjectDto) {
   @IsNumber()
   @IsOptional()
   pm_user_id?: number;
+
+  @ApiProperty({ example: 1 })
+  @IsNumber()
+  @IsOptional()
+  project_type_id?: number;
 }

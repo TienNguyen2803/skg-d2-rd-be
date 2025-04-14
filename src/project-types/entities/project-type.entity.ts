@@ -1,6 +1,7 @@
 
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
+import { Project } from '../../projects/entities/project.entity';
 
 @Entity()
 export class ProjectType extends EntityHelper {
@@ -15,4 +16,7 @@ export class ProjectType extends EntityHelper {
 
   @Column({ type: String, nullable: true })
   description: string;
+
+  @OneToMany(() => Project, (project) => project.project_type)
+  projects: Project[];
 }
