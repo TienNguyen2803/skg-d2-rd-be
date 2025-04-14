@@ -46,6 +46,7 @@ const timesheet_module_1 = require("./timesheet/timesheet.module");
 const roles_module_1 = require("./roles/roles.module");
 const statuses_module_1 = require("./statuses/statuses.module");
 const timesheet_detail_module_1 = require("./timesheet-detail/timesheet-detail.module");
+const project_types_module_1 = require("./project-types/project-types.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -117,6 +118,7 @@ exports.AppModule = AppModule = __decorate([
             imgs_module_1.ImgsModule,
             roles_module_1.RolesModule,
             statuses_module_1.StatusesModule,
+            project_types_module_1.ProjectTypesModule,
         ],
     })
 ], AppModule);

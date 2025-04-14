@@ -21,6 +21,7 @@ const role_seed_module_1 = require("./role/role-seed.module");
 const status_seed_module_1 = require("./status/status-seed.module");
 const user_seed_module_1 = require("./user/user-seed.module");
 const timesheet_status_seed_module_1 = require("./timesheet-status/timesheet-status-seed.module");
+const project_type_seed_module_1 = require("./project-type/project-type-seed.module");
 let SeedModule = exports.SeedModule = class SeedModule {
 };
 exports.SeedModule = SeedModule = __decorate([
@@ -30,6 +31,7 @@ exports.SeedModule = SeedModule = __decorate([
             status_seed_module_1.StatusSeedModule,
             user_seed_module_1.UserSeedModule,
             timesheet_status_seed_module_1.TimesheetStatusSeedModule,
+            project_type_seed_module_1.ProjectTypeSeedModule,
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 load: [database_config_1.default, app_config_1.default],
