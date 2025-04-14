@@ -26,6 +26,7 @@ import { RolesGuard } from '../roles/roles.guard';
 import { CurrentUser } from '../decorators/user/current-user.decorator';
 import { UpdateTimesheetStatusDto } from './dto/update-timesheet-status.dto';
 import { UpdateTimesheetRejectDto } from './dto/update-timesheet-reject.dto';
+import { Timesheet } from './entities/timesheet.entity';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.user, RoleEnum.admin)

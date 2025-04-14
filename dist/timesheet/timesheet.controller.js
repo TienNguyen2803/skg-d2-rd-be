@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TimesheetController = void 0;
 const common_1 = require("@nestjs/common");
+const standard_pagination_1 = require("../utils/standard-pagination");
 const timesheet_service_1 = require("./timesheet.service");
 const create_timesheet_dto_1 = require("./dto/create-timesheet.dto");
 const swagger_1 = require("@nestjs/swagger");
@@ -24,6 +25,7 @@ const roles_guard_1 = require("../roles/roles.guard");
 const current_user_decorator_1 = require("../decorators/user/current-user.decorator");
 const update_timesheet_status_dto_1 = require("./dto/update-timesheet-status.dto");
 const update_timesheet_reject_dto_1 = require("./dto/update-timesheet-reject.dto");
+const timesheet_entity_1 = require("./entities/timesheet.entity");
 let TimesheetController = exports.TimesheetController = class TimesheetController {
     constructor(timesheetService) {
         this.timesheetService = timesheetService;
@@ -31,10 +33,14 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
     create(createTimesheetDto, user) {
         return this.timesheetService.create(createTimesheetDto, user.id);
     }
-    findAll(user) {
+    async findAll(page, limit, filterQuery, sort, user) {
         var _a;
         const isAdmin = ((_a = user.role) === null || _a === void 0 ? void 0 : _a.id) === roles_enum_1.RoleEnum.admin;
-        return this.timesheetService.findAll(user.id, isAdmin);
+        return (0, standard_pagination_1.standardPagination)(await this.timesheetService.findManyWithPagination({
+            page,
+            limit,
+            offset: (page - 1) * limit,
+        }, filterQuery, sort, user.id, isAdmin), await this.timesheetService.standardCount(filterQuery, user.id, isAdmin));
     }
     findOne(id) {
         return this.timesheetService.findOne(id);
@@ -62,10 +68,21 @@ __decorate([
 ], TimesheetController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiOperation)({ summary: 'Get timesheets list' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.OK,
+        description: 'Get timesheets list',
+        type: [timesheet_entity_1.Timesheet],
+    }),
+    __param(0, (0, common_1.Query)('page', new common_1.DefaultValuePipe(1), common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(10), common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Query)('s')),
+    __param(3, (0, common_1.Query)('sort')),
+    __param(4, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Number, Number, String, String, Object]),
+    __metadata("design:returntype", Promise)
 ], TimesheetController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),

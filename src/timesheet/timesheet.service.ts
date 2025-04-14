@@ -9,6 +9,7 @@ import { Timesheet } from './entities/timesheet.entity';
 import { TimesheetStatus } from '../timesheet-status/entities/timesheet-status.entity';
 import { Response } from 'express';
 import * as fs from 'fs';
+import { FilterBuilder } from 'src/utils/filter-builder';
 
 @Injectable()
 export class TimesheetService {
@@ -41,31 +42,30 @@ export class TimesheetService {
     creatorId?: number,
     isAdmin?: boolean,
   ) {
-    const where: FindOptionsWhere<Timesheet> = {};
-    
-    if (!isAdmin) {
-      where.creator_id = creatorId;
-    }
 
-    if (filterQuery) {
-      where.month_year = ILike(`%${filterQuery}%`);
-    }
-
-    const order: Record<string, 'ASC' | 'DESC'> = {};
-    if (sort) {
-      const [field, direction] = sort.split(',');
-      order[field] = direction.toUpperCase() as 'ASC' | 'DESC';
-    } else {
-      order.id = 'DESC';
-    }
-
-    const findOptions: FindManyOptions<Timesheet> = {
-      where,
-      order,
+    const findOptions = {
+      ...FilterBuilder.buildFilter(filterQuery),
       skip: paginationOptions.offset,
       take: paginationOptions.limit,
       relations: ['creator', 'project', 'department', 'status', 'details'],
+      order: {}
     };
+
+    if (!isAdmin) {
+      findOptions.where = { creator_id: creatorId }
+    }
+
+    if (sort) {
+      const [field, direction] = sort.split(',');
+      if (field && direction) {
+        const upperDirection = direction.toUpperCase();
+        if (upperDirection === 'ASC' || upperDirection === 'DESC') {
+          findOptions.order = { [field]: upperDirection };
+        }
+      }
+    } else {
+      findOptions.order = { id: 'DESC' };
+    }
 
     return this.timesheetRepository.find(findOptions);
   }
@@ -75,17 +75,13 @@ export class TimesheetService {
     creatorId?: number,
     isAdmin?: boolean,
   ): Promise<number> {
-    const where: FindOptionsWhere<Timesheet> = {};
-    
+    const findOptions = FilterBuilder.buildFilter(filterQuery);
+
     if (!isAdmin) {
-      where.creator_id = creatorId;
+      findOptions.creator_id = creatorId;
     }
 
-    if (filterQuery) {
-      where.month_year = ILike(`%${filterQuery}%`);
-    }
-
-    return this.timesheetRepository.count({ where });
+    return this.timesheetRepository.count(findOptions);
   }
 
   async findOne(id: number) {

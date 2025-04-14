@@ -44,6 +44,7 @@ const path = __importStar(require("path"));
 const timesheet_entity_1 = require("./entities/timesheet.entity");
 const timesheet_status_entity_1 = require("../timesheet-status/entities/timesheet-status.entity");
 const fs = __importStar(require("fs"));
+const filter_builder_1 = require("../utils/filter-builder");
 let TimesheetService = exports.TimesheetService = class TimesheetService {
     constructor(timesheetRepository, timesheetStatusRepository) {
         this.timesheetRepository = timesheetRepository;
@@ -56,14 +57,31 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
         const timesheet = this.timesheetRepository.create(Object.assign(Object.assign({}, createTimesheetDto), { creator_id: userId, status_id: draftStatus.id, total_hours: createTimesheetDto.total_hours ? Number(createTimesheetDto.total_hours) : 0 }));
         return this.timesheetRepository.save(timesheet);
     }
-    async findAll(creatorId, isAdmin) {
-        const baseQuery = {
-            relations: ['creator', 'project', 'department', 'status', 'details'],
-        };
+    async findManyWithPagination(paginationOptions, filterQuery, sort, creatorId, isAdmin) {
+        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: paginationOptions.offset, take: paginationOptions.limit, relations: ['creator', 'project', 'department', 'status', 'details'], order: {} });
         if (!isAdmin) {
-            return this.timesheetRepository.find(Object.assign(Object.assign({}, baseQuery), { where: { creator_id: creatorId } }));
+            findOptions.where = { creator_id: creatorId };
         }
-        return this.timesheetRepository.find(baseQuery);
+        if (sort) {
+            const [field, direction] = sort.split(',');
+            if (field && direction) {
+                const upperDirection = direction.toUpperCase();
+                if (upperDirection === 'ASC' || upperDirection === 'DESC') {
+                    findOptions.order = { [field]: upperDirection };
+                }
+            }
+        }
+        else {
+            findOptions.order = { id: 'DESC' };
+        }
+        return this.timesheetRepository.find(findOptions);
+    }
+    async standardCount(filterQuery, creatorId, isAdmin) {
+        const findOptions = filter_builder_1.FilterBuilder.buildFilter(filterQuery);
+        if (!isAdmin) {
+            findOptions.creator_id = creatorId;
+        }
+        return this.timesheetRepository.count(findOptions);
     }
     async findOne(id) {
         const timesheet = await this.timesheetRepository.findOne({
