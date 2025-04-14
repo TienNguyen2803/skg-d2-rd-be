@@ -8,7 +8,7 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
 import { Department } from 'src/departments/entities/department.entity';
 import { User } from 'src/users/entities/user.entity';
-import { ProjectType } from './entities/project-type.entity'; // Import ProjectType
+import { ProjectType } from 'src/project-types/entities/project-type.entity';
 
 @Injectable()
 export class ProjectsService {

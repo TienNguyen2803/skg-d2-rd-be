@@ -18,18 +18,27 @@ const typeorm_1 = require("@nestjs/typeorm");
 const filter_builder_1 = require("../utils/filter-builder");
 const typeorm_2 = require("typeorm");
 const project_entity_1 = require("./entities/project.entity");
+const department_entity_1 = require("../departments/entities/department.entity");
+const user_entity_1 = require("../users/entities/user.entity");
+const project_type_entity_1 = require("../project-types/entities/project-type.entity");
 let ProjectsService = exports.ProjectsService = class ProjectsService {
-    constructor(projectRepository, departmentRepository, userRepository) {
+    constructor(projectRepository, departmentRepository, userRepository, projectTypeRepository) {
         this.projectRepository = projectRepository;
         this.departmentRepository = departmentRepository;
         this.userRepository = userRepository;
+        this.projectTypeRepository = projectTypeRepository;
     }
     async create(createProjectDto) {
         const project = this.projectRepository.create(createProjectDto);
+        const projectType = await this.projectTypeRepository.findOne({ where: { id: createProjectDto.project_type_id } });
+        if (!projectType) {
+            throw new common_1.NotFoundException(`Project Type with ID ${createProjectDto.project_type_id} not found`);
+        }
+        project.project_type = projectType;
         return this.projectRepository.save(project);
     }
     async findManyWithPagination({ page, limit, offset }, filterQuery, sort) {
-        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: offset, take: limit, relations: ['department', 'project_manager'], order: {} });
+        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: offset, take: limit, relations: ['department', 'project_manager', 'project_type'], order: {} });
         if (sort) {
             const [field, direction] = sort.split(',');
             if (field && direction) {
@@ -51,7 +60,7 @@ let ProjectsService = exports.ProjectsService = class ProjectsService {
     async findOne(id) {
         const project = await this.projectRepository.findOne({
             where: { id },
-            relations: ['department', 'project_manager'],
+            relations: ['department', 'project_manager', 'project_type'],
         });
         if (!project) {
             throw new common_1.NotFoundException(`Project with ID ${id} not found`);
@@ -61,11 +70,19 @@ let ProjectsService = exports.ProjectsService = class ProjectsService {
     async update(id, updateProjectDto) {
         const project = await this.projectRepository.findOne({
             where: { id },
+            relations: ['department', 'project_manager', 'project_type'],
         });
         if (!project) {
             throw new common_1.NotFoundException(`Project with ID ${id} not found`);
         }
         Object.assign(project, updateProjectDto);
+        if (updateProjectDto.project_type_id) {
+            const projectType = await this.projectTypeRepository.findOne({ where: { id: updateProjectDto.project_type_id } });
+            if (!projectType) {
+                throw new common_1.NotFoundException(`Project Type with ID ${updateProjectDto.project_type_id} not found`);
+            }
+            project.project_type = projectType;
+        }
         if (updateProjectDto.department_id) {
             const department = await this.departmentRepository.findOne({
                 where: { id: updateProjectDto.department_id },
@@ -85,7 +102,7 @@ let ProjectsService = exports.ProjectsService = class ProjectsService {
         await this.projectRepository.save(project);
         return this.projectRepository.findOneOrFail({
             where: { id },
-            relations: ['department', 'project_manager'],
+            relations: ['department', 'project_manager', 'project_type'],
         });
     }
     async softDelete(id) {
@@ -95,9 +112,11 @@ let ProjectsService = exports.ProjectsService = class ProjectsService {
 exports.ProjectsService = ProjectsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(project_entity_1.Project)),
-    __param(1, (0, typeorm_1.InjectRepository)(project_entity_1.Project)),
-    __param(2, (0, typeorm_1.InjectRepository)(project_entity_1.Project)),
+    __param(1, (0, typeorm_1.InjectRepository)(department_entity_1.Department)),
+    __param(2, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __param(3, (0, typeorm_1.InjectRepository)(project_type_entity_1.ProjectType)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository,
         typeorm_2.Repository])
 ], ProjectsService);

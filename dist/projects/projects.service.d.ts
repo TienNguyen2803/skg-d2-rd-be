@@ -5,11 +5,13 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
 import { Department } from 'src/departments/entities/department.entity';
 import { User } from 'src/users/entities/user.entity';
+import { ProjectType } from 'src/project-types/entities/project-type.entity';
 export declare class ProjectsService {
     private projectRepository;
     private departmentRepository;
     private userRepository;
-    constructor(projectRepository: Repository<Project>, departmentRepository: Repository<Department>, userRepository: Repository<User>);
+    private projectTypeRepository;
+    constructor(projectRepository: Repository<Project>, departmentRepository: Repository<Department>, userRepository: Repository<User>, projectTypeRepository: Repository<ProjectType>);
     create(createProjectDto: CreateProjectDto): Promise<Project>;
     findManyWithPagination({ page, limit, offset }: IPaginationOptions, filterQuery?: string, sort?: string): Promise<Project[]>;
     standardCount(filterQuery?: string): Promise<number>;

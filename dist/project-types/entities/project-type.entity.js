@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectType = void 0;
 const typeorm_1 = require("typeorm");
 const entity_helper_1 = require("../../utils/entity-helper");
+const project_entity_1 = require("../../projects/entities/project.entity");
 let ProjectType = exports.ProjectType = class ProjectType extends entity_helper_1.EntityHelper {
 };
 __decorate([
@@ -30,6 +31,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: String, nullable: true }),
     __metadata("design:type", String)
 ], ProjectType.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => project_entity_1.Project, (project) => project.project_type),
+    __metadata("design:type", Array)
+], ProjectType.prototype, "projects", void 0);
 exports.ProjectType = ProjectType = __decorate([
     (0, typeorm_1.Entity)()
 ], ProjectType);

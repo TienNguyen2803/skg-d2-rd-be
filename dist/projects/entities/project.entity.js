@@ -15,8 +15,20 @@ const entity_helper_1 = require("../../utils/entity-helper");
 const user_entity_1 = require("../../users/entities/user.entity");
 const department_entity_1 = require("../../departments/entities/department.entity");
 const timesheet_entity_1 = require("../../timesheet/entities/timesheet.entity");
+const project_type_entity_1 = require("../../project-types/entities/project-type.entity");
 let Project = exports.Project = class Project extends entity_helper_1.EntityHelper {
 };
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => project_type_entity_1.ProjectType, {
+        eager: false
+    }),
+    (0, typeorm_1.JoinColumn)({ name: 'project_type_id' }),
+    __metadata("design:type", project_type_entity_1.ProjectType)
+], Project.prototype, "project_type", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: Number, nullable: true }),
+    __metadata("design:type", Number)
+], Project.prototype, "project_type_id", void 0);
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)

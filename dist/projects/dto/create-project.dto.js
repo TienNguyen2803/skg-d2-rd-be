@@ -39,4 +39,10 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], CreateProjectDto.prototype, "pm_user_id", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 1 }),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateProjectDto.prototype, "project_type_id", void 0);
 //# sourceMappingURL=create-project.dto.js.map
