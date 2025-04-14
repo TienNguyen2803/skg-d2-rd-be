@@ -7,10 +7,11 @@ import { Project } from './entities/project.entity';
 import { ProjectType } from 'src/project-types/entities/project-type.entity';
 import { DepartmentsModule } from '../departments/departments.module';
 import { User } from '../users/entities/user.entity';
+import { Department } from 'src/departments/entities/department.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Project, ProjectType, User]),
+    TypeOrmModule.forFeature([Project, ProjectType, User, Department]),
     DepartmentsModule
   ],
   controllers: [ProjectsController],
