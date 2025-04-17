@@ -59,8 +59,19 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
     }
     async findManyWithPagination(paginationOptions, filterQuery, sort, creatorId, isAdmin) {
         const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: paginationOptions.offset, take: paginationOptions.limit, relations: ['creator', 'project', 'department', 'status', 'details'], order: {} });
-        if (!isAdmin) {
-            findOptions.where = { creator_id: creatorId };
+        if (!findOptions.where) {
+            findOptions.where = [];
+        }
+        if (!isAdmin && creatorId !== undefined) {
+            if (findOptions.where.length > 0) {
+                const newWhereConditions = findOptions.where.map(condition => {
+                    return Object.assign(Object.assign({}, condition), { creator_id: creatorId });
+                });
+                findOptions.where = newWhereConditions;
+            }
+            else {
+                findOptions.where = [{ creator_id: creatorId }];
+            }
         }
         if (sort) {
             const [field, direction] = sort.split(',');
@@ -78,8 +89,19 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
     }
     async standardCount(filterQuery, creatorId, isAdmin) {
         const findOptions = filter_builder_1.FilterBuilder.buildFilter(filterQuery);
-        if (!isAdmin) {
-            findOptions.creator_id = creatorId;
+        if (!findOptions.where) {
+            findOptions.where = [];
+        }
+        if (!isAdmin && creatorId !== undefined) {
+            if (findOptions.where.length > 0) {
+                const newWhereConditions = findOptions.where.map(condition => {
+                    return Object.assign(Object.assign({}, condition), { creator_id: creatorId });
+                });
+                findOptions.where = newWhereConditions;
+            }
+            else {
+                findOptions.where = [{ creator_id: creatorId }];
+            }
         }
         return this.timesheetRepository.count(findOptions);
     }

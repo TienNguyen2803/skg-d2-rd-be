@@ -51,10 +51,30 @@ export class TimesheetService {
       order: {}
     };
 
-    if (!isAdmin) {
-      findOptions.where = { creator_id: creatorId }
+    // Đảm bảo findOptions.where là một mảng
+    if (!findOptions.where) {
+        findOptions.where = [];
     }
 
+    // Nếu không phải admin và có creatorId, thêm điều kiện creator_id vào từng object trong mảng where
+    if (!isAdmin && creatorId !== undefined) {
+        if (findOptions.where.length > 0) {
+            // Tạo mảng where mới với điều kiện creator_id được thêm vào mỗi object
+            const newWhereConditions = findOptions.where.map(condition => {
+                // Tạo một bản sao của điều kiện hiện tại và thêm creator_id
+                return {
+                    ...condition,
+                    creator_id: creatorId
+                };
+            });
+
+            findOptions.where = newWhereConditions;
+        } else {
+            // Nếu mảng where rỗng, chỉ cần thêm điều kiện creator_id
+            findOptions.where = [{ creator_id: creatorId }];
+        }
+    }
+    
     if (sort) {
       const [field, direction] = sort.split(',');
       if (field && direction) {
@@ -77,8 +97,28 @@ export class TimesheetService {
   ): Promise<number> {
     const findOptions = FilterBuilder.buildFilter(filterQuery);
 
-    if (!isAdmin) {
-      findOptions.creator_id = creatorId;
+    // Đảm bảo findOptions.where là một mảng
+    if (!findOptions.where) {
+        findOptions.where = [];
+    }
+
+    // Nếu không phải admin và có creatorId, thêm điều kiện creator_id vào từng object trong mảng where
+    if (!isAdmin && creatorId !== undefined) {
+        if (findOptions.where.length > 0) {
+            // Tạo mảng where mới với điều kiện creator_id được thêm vào mỗi object
+            const newWhereConditions = findOptions.where.map(condition => {
+                // Tạo một bản sao của điều kiện hiện tại và thêm creator_id
+                return {
+                    ...condition,
+                    creator_id: creatorId
+                };
+            });
+
+            findOptions.where = newWhereConditions;
+        } else {
+            // Nếu mảng where rỗng, chỉ cần thêm điều kiện creator_id
+            findOptions.where = [{ creator_id: creatorId }];
+        }
     }
 
     return this.timesheetRepository.count(findOptions);
