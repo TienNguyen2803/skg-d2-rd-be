@@ -10,6 +10,9 @@ import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
 import { TimesheetStatusSeedModule } from './timesheet-status/timesheet-status-seed.module';
 import { ProjectTypeSeedModule } from './project-type/project-type-seed.module';
+import { ActionSeedModule } from './action/action-seed.module';
+import { FunctionalitySeedModule } from './functionality/functionality-seed.module';
+import { PermissionSeedModule } from './permission/permission-seed.module';
 
 @Module({
   imports: [
@@ -18,6 +21,9 @@ import { ProjectTypeSeedModule } from './project-type/project-type-seed.module';
     UserSeedModule,
     TimesheetStatusSeedModule,
     ProjectTypeSeedModule,
+    ActionSeedModule,
+    FunctionalitySeedModule,
+    PermissionSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
