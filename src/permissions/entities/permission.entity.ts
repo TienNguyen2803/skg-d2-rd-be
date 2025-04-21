@@ -38,4 +38,7 @@ export class Permission extends EntityHelper {
 
   @Column({ type: String, nullable: true })
   description: string;
+
+  @OneToMany(() => RolePermission, (rolePermission) => rolePermission.permission)
+  rolePermissions: RolePermission[];
 }
