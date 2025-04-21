@@ -1,22 +1,36 @@
 1/ Create Entity
 
-Tạo 3 entity với cấu trúc cụ thể và các trường (field) có thể để trống (null) cùng với khóa không tự động tăng. Dựa trên cấu trúc của entity project được định nghĩa trong file sau:
+Tôi cần tạo 3 entity, trong đó các trường (field) đều có thể để trống (null). Dựa trên cấu trúc của entity spa-info, hãy thực hiện như sau:
 
-Link: src/projects/entities/project.entity.ts
-
-Yêu cầu:
-
-1. Thêm các entity sau:
-   - functionalities
-   - actions
-   - permissions
-
-2. Quan hệ giữa các entity:
-   - Một permission là sự kết hợp của một functionality và một action.
-
-Vui lòng triển khai đầy đủ cấu trúc và mã nguồn cho các entity này theo yêu cầu trên.
+- Thêm các entity: **Timesheet**, **TimesheetDetail** và **TimesheetStatus**.
+- Mối quan hệ:
+  + Một **Timesheet** có thể chứa nhiều **TimesheetDetail**.
+  + Một **Timesheet** chỉ thuộc một **TimesheetStatus**.
 
 **Cấu trúc bảng:**
+
+**Timesheet**:
+- id
+- project_id (một project có thể có nhiều timesheet)
+- department_id (một department có thể có nhiều timesheet)
+- month_year
+- total_hours
+- status_id (một timesheet chỉ thuộc một timesheet_status)
+- reject_reason
+
+**TimesheetDetail**:
+- id
+- date
+- start_time
+- end_time
+- ot_hours
+- description
+
+**TimesheetStatus**:
+- id
+- code
+- name
+- description
 
 **Yêu cầu kỹ thuật cho quan hệ ManyToOne**:
 - Thêm JoinColumn với các tùy chọn đầy đủ:
