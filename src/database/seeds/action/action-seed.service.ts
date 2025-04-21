@@ -9,16 +9,16 @@ export class ActionSeedService {
   constructor(
     @InjectRepository(Action)
     private repository: Repository<Action>,
-  ) {}
+  ) { }
 
   async run() {
     const actions = [
-      { id: 1, name: 'view' },
-      { id: 2, name: 'edit' },
-      { id: 3, name: 'delete' },
-      { id: 4, name: 'create' },
-      { id: 5, name: 'approve' },
-      { id: 6, name: 'reject' },
+      { id: 1, name: 'view', description: "Xem" },
+      { id: 2, name: 'edit', description: "Sửa" },
+      { id: 3, name: 'delete', description: "Xoá" },
+      { id: 4, name: 'create', description: "Tạo" },
+      { id: 5, name: 'approve', description: "Phê duyệt" },
+      { id: 6, name: 'reject', description: "Từ chối" },
     ];
 
     for (const action of actions) {

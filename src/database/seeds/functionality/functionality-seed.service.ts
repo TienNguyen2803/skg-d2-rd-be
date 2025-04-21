@@ -9,11 +9,11 @@ export class FunctionalitySeedService {
   constructor(
     @InjectRepository(Functionality)
     private repository: Repository<Functionality>,
-  ) {}
+  ) { }
 
   async run() {
     const functionalities = [
-      { id: 1, name: 'Timesheet' },
+      { id: 1, name: 'Timesheet', description: "Bảng chấm công" },
     ];
 
     for (const functionality of functionalities) {
