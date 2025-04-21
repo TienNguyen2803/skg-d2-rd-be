@@ -19,6 +19,10 @@ export class PermissionSeedService {
       { id: 4, functionality_id: 1, action_id: 4, name: 'timesheet.create' },
       { id: 5, functionality_id: 1, action_id: 5, name: 'timesheet.approve' },
       { id: 6, functionality_id: 1, action_id: 6, name: 'timesheet.reject' },
+      { id: 7, functionality_id: 2, action_id: 1, name: 'project.view' },
+      { id: 8, functionality_id: 2, action_id: 2, name: 'project.edit' },
+      { id: 9, functionality_id: 2, action_id: 3, name: 'project.delete' },
+      { id: 10, functionality_id: 2, action_id: 4, name: 'project.create' },
     ];
 
     for (const permission of permissions) {
