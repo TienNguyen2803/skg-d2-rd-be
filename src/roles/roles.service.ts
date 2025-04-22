@@ -13,9 +13,10 @@ export class RolesService {
   constructor(
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
-  ) {}
+  ) { }
 
   create(createRoleDto: CreateRoleDto): Promise<Role> {
+    console.log(createRoleDto)
     const role = this.roleRepository.create(createRoleDto);
     return this.roleRepository.save(role);
   }

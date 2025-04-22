@@ -23,6 +23,7 @@ let RolesService = exports.RolesService = class RolesService {
         this.roleRepository = roleRepository;
     }
     create(createRoleDto) {
+        console.log(createRoleDto);
         const role = this.roleRepository.create(createRoleDto);
         return this.roleRepository.save(role);
     }

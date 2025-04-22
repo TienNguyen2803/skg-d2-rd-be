@@ -19,7 +19,7 @@ let Role = exports.Role = class Role extends entity_helper_1.EntityHelper {
 };
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 1 }),
-    (0, typeorm_1.PrimaryColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], Role.prototype, "id", void 0);
 __decorate([
@@ -28,6 +28,16 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Role.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'ADMIN', required: false }),
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Role.prototype, "code", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Administrator role', required: false }),
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], Role.prototype, "description", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => role_permission_entity_1.RolePermission, (rolePermission) => rolePermission.role),
     __metadata("design:type", Array)

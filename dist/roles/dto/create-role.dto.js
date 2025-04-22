@@ -21,4 +21,16 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateRoleDto.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'ADMIN', required: false }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateRoleDto.prototype, "code", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Administrator role', required: false }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateRoleDto.prototype, "description", void 0);
 //# sourceMappingURL=create-role.dto.js.map

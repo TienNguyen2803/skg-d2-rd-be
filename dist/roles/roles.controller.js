@@ -50,7 +50,7 @@ __decorate([
     (0, swagger_1.ApiOperation)({ summary: 'Create new role' }),
     (0, swagger_1.ApiResponse)({
         status: common_1.HttpStatus.CREATED,
-        description: 'Role has been successfully created.',
+        description: 'Role has been successfully created with optional code and description.',
         type: role_entity_1.Role,
     }),
     __param(0, (0, common_1.Body)()),
