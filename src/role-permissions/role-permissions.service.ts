@@ -16,13 +16,13 @@ export class RolePermissionsService {
     private roleRepository: Repository<Role>,
     @InjectRepository(Permission)
     private permissionRepository: Repository<Permission>,
-  ) {}
+  ) { }
 
   async create(createRolePermissionDto: CreateRolePermissionDto): Promise<{ success: boolean; message: string }> {
     try {
       // Get the role_id from root level
       const roleId = createRolePermissionDto.role_id;
-      
+
       // Validate if role exists
       const role = await this.roleRepository.findOne({ where: { id: roleId } });
       if (!role) {
@@ -31,7 +31,7 @@ export class RolePermissionsService {
 
       // Delete existing role permissions for the specified role
       await this.rolePermissionRepository.delete({ role_id: roleId });
-      
+
       // If rolePermissions array is empty, just return after deletion
       if (!createRolePermissionDto.rolePermissions || createRolePermissionDto.rolePermissions.length === 0) {
         return {

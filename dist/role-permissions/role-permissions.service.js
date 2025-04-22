@@ -27,20 +27,23 @@ let RolePermissionsService = exports.RolePermissionsService = class RolePermissi
     }
     async create(createRolePermissionDto) {
         try {
-            if (!createRolePermissionDto.rolePermissions || createRolePermissionDto.rolePermissions.length === 0) {
-                throw new common_1.BadRequestException('No role permissions provided');
-            }
             const roleId = createRolePermissionDto.role_id;
-            const permissionIds = [...new Set(createRolePermissionDto.rolePermissions.map(item => item.permission_id))];
             const role = await this.roleRepository.findOne({ where: { id: roleId } });
             if (!role) {
                 throw new common_1.NotFoundException(`Role with ID ${roleId} not found`);
             }
+            await this.rolePermissionRepository.delete({ role_id: roleId });
+            if (!createRolePermissionDto.rolePermissions || createRolePermissionDto.rolePermissions.length === 0) {
+                return {
+                    success: true,
+                    message: 'All role permissions deleted successfully',
+                };
+            }
+            const permissionIds = [...new Set(createRolePermissionDto.rolePermissions.map(item => item.permission_id))];
             const permissions = await this.permissionRepository.find({ where: { id: (0, typeorm_2.In)(permissionIds) } });
             if (permissions.length !== permissionIds.length) {
                 throw new common_1.NotFoundException('One or more permissions not found');
             }
-            await this.rolePermissionRepository.delete({ role_id: roleId });
             const rolePermissions = createRolePermissionDto.rolePermissions.map(item => {
                 return this.rolePermissionRepository.create({
                     role_id: roleId,
