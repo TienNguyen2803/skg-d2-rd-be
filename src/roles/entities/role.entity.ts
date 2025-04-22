@@ -15,6 +15,14 @@ export class Role extends EntityHelper {
   @Column()
   name?: string;
 
+  @ApiProperty({ example: 'ADMIN', required: false })
+  @Column({ nullable: true })
+  code?: string;
+
+  @ApiProperty({ example: 'Administrator role', required: false })
+  @Column({ nullable: true })
+  description?: string;
+
   @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role)
   rolePermissions: RolePermission[];
 }

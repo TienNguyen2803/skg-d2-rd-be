@@ -20,7 +20,7 @@ export class RolesController {
   @ApiOperation({ summary: 'Create new role' })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Role has been successfully created.',
+    description: 'Role has been successfully created with optional code and description.',
     type: Role,
   })
   create(@Body() createRoleDto: CreateRoleDto): Promise<Role> {
