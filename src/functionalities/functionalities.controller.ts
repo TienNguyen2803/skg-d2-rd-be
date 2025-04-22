@@ -1,6 +1,5 @@
-
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { Functionality } from './entities/functionality.entity';
 import { FunctionalitiesService } from './functionalities.service';
 
@@ -20,7 +19,8 @@ export class FunctionalitiesController {
     description: 'Get functionalities list',
     type: [Functionality],
   })
-  async findAll() {
-    return await this.functionalitiesService.findAll();
+  @ApiQuery({ name: 'role_id', required: false, type: Number })
+  async findAll(@Query('role_id') role_id?: number): Promise<Functionality[]> {
+    return await this.functionalitiesService.findAll(role_id);
   }
 }

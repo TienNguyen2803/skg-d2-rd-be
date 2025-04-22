@@ -11,7 +11,7 @@ export class FunctionalitiesService {
     private functionalityRepository: Repository<Functionality>,
   ) { }
 
-  async findAll(): Promise<Functionality[]> {
+  async findAll(role_id?: number): Promise<Functionality[]> {
     const list = await this.functionalityRepository.find({
       relations: ['permissions', 'permissions.action'],
       order: {
@@ -19,7 +19,41 @@ export class FunctionalitiesService {
       },
     });
 
-    return this.convertToPermissionDto(list);
+    // Convert to DTO format first (with all selected = false)
+    const functionalitiesWithActions = this.convertToPermissionDto(list);
+    
+    // If role_id is provided, update selected status based on role permissions
+    if (role_id) {
+      // Get role permissions for the specified role_id
+      const queryRunner = this.functionalityRepository.manager.connection.createQueryRunner();
+      await queryRunner.connect();
+      
+      try {
+        // Find all role_permissions for this role_id
+        const rolePermissions = await queryRunner.manager.query(
+          `SELECT permission_id FROM role_permission WHERE role_id = $1`, 
+          [role_id]
+        );
+        
+        // Extract permission_ids from results
+        const permissionIds = rolePermissions.map(item => item.permission_id);
+        
+        // Update the selected status for matching permission_ids
+        if (permissionIds.length > 0) {
+          functionalitiesWithActions.forEach(functionality => {
+            functionality.actions.forEach(action => {
+              if (permissionIds.includes(action.permission_id)) {
+                action.selected = true;
+              }
+            });
+          });
+        }
+      } finally {
+        await queryRunner.release();
+      }
+    }
+
+    return functionalitiesWithActions;
   }
 
   convertToPermissionDto = (data) => {
