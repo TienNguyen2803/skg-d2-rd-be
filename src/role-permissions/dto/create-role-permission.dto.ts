@@ -16,6 +16,11 @@ class RolePermissionItem {
 }
 
 export class CreateRolePermissionDto {
+  @ApiProperty({ example: 4, description: 'Role ID' })
+  @IsNumber()
+  @IsNotEmpty()
+  role_id: number;
+  
   @ApiProperty({ 
     type: [RolePermissionItem],
     description: 'List of role permissions to create' 

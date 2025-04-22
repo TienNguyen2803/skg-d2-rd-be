@@ -24,14 +24,16 @@ export class RolePermissionsService {
         throw new BadRequestException('No role permissions provided');
       }
 
-      // Get unique role IDs and permission IDs for validation
-      const roleIds = [...new Set(createRolePermissionDto.rolePermissions.map(item => item.id))];
+      // Get the role_id from root level
+      const roleId = createRolePermissionDto.role_id;
+      
+      // Get unique permission IDs for validation
       const permissionIds = [...new Set(createRolePermissionDto.rolePermissions.map(item => item.permission_id))];
 
-      // Validate if roles exist
-      const roles = await this.roleRepository.find({ where: { id: In(roleIds) } });
-      if (roles.length !== roleIds.length) {
-        throw new NotFoundException('One or more roles not found');
+      // Validate if role exists
+      const role = await this.roleRepository.findOne({ where: { id: roleId } });
+      if (!role) {
+        throw new NotFoundException(`Role with ID ${roleId} not found`);
       }
 
       // Validate if permissions exist
@@ -40,15 +42,13 @@ export class RolePermissionsService {
         throw new NotFoundException('One or more permissions not found');
       }
 
-      // Delete all existing role permissions for all the roles in the input
-      for (const roleId of roleIds) {
-        await this.rolePermissionRepository.delete({ role_id: roleId });
-      }
+      // Delete existing role permissions for the specified role
+      await this.rolePermissionRepository.delete({ role_id: roleId });
 
       // Create new role permissions
       const rolePermissions = createRolePermissionDto.rolePermissions.map(item => {
         return this.rolePermissionRepository.create({
-          role_id: item.id,
+          role_id: roleId,
           permission_id: item.permission_id,
         });
       });
