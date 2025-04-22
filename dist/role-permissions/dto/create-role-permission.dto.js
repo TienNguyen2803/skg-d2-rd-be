@@ -31,6 +31,12 @@ class CreateRolePermissionDto {
 }
 exports.CreateRolePermissionDto = CreateRolePermissionDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 4, description: 'Role ID' }),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", Number)
+], CreateRolePermissionDto.prototype, "role_id", void 0);
+__decorate([
     (0, swagger_1.ApiProperty)({
         type: [RolePermissionItem],
         description: 'List of role permissions to create'

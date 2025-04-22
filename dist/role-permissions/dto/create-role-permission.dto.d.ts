@@ -3,6 +3,7 @@ declare class RolePermissionItem {
     permission_id: number;
 }
 export declare class CreateRolePermissionDto {
+    role_id: number;
     rolePermissions: RolePermissionItem[];
 }
 export {};
