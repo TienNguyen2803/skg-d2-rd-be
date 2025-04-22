@@ -40,8 +40,9 @@ let RolePermissionsService = exports.RolePermissionsService = class RolePermissi
             if (permissions.length !== permissionIds.length) {
                 throw new common_1.NotFoundException('One or more permissions not found');
             }
-            const roleId = createRolePermissionDto.rolePermissions[0].id;
-            await this.rolePermissionRepository.delete({ role_id: roleId });
+            for (const roleId of roleIds) {
+                await this.rolePermissionRepository.delete({ role_id: roleId });
+            }
             const rolePermissions = createRolePermissionDto.rolePermissions.map(item => {
                 return this.rolePermissionRepository.create({
                     role_id: item.id,
