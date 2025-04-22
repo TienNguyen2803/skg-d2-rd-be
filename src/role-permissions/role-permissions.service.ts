@@ -20,30 +20,34 @@ export class RolePermissionsService {
 
   async create(createRolePermissionDto: CreateRolePermissionDto): Promise<{ success: boolean; message: string }> {
     try {
-      if (!createRolePermissionDto.rolePermissions || createRolePermissionDto.rolePermissions.length === 0) {
-        throw new BadRequestException('No role permissions provided');
-      }
-
       // Get the role_id from root level
       const roleId = createRolePermissionDto.role_id;
       
-      // Get unique permission IDs for validation
-      const permissionIds = [...new Set(createRolePermissionDto.rolePermissions.map(item => item.permission_id))];
-
       // Validate if role exists
       const role = await this.roleRepository.findOne({ where: { id: roleId } });
       if (!role) {
         throw new NotFoundException(`Role with ID ${roleId} not found`);
       }
 
+      // Delete existing role permissions for the specified role
+      await this.rolePermissionRepository.delete({ role_id: roleId });
+      
+      // If rolePermissions array is empty, just return after deletion
+      if (!createRolePermissionDto.rolePermissions || createRolePermissionDto.rolePermissions.length === 0) {
+        return {
+          success: true,
+          message: 'All role permissions deleted successfully',
+        };
+      }
+
+      // Get unique permission IDs for validation
+      const permissionIds = [...new Set(createRolePermissionDto.rolePermissions.map(item => item.permission_id))];
+
       // Validate if permissions exist
       const permissions = await this.permissionRepository.find({ where: { id: In(permissionIds) } });
       if (permissions.length !== permissionIds.length) {
         throw new NotFoundException('One or more permissions not found');
       }
-
-      // Delete existing role permissions for the specified role
-      await this.rolePermissionRepository.delete({ role_id: roleId });
 
       // Create new role permissions
       const rolePermissions = createRolePermissionDto.rolePermissions.map(item => {
