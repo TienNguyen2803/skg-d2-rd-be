@@ -36,7 +36,7 @@ import { RolesModule } from './roles/roles.module';
 import { StatusesModule } from './statuses/statuses.module';
 import { TimesheetDetailModule } from './timesheet-detail/timesheet-detail.module';
 import { ProjectTypesModule } from './project-types/project-types.module';
-
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
@@ -45,6 +45,7 @@ import { ProjectTypesModule } from './project-types/project-types.module';
     DepartmentsModule,
     ProjectsModule,
     SpaInfoModule,
+    PermissionsModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
