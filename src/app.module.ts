@@ -38,6 +38,7 @@ import { TimesheetDetailModule } from './timesheet-detail/timesheet-detail.modul
 import { ProjectTypesModule } from './project-types/project-types.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { FunctionalitiesModule } from './functionalities/functionalities.module';
+import { RolePermissionsModule } from './role-permissions/role-permissions.module'; // Added import
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { FunctionalitiesModule } from './functionalities/functionalities.module'
     SpaInfoModule,
     PermissionsModule,
     FunctionalitiesModule,
+    RolePermissionsModule, // Added to imports
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
