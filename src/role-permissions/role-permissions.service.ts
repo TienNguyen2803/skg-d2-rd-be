@@ -40,9 +40,10 @@ export class RolePermissionsService {
         throw new NotFoundException('One or more permissions not found');
       }
 
-      // First, delete existing role permissions for the specified role
-      const roleId = createRolePermissionDto.rolePermissions[0].id;
-      await this.rolePermissionRepository.delete({ role_id: roleId });
+      // Delete all existing role permissions for all the roles in the input
+      for (const roleId of roleIds) {
+        await this.rolePermissionRepository.delete({ role_id: roleId });
+      }
 
       // Create new role permissions
       const rolePermissions = createRolePermissionDto.rolePermissions.map(item => {
