@@ -1,8 +1,9 @@
 
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { Functionality } from '../../functionalities/entities/functionality.entity';
 import { Action } from '../../actions/entities/action.entity';
+import { RolePermission } from 'src/role-permissions/entities/role-permission.entity';
 
 @Entity()
 export class Permission extends EntityHelper {

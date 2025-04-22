@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const entity_helper_1 = require("../../utils/entity-helper");
 const functionality_entity_1 = require("../../functionalities/entities/functionality.entity");
 const action_entity_1 = require("../../actions/entities/action.entity");
+const role_permission_entity_1 = require("../../role-permissions/entities/role-permission.entity");
 let Permission = exports.Permission = class Permission extends entity_helper_1.EntityHelper {
 };
 __decorate([
@@ -56,6 +57,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: String, nullable: true }),
     __metadata("design:type", String)
 ], Permission.prototype, "description", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => role_permission_entity_1.RolePermission, (rolePermission) => rolePermission.permission),
+    __metadata("design:type", Array)
+], Permission.prototype, "rolePermissions", void 0);
 exports.Permission = Permission = __decorate([
     (0, typeorm_1.Entity)()
 ], Permission);

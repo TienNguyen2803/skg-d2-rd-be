@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import { EntityHelper } from 'src/utils/entity-helper';
+import { RolePermission } from 'src/role-permissions/entities/role-permission.entity';
 
 @Entity()
 export class Role extends EntityHelper {
