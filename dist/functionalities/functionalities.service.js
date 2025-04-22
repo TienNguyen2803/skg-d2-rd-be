@@ -44,14 +44,35 @@ let FunctionalitiesService = exports.FunctionalitiesService = class Functionalit
             });
         };
     }
-    async findAll() {
+    async findAll(role_id) {
         const list = await this.functionalityRepository.find({
             relations: ['permissions', 'permissions.action'],
             order: {
                 id: 'ASC',
             },
         });
-        return this.convertToPermissionDto(list);
+        const functionalitiesWithActions = this.convertToPermissionDto(list);
+        if (role_id) {
+            const queryRunner = this.functionalityRepository.manager.connection.createQueryRunner();
+            await queryRunner.connect();
+            try {
+                const rolePermissions = await queryRunner.manager.query(`SELECT permission_id FROM role_permission WHERE role_id = $1`, [role_id]);
+                const permissionIds = rolePermissions.map(item => item.permission_id);
+                if (permissionIds.length > 0) {
+                    functionalitiesWithActions.forEach(functionality => {
+                        functionality.actions.forEach(action => {
+                            if (permissionIds.includes(action.permission_id)) {
+                                action.selected = true;
+                            }
+                        });
+                    });
+                }
+            }
+            finally {
+                await queryRunner.release();
+            }
+        }
+        return functionalitiesWithActions;
     }
 };
 exports.FunctionalitiesService = FunctionalitiesService = __decorate([
