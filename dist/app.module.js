@@ -48,6 +48,7 @@ const statuses_module_1 = require("./statuses/statuses.module");
 const timesheet_detail_module_1 = require("./timesheet-detail/timesheet-detail.module");
 const project_types_module_1 = require("./project-types/project-types.module");
 const permissions_module_1 = require("./permissions/permissions.module");
+const functionalities_module_1 = require("./functionalities/functionalities.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -59,6 +60,7 @@ exports.AppModule = AppModule = __decorate([
             projects_module_1.ProjectsModule,
             spa_info_module_1.SpaInfoModule,
             permissions_module_1.PermissionsModule,
+            functionalities_module_1.FunctionalitiesModule,
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 load: [

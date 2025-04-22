@@ -16,4 +16,5 @@ export class PermissionsService {
       relations: ['functionality', 'action']
     });
   }
+
 }
