@@ -9,14 +9,11 @@ export class PermissionsService {
   constructor(
     @InjectRepository(Permission)
     private permissionRepository: Repository<Permission>,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Permission[]> {
     return this.permissionRepository.find({
-      relations: ['functionality', 'action'],
-      where: {
-        deleted_at: null,
-      },
+      relations: ['functionality', 'action']
     });
   }
 }
