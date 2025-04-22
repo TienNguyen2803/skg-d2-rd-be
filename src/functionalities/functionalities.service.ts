@@ -34,8 +34,9 @@ export class FunctionalitiesService {
             return {
               // Lưu ý: Dựa theo ví dụ mong muốn của bạn,
               // chúng ta lấy `action.name` làm `id` và `action.description` làm `name`
-              id: permission.action.name,
+              id: permission.action.id,
               name: permission.action.description,
+              permission_id: permission.id,
               selected: false, // Mặc định selected là false
             };
           }

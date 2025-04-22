@@ -26,8 +26,9 @@ let FunctionalitiesService = exports.FunctionalitiesService = class Functionalit
                     .map(permission => {
                     if (permission.action) {
                         return {
-                            id: permission.action.name,
+                            id: permission.action.id,
                             name: permission.action.description,
+                            permission_id: permission.id,
                             selected: false,
                         };
                     }
