@@ -37,6 +37,7 @@ import { StatusesModule } from './statuses/statuses.module';
 import { TimesheetDetailModule } from './timesheet-detail/timesheet-detail.module';
 import { ProjectTypesModule } from './project-types/project-types.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { FunctionalitiesModule } from './functionalities/functionalities.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { PermissionsModule } from './permissions/permissions.module';
     ProjectsModule,
     SpaInfoModule,
     PermissionsModule,
+    FunctionalitiesModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
