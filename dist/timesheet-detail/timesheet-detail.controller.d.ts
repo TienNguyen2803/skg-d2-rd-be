@@ -11,6 +11,6 @@ export declare class TimesheetDetailController {
         total: number;
     }>>;
     findOne(id: number): Promise<TimesheetDetail>;
-    update(id: number, updateTimesheetDetailDto: UpdateTimesheetDetailDto): Promise<TimesheetDetail>;
+    update(id: number, updateTimesheetDetailDto: UpdateTimesheetDetailDto): Promise<void>;
     remove(id: number): Promise<void>;
 }

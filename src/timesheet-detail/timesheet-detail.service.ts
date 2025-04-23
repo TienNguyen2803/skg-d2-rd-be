@@ -76,17 +76,19 @@ export class TimesheetDetailService {
     return timesheetDetail;
   }
 
-  async update(id: number, updateTimesheetDetailDto: UpdateTimesheetDetailDto): Promise<TimesheetDetail> {
+  async update(id: number, updateTimesheetDetailDto: UpdateTimesheetDetailDto): Promise<void> {
     try {
       // Tìm chi tiết timesheet hiện tại
-      const timesheetDetail = await this.findOne(id);
+      const timesheetDetail = await this.timesheetDetailRepository.findOne({
+        where: { id },
+      });
       if (!timesheetDetail) {
         throw new NotFoundException(`Timesheet detail with ID ${id} not found`);
       }
 
       // Tìm timesheet liên quan
       const timesheet = await this.timesheetRepository.findOne({
-        where: { id: updateTimesheetDetailDto.timesheet_id },
+        where: { id: timesheetDetail.timesheet_id },
       });
 
       if (!timesheet) {
@@ -103,30 +105,30 @@ export class TimesheetDetailService {
       // Trừ đi giá trị cũ và cộng thêm giá trị mới
       const currentTotal = parseFloat(timesheet.total_hours?.toString() || '0');
       const newTotal = currentTotal - oldOtHours + newOtHours;
-      
+
       // Gán giá trị mới cho timesheet.total_hours
       timesheet.total_hours = newTotal;
-      
+
       console.log('Debug:', {
         currentTotal,
         oldOtHours,
         newOtHours,
         newTotal: timesheet.total_hours
       });
-      
+
       // Đảm bảo total_hours không âm
       if (timesheet.total_hours < 0) {
         timesheet.total_hours = 0;
       }
 
       // Lưu timesheet đã cập nhật với await để đảm bảo hoàn thành trước khi tiếp tục
-      await this.timesheetRepository.save({...timesheet});
+      await this.timesheetRepository.save({ ...timesheet });
 
       // Cập nhật chi tiết timesheet
       Object.assign(timesheetDetail, updateTimesheetDetailDto);
 
       // Lưu và trả về chi tiết timesheet đã cập nhật
-      return this.timesheetDetailRepository.save(timesheetDetail);
+      await this.timesheetDetailRepository.save(timesheetDetail);
     } catch (error) {
       throw new Error('Error updating timesheet detail: ' + error.message);
     }

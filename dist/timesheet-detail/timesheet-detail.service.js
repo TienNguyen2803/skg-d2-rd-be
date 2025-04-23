@@ -60,12 +60,14 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
     async update(id, updateTimesheetDetailDto) {
         var _a;
         try {
-            const timesheetDetail = await this.findOne(id);
+            const timesheetDetail = await this.timesheetDetailRepository.findOne({
+                where: { id },
+            });
             if (!timesheetDetail) {
                 throw new common_1.NotFoundException(`Timesheet detail with ID ${id} not found`);
             }
             const timesheet = await this.timesheetRepository.findOne({
-                where: { id: updateTimesheetDetailDto.timesheet_id },
+                where: { id: timesheetDetail.timesheet_id },
             });
             if (!timesheet) {
                 throw new common_1.NotFoundException(`Timesheet with ID ${timesheetDetail.timesheet_id} not found`);
@@ -75,7 +77,8 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
                 ? Number(updateTimesheetDetailDto.ot_hours)
                 : oldOtHours;
             const currentTotal = parseFloat(((_a = timesheet.total_hours) === null || _a === void 0 ? void 0 : _a.toString()) || '0');
-            timesheet.total_hours = 9999;
+            const newTotal = currentTotal - oldOtHours + newOtHours;
+            timesheet.total_hours = newTotal;
             console.log('Debug:', {
                 currentTotal,
                 oldOtHours,
@@ -85,9 +88,9 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
             if (timesheet.total_hours < 0) {
                 timesheet.total_hours = 0;
             }
-            await this.timesheetRepository.save(timesheet);
+            await this.timesheetRepository.save(Object.assign({}, timesheet));
             Object.assign(timesheetDetail, updateTimesheetDetailDto);
-            return this.timesheetDetailRepository.save(timesheetDetail);
+            await this.timesheetDetailRepository.save(timesheetDetail);
         }
         catch (error) {
             throw new Error('Error updating timesheet detail: ' + error.message);
