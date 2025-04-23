@@ -16,7 +16,6 @@ exports.RoleSeedService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const role_entity_1 = require("../../../roles/entities/role.entity");
-const roles_enum_1 = require("../../../roles/roles.enum");
 const typeorm_2 = require("typeorm");
 let RoleSeedService = exports.RoleSeedService = class RoleSeedService {
     constructor(repository) {
@@ -30,7 +29,6 @@ let RoleSeedService = exports.RoleSeedService = class RoleSeedService {
         });
         if (!existingUserRole) {
             await this.repository.save(this.repository.create({
-                id: roles_enum_1.RoleEnum.user,
                 name: 'User',
                 code: 'USER'
             }));
@@ -42,7 +40,6 @@ let RoleSeedService = exports.RoleSeedService = class RoleSeedService {
         });
         if (!existingAdminRole) {
             await this.repository.save(this.repository.create({
-                id: roles_enum_1.RoleEnum.admin,
                 name: 'Admin',
                 code: 'ADMIN'
             }));

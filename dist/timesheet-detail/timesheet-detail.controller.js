@@ -21,8 +21,6 @@ const swagger_1 = require("@nestjs/swagger");
 const passport_1 = require("@nestjs/passport");
 const roles_guard_1 = require("../roles/roles.guard");
 const timesheet_detail_entity_1 = require("./entities/timesheet-detail.entity");
-const roles_enum_1 = require("../roles/roles.enum");
-const roles_decorator_1 = require("../roles/roles.decorator");
 let TimesheetDetailController = exports.TimesheetDetailController = class TimesheetDetailController {
     constructor(timesheetDetailService) {
         this.timesheetDetailService = timesheetDetailService;
@@ -98,7 +96,6 @@ __decorate([
 ], TimesheetDetailController.prototype, "remove", null);
 exports.TimesheetDetailController = TimesheetDetailController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
-    (0, roles_decorator_1.Roles)(roles_enum_1.RoleEnum.user, roles_enum_1.RoleEnum.admin),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, swagger_1.ApiTags)('Timesheet Detail'),
     (0, common_1.Controller)({

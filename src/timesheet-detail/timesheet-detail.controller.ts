@@ -25,7 +25,7 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { Roles } from 'src/roles/roles.decorator';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.user, RoleEnum.admin)
+// @Roles(RoleEnum.user, RoleEnum.admin)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Timesheet Detail')
 @Controller({
