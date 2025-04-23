@@ -30,8 +30,8 @@ let RoleSeedService = exports.RoleSeedService = class RoleSeedService {
         });
         if (!countUser) {
             await this.repository.save(this.repository.create({
-                id: roles_enum_1.RoleEnum.user,
                 name: 'User',
+                code: 'USER'
             }));
         }
         const countAdmin = await this.repository.count({
@@ -41,8 +41,8 @@ let RoleSeedService = exports.RoleSeedService = class RoleSeedService {
         });
         if (!countAdmin) {
             await this.repository.save(this.repository.create({
-                id: roles_enum_1.RoleEnum.admin,
                 name: 'Admin',
+                code: 'ADMIN'
             }));
         }
     }

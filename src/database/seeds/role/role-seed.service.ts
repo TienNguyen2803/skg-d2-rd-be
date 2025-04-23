@@ -9,7 +9,7 @@ export class RoleSeedService {
   constructor(
     @InjectRepository(Role)
     private repository: Repository<Role>,
-  ) {}
+  ) { }
 
   async run() {
     const countUser = await this.repository.count({
@@ -21,8 +21,8 @@ export class RoleSeedService {
     if (!countUser) {
       await this.repository.save(
         this.repository.create({
-          id: RoleEnum.user,
           name: 'User',
+          code: 'USER'
         }),
       );
     }
@@ -36,8 +36,8 @@ export class RoleSeedService {
     if (!countAdmin) {
       await this.repository.save(
         this.repository.create({
-          id: RoleEnum.admin,
           name: 'Admin',
+          code: 'ADMIN'
         }),
       );
     }
