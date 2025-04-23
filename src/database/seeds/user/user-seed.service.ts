@@ -17,7 +17,7 @@ export class UserSeedService {
     private roleRepository: Repository<Role>,
     @InjectRepository(Status)
     private statusRepository: Repository<Status>,
-  ) {}
+  ) { }
 
   async run() {
     // Kiểm tra số lượng người dùng hiện có trong hệ thống
@@ -46,7 +46,6 @@ export class UserSeedService {
           email: 'admin@example.com',
           password: 'secret',
           role: adminRole || null,
-          status: activeStatus || null,
         }),
       );
 
