@@ -101,10 +101,14 @@ export class TimesheetDetailService {
 
       // Cập nhật tổng số giờ làm việc của timesheet
       // Trừ đi giá trị cũ và cộng thêm giá trị mới
-      timesheet.total_hours = (timesheet.total_hours || 0) - oldOtHours + newOtHours;
-      console.log(timesheet)
-      console.log(timesheet.total_hours, oldOtHours, newOtHours)
-      console.log(timesheet.total_hours - oldOtHours + newOtHours)
+      const currentTotal = parseFloat(timesheet.total_hours?.toString() || '0');
+      timesheet.total_hours = currentTotal - oldOtHours + newOtHours;
+      console.log('Debug:', {
+        currentTotal,
+        oldOtHours,
+        newOtHours,
+        newTotal: timesheet.total_hours
+      });
       // Đảm bảo total_hours không âm
       if (timesheet.total_hours < 0) {
         timesheet.total_hours = 0;
