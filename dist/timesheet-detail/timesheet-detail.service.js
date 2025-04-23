@@ -59,6 +59,20 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
     }
     async update(id, updateTimesheetDetailDto) {
         const timesheetDetail = await this.findOne(id);
+        if (!timesheetDetail) {
+            throw new common_1.NotFoundException(`Timesheet detail with ID ${id} not found`);
+        }
+        const timesheet = await this.timesheetRepository.findOne({
+            where: { id: timesheetDetail.timesheet_id },
+        });
+        if (!timesheet) {
+            throw new common_1.NotFoundException(`Timesheet with ID ${timesheetDetail.timesheet_id} not found`);
+        }
+        console.log("updateTimesheetDetailDto", updateTimesheetDetailDto);
+        timesheet.total_hours = timesheet.total_hours - timesheetDetail.ot_hours + updateTimesheetDetailDto.ot_hours;
+        console.log(timesheet.total_hours, timesheetDetail.ot_hours, updateTimesheetDetailDto.ot_hours);
+        console.log("timesheet.total_hours", timesheet.total_hours);
+        await this.timesheetRepository.save(timesheet);
         Object.assign(timesheetDetail, updateTimesheetDetailDto);
         return this.timesheetDetailRepository.save(timesheetDetail);
     }

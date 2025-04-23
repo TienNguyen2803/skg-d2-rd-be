@@ -26,7 +26,7 @@ export class TimesheetDetailService {
         ...createTimesheetDetailDto,
         ot_hours: createTimesheetDetailDto.ot_hours ? Number(createTimesheetDetailDto.ot_hours) : 0,
       });
-      
+
       // Save the timesheet detail
       const savedDetail = await this.timesheetDetailRepository.save(timesheetDetail);
 
@@ -77,7 +77,30 @@ export class TimesheetDetailService {
   }
 
   async update(id: number, updateTimesheetDetailDto: UpdateTimesheetDetailDto): Promise<TimesheetDetail> {
+
     const timesheetDetail = await this.findOne(id);
+    if (!timesheetDetail) {
+      throw new NotFoundException(`Timesheet detail with ID ${id} not found`);
+    }
+
+    // Find the related timesheet
+    const timesheet = await this.timesheetRepository.findOne({
+      where: { id: timesheetDetail.timesheet_id },
+    });
+
+    if (!timesheet) {
+      throw new NotFoundException(`Timesheet with ID ${timesheetDetail.timesheet_id} not found`);
+    }
+
+
+    console.log("updateTimesheetDetailDto", updateTimesheetDetailDto)
+
+    // Update timesheet total_hours by subtracting detail's ot_hours
+    timesheet.total_hours = timesheet.total_hours - timesheetDetail.ot_hours + (updateTimesheetDetailDto as any).ot_hours;
+
+    console.log(timesheet.total_hours, timesheetDetail.ot_hours, (updateTimesheetDetailDto as any).ot_hours)
+    console.log("timesheet.total_hours", timesheet.total_hours)
+    await this.timesheetRepository.save(timesheet);
     Object.assign(timesheetDetail, updateTimesheetDetailDto);
     return this.timesheetDetailRepository.save(timesheetDetail);
   }
