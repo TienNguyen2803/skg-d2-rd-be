@@ -1,3 +1,4 @@
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/roles/entities/role.entity';
@@ -12,30 +13,34 @@ export class RoleSeedService {
   ) { }
 
   async run() {
-    const countUser = await this.repository.count({
+    // Kiểm tra role USER đã tồn tại chưa
+    const existingUserRole = await this.repository.findOne({
       where: {
-        id: RoleEnum.user,
+        code: 'USER',
       },
     });
 
-    if (!countUser) {
+    if (!existingUserRole) {
       await this.repository.save(
         this.repository.create({
+          id: RoleEnum.user,
           name: 'User',
           code: 'USER'
         }),
       );
     }
 
-    const countAdmin = await this.repository.count({
+    // Kiểm tra role ADMIN đã tồn tại chưa
+    const existingAdminRole = await this.repository.findOne({
       where: {
-        id: RoleEnum.admin,
+        code: 'ADMIN',
       },
     });
 
-    if (!countAdmin) {
+    if (!existingAdminRole) {
       await this.repository.save(
         this.repository.create({
+          id: RoleEnum.admin,
           name: 'Admin',
           code: 'ADMIN'
         }),
