@@ -102,20 +102,25 @@ export class TimesheetDetailService {
       // Cập nhật tổng số giờ làm việc của timesheet
       // Trừ đi giá trị cũ và cộng thêm giá trị mới
       const currentTotal = parseFloat(timesheet.total_hours?.toString() || '0');
-      timesheet.total_hours = 9999;
+      const newTotal = currentTotal - oldOtHours + newOtHours;
+      
+      // Gán giá trị mới cho timesheet.total_hours
+      timesheet.total_hours = newTotal;
+      
       console.log('Debug:', {
         currentTotal,
         oldOtHours,
         newOtHours,
         newTotal: timesheet.total_hours
       });
+      
       // Đảm bảo total_hours không âm
       if (timesheet.total_hours < 0) {
         timesheet.total_hours = 0;
       }
 
-      // Lưu timesheet đã cập nhật
-      await this.timesheetRepository.save(timesheet);
+      // Lưu timesheet đã cập nhật với await để đảm bảo hoàn thành trước khi tiếp tục
+      await this.timesheetRepository.save({...timesheet});
 
       // Cập nhật chi tiết timesheet
       Object.assign(timesheetDetail, updateTimesheetDetailDto);
