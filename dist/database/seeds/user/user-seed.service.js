@@ -24,14 +24,8 @@ let UserSeedService = exports.UserSeedService = class UserSeedService {
         this.repository = repository;
     }
     async run() {
-        const countAdmin = await this.repository.count({
-            where: {
-                role: {
-                    id: roles_enum_1.RoleEnum.admin,
-                },
-            },
-        });
-        if (!countAdmin) {
+        const userCount = await this.repository.count();
+        if (userCount === 0) {
             await this.repository.save(this.repository.create({
                 firstName: 'Super',
                 lastName: 'Admin',
@@ -40,35 +34,17 @@ let UserSeedService = exports.UserSeedService = class UserSeedService {
                 role: {
                     id: roles_enum_1.RoleEnum.admin,
                     name: 'Admin',
+                    code: 'ADMIN',
                 },
                 status: {
                     id: statuses_enum_1.StatusEnum.active,
                     name: 'Active',
                 },
             }));
+            console.log('User Admin đã được tạo thành công.');
         }
-        const countUser = await this.repository.count({
-            where: {
-                role: {
-                    id: roles_enum_1.RoleEnum.user,
-                },
-            },
-        });
-        if (!countUser) {
-            await this.repository.save(this.repository.create({
-                firstName: 'John',
-                lastName: 'Doe',
-                email: 'john.doe@example.com',
-                password: 'secret',
-                role: {
-                    id: roles_enum_1.RoleEnum.user,
-                    name: 'Admin',
-                },
-                status: {
-                    id: statuses_enum_1.StatusEnum.active,
-                    name: 'Active',
-                },
-            }));
+        else {
+            console.log('Đã có người dùng trong hệ thống, không cần tạo thêm.');
         }
     }
 };
