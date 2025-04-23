@@ -13,15 +13,11 @@ export class UserSeedService {
   ) {}
 
   async run() {
-    const countAdmin = await this.repository.count({
-      where: {
-        role: {
-          id: RoleEnum.admin,
-        },
-      },
-    });
+    // Kiểm tra số lượng người dùng hiện có trong hệ thống
+    const userCount = await this.repository.count();
 
-    if (!countAdmin) {
+    // Nếu chưa có người dùng nào, tạo tài khoản Admin
+    if (userCount === 0) {
       await this.repository.save(
         this.repository.create({
           firstName: 'Super',
@@ -31,6 +27,7 @@ export class UserSeedService {
           role: {
             id: RoleEnum.admin,
             name: 'Admin',
+            code: 'ADMIN',
           },
           status: {
             id: StatusEnum.active,
@@ -38,33 +35,10 @@ export class UserSeedService {
           },
         }),
       );
-    }
 
-    const countUser = await this.repository.count({
-      where: {
-        role: {
-          id: RoleEnum.user,
-        },
-      },
-    });
-
-    if (!countUser) {
-      await this.repository.save(
-        this.repository.create({
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@example.com',
-          password: 'secret',
-          role: {
-            id: RoleEnum.user,
-            name: 'Admin',
-          },
-          status: {
-            id: StatusEnum.active,
-            name: 'Active',
-          },
-        }),
-      );
+      console.log('User Admin đã được tạo thành công.');
+    } else {
+      console.log('Đã có người dùng trong hệ thống, không cần tạo thêm.');
     }
   }
 }
