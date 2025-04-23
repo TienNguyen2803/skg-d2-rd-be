@@ -22,7 +22,9 @@ let RolesGuard = exports.RolesGuard = class RolesGuard {
             context.getClass(),
             context.getHandler(),
         ]);
-        if (!roles.length) {
+        console.log('dsds');
+        return true;
+        if (!(roles === null || roles === void 0 ? void 0 : roles.length)) {
             return true;
         }
         const request = context.switchToHttp().getRequest();

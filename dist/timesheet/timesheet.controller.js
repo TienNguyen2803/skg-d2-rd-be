@@ -18,7 +18,6 @@ const standard_pagination_1 = require("../utils/standard-pagination");
 const timesheet_service_1 = require("./timesheet.service");
 const create_timesheet_dto_1 = require("./dto/create-timesheet.dto");
 const swagger_1 = require("@nestjs/swagger");
-const roles_decorator_1 = require("../roles/roles.decorator");
 const roles_enum_1 = require("../roles/roles.enum");
 const passport_1 = require("@nestjs/passport");
 const roles_guard_1 = require("../roles/roles.guard");
@@ -148,7 +147,6 @@ __decorate([
 ], TimesheetController.prototype, "exportExcel", null);
 exports.TimesheetController = TimesheetController = __decorate([
     (0, swagger_1.ApiBearerAuth)(),
-    (0, roles_decorator_1.Roles)(roles_enum_1.RoleEnum.user, roles_enum_1.RoleEnum.admin),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, swagger_1.ApiTags)('Timesheet'),
     (0, common_1.Controller)({

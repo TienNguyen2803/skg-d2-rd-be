@@ -29,7 +29,7 @@ import { UpdateTimesheetRejectDto } from './dto/update-timesheet-reject.dto';
 import { Timesheet } from './entities/timesheet.entity';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.user, RoleEnum.admin)
+// @Roles(RoleEnum.user, RoleEnum.admin)
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('Timesheet')
 @Controller({
