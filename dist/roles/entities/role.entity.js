@@ -15,6 +15,7 @@ const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 const entity_helper_1 = require("../../utils/entity-helper");
 const role_permission_entity_1 = require("../../role-permissions/entities/role-permission.entity");
+const user_role_entity_1 = require("../../user-roles/entities/user-role.entity");
 let Role = exports.Role = class Role extends entity_helper_1.EntityHelper {
 };
 __decorate([
@@ -42,6 +43,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => role_permission_entity_1.RolePermission, (rolePermission) => rolePermission.role),
     __metadata("design:type", Array)
 ], Role.prototype, "rolePermissions", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => user_role_entity_1.UserRole, (userRole) => userRole.role),
+    __metadata("design:type", Array)
+], Role.prototype, "userRoles", void 0);
 exports.Role = Role = __decorate([
     (0, typeorm_1.Entity)()
 ], Role);

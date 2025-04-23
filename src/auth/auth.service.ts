@@ -93,7 +93,7 @@ export class AuthService {
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,
-      role: user.role,
+      // role: user.role,
       sessionId: session.id,
     });
 
@@ -413,7 +413,7 @@ export class AuthService {
 
   private async getTokensData(data: {
     id: User['id'];
-    role: User['role'];
+    // role: User['role'];
     sessionId: Session['id'];
   }) {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
@@ -426,7 +426,7 @@ export class AuthService {
       await this.jwtService.signAsync(
         {
           id: data.id,
-          role: data.role,
+          // role: data.role,
           sessionId: data.sessionId,
         },
         {

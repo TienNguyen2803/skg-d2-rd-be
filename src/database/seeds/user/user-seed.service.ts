@@ -45,7 +45,7 @@ export class UserSeedService {
           lastName: 'Admin',
           email: 'admin@example.com',
           password: 'secret',
-          role: adminRole || null,
+          // role: adminRole || null,
         }),
       );
 

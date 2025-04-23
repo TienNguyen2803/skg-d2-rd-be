@@ -14,11 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
-const role_entity_1 = require("../../roles/entities/role.entity");
 const status_entity_1 = require("../../statuses/entities/status.entity");
 const department_entity_1 = require("../../departments/entities/department.entity");
 const project_entity_1 = require("../../projects/entities/project.entity");
 const timesheet_entity_1 = require("../../timesheet/entities/timesheet.entity");
+const user_role_entity_1 = require("../../user-roles/entities/user-role.entity");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const entity_helper_1 = require("../../utils/entity-helper");
 const auth_providers_enum_1 = require("../../auth/auth-providers.enum");
@@ -89,11 +89,9 @@ __decorate([
     __metadata("design:type", Object)
 ], User.prototype, "short_name", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => role_entity_1.Role, {
-        eager: true,
-    }),
-    __metadata("design:type", Object)
-], User.prototype, "role", void 0);
+    (0, typeorm_1.OneToMany)(() => user_role_entity_1.UserRole, (userRole) => userRole.user),
+    __metadata("design:type", Array)
+], User.prototype, "userRoles", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => status_entity_1.Status, {
         eager: true,

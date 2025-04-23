@@ -1,88 +1,133 @@
-import { Injectable } from '@nestjs/common';
+
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FilterBuilder } from '../utils/filter-builder';
+import { IPaginationOptions } from '../utils/types/pagination-options';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './entities/user.entity';
-import { IPaginationOptions } from 'src/utils/types/pagination-options';
-import { StandartPaginationResult } from '../utils/types/standard-pagination-result.type';
-import { standartPagination } from '../utils/standard-pagination';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRolesService } from '../user-roles/user-roles.service';
+import { User } from './entities/user.entity';
+import bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    private userRolesService: UserRolesService,
-  ) {}
+    private userRepository: Repository<User>,
+  ) { }
 
-  async create(createProfileDto: CreateUserDto): Promise<User> {
-    const { roleIds, ...userData } = createProfileDto;
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user = this.userRepository.create(createUserDto);
 
-    const user = await this.usersRepository.save(
-      this.usersRepository.create(userData),
-    );
-
-    // Thêm các roles cho user nếu có
-    if (roleIds && roleIds.length > 0) {
-      for (const roleId of roleIds) {
-        await this.userRolesService.createUserRole(user.id, roleId);
-      }
+    // Handle status relationship
+    if (createUserDto.status_id) {
+      user.status = { id: createUserDto.status_id } as any;
     }
 
-    return user;
-  }
+    // Handle department relationship
+    if (createUserDto.department_id) {
+      user.department = { id: createUserDto.department_id } as any;
+    }
 
-  async findAll(
-    paginationOptions?: IPaginationOptions,
-  ): Promise<StandartPaginationResult<User>> {
-    const result = await standartPagination(
-      this.usersRepository,
-      paginationOptions,
-    );
-    return {
-      count: result.count,
-      rows: result.rows,
-    };
-  }
+    await this.userRepository.save(user);
 
-  findOne(fields: EntityCondition<User>) {
-    return this.usersRepository.findOne({
-      where: fields as FindOptionsWhere<User>,
-      relations: ['userRoles', 'userRoles.role'],
+    return this.userRepository.findOneOrFail({
+      where: { id: user.id },
+      relations: ['department', 'status'],
     });
   }
 
-  async update(id: number, updateProfileDto: UpdateUserDto) {
-    const { roleIds, ...userData } = updateProfileDto;
+  async findManyWithPagination(
+    { page, limit, offset }: IPaginationOptions,
+    filterQuery?: string,
+    sort?: string,
+  ) {
+    const findOptions = {
+      ...FilterBuilder.buildFilter(filterQuery),
+      skip: offset,
+      take: limit,
+      relations: ['department', 'status'],
+      order: {},
+    };
 
-    // Cập nhật thông tin cơ bản của user
-    const user = await this.usersRepository.save(
-      this.usersRepository.create({
-        id,
-        ...userData,
-      }),
-    );
-
-    // Cập nhật roles cho user nếu có
-    if (roleIds !== undefined) {
-      // Xóa tất cả user_roles hiện tại của user
-      await this.userRolesService.removeAllUserRoles(id);
-
-      // Thêm các roles mới
-      if (roleIds && roleIds.length > 0) {
-        for (const roleId of roleIds) {
-          await this.userRolesService.createUserRole(id, roleId);
+    if (sort) {
+      const [field, direction] = sort.split(',');
+      if (field && direction) {
+        const upperDirection = direction.toUpperCase();
+        if (upperDirection === 'ASC' || upperDirection === 'DESC') {
+          findOptions.order = { [field]: upperDirection };
         }
       }
+    } else {
+      findOptions.order = { id: 'DESC' };
+    }
+
+    return this.userRepository.find(findOptions);
+  }
+
+  standardCount(filterQuery?: string): Promise<number> {
+    const findOptions = FilterBuilder.buildFilter(filterQuery);
+    return this.userRepository.count(findOptions);
+  }
+
+  async findOne(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['department',  'status'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     return user;
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+      relations: ['department',  'status'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${email} not found`);
+    }
+
+    return user;
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['department',  'status'],
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    // Handle direct properties
+    Object.assign(user, updateUserDto);
+
+    // Handle status relationship
+    if (updateUserDto.status_id) {
+      user.status = { id: updateUserDto.status_id } as any;
+    }
+
+    // Handle department relationship
+    if (updateUserDto.department_id) {
+      user.department = { id: updateUserDto.department_id } as any;
+    }
+
+    await this.userRepository.save(user);
+
+    return this.userRepository.findOneOrFail({
+      where: { id },
+      relations: ['department',  'status'],
+    });
+  }
+
   async softDelete(id: number): Promise<void> {
-    await this.usersRepository.softDelete(id);
+    await this.userRepository.softDelete(id);
   }
 }

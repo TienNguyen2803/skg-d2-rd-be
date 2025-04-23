@@ -1,10 +1,9 @@
+import { Status } from '../../statuses/entities/status.entity';
 export declare class CreateUserDto {
-    email: string;
-    firstName?: string;
-    lastName?: string;
-    short_name?: string;
-    password: string;
+    email: string | null;
+    password?: string;
+    firstName: string | null;
+    lastName: string | null;
+    status_id?: Status;
     department_id?: number;
-    role_id?: number;
-    status_id?: number;
 }

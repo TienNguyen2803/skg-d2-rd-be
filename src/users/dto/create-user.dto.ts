@@ -34,20 +34,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   lastName: string | null;
 
-  @ApiProperty({ example: [1, 2], required: false, description: 'Array of role IDs' })
+  @ApiProperty({ example: 1 })
   @IsOptional()
-  @IsArray()
-  roleIds?: number[];
-
-  @ApiProperty({ type: () => Status })
-  @IsOptional()
-  status?: Status;
+  status_id?: Status;
 
   @ApiProperty({ example: 1 })
   @IsOptional()
   department_id?: number;
 
-  @ApiProperty({ type: () => Department })
-  @IsOptional()
-  department?: Department;
 }

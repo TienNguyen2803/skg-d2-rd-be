@@ -50,6 +50,7 @@ const project_types_module_1 = require("./project-types/project-types.module");
 const permissions_module_1 = require("./permissions/permissions.module");
 const functionalities_module_1 = require("./functionalities/functionalities.module");
 const role_permissions_module_1 = require("./role-permissions/role-permissions.module");
+const user_roles_module_1 = require("./user-roles/user-roles.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -63,6 +64,7 @@ exports.AppModule = AppModule = __decorate([
             permissions_module_1.PermissionsModule,
             functionalities_module_1.FunctionalitiesModule,
             role_permissions_module_1.RolePermissionsModule,
+            user_roles_module_1.UserRolesModule,
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 load: [

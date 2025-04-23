@@ -24,9 +24,6 @@ let UsersService = exports.UsersService = class UsersService {
     }
     async create(createUserDto) {
         const user = this.userRepository.create(createUserDto);
-        if (createUserDto.role_id) {
-            user.role = { id: createUserDto.role_id };
-        }
         if (createUserDto.status_id) {
             user.status = { id: createUserDto.status_id };
         }
@@ -36,11 +33,11 @@ let UsersService = exports.UsersService = class UsersService {
         await this.userRepository.save(user);
         return this.userRepository.findOneOrFail({
             where: { id: user.id },
-            relations: ['department', 'role', 'status'],
+            relations: ['department', 'status'],
         });
     }
     async findManyWithPagination({ page, limit, offset }, filterQuery, sort) {
-        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: offset, take: limit, relations: ['department', 'role', 'status'], order: {} });
+        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: offset, take: limit, relations: ['department', 'status'], order: {} });
         if (sort) {
             const [field, direction] = sort.split(',');
             if (field && direction) {
@@ -62,7 +59,7 @@ let UsersService = exports.UsersService = class UsersService {
     async findOne(id) {
         const user = await this.userRepository.findOne({
             where: { id },
-            relations: ['department', 'role', 'status'],
+            relations: ['department', 'status'],
         });
         if (!user) {
             throw new common_1.NotFoundException(`User with ID ${id} not found`);
@@ -72,7 +69,7 @@ let UsersService = exports.UsersService = class UsersService {
     async findByEmail(email) {
         const user = await this.userRepository.findOne({
             where: { email },
-            relations: ['department', 'role', 'status'],
+            relations: ['department', 'status'],
         });
         if (!user) {
             throw new common_1.NotFoundException(`User with ID ${email} not found`);
@@ -82,15 +79,12 @@ let UsersService = exports.UsersService = class UsersService {
     async update(id, updateUserDto) {
         const user = await this.userRepository.findOne({
             where: { id },
-            relations: ['department', 'role', 'status'],
+            relations: ['department', 'status'],
         });
         if (!user) {
             throw new common_1.NotFoundException(`User with ID ${id} not found`);
         }
         Object.assign(user, updateUserDto);
-        if (updateUserDto.role_id) {
-            user.role = { id: updateUserDto.role_id };
-        }
         if (updateUserDto.status_id) {
             user.status = { id: updateUserDto.status_id };
         }
@@ -100,7 +94,7 @@ let UsersService = exports.UsersService = class UsersService {
         await this.userRepository.save(user);
         return this.userRepository.findOneOrFail({
             where: { id },
-            relations: ['department', 'role', 'status'],
+            relations: ['department', 'status'],
         });
     }
     async softDelete(id) {

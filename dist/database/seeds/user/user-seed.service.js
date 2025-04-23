@@ -44,7 +44,6 @@ let UserSeedService = exports.UserSeedService = class UserSeedService {
                 lastName: 'Admin',
                 email: 'admin@example.com',
                 password: 'secret',
-                role: adminRole || null,
             }));
             console.log('User Admin đã được tạo thành công.');
         }

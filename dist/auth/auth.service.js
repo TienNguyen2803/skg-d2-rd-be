@@ -64,7 +64,6 @@ let AuthService = exports.AuthService = class AuthService {
         });
         const { token, refreshToken, tokenExpires } = await this.getTokensData({
             id: user.id,
-            role: user.role,
             sessionId: session.id,
         });
         return {
@@ -82,7 +81,6 @@ let AuthService = exports.AuthService = class AuthService {
         const [token, refreshToken] = await Promise.all([
             await this.jwtService.signAsync({
                 id: data.id,
-                role: data.role,
                 sessionId: data.sessionId,
             }, {
                 secret: this.configService.getOrThrow('auth.secret', { infer: true }),
