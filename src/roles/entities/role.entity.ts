@@ -1,8 +1,9 @@
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Allow } from 'class-validator';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { RolePermission } from 'src/role-permissions/entities/role-permission.entity';
+import { UserRole } from 'src/user-roles/entities/user-role.entity';
 
 @Entity()
 export class Role extends EntityHelper {
@@ -25,4 +26,7 @@ export class Role extends EntityHelper {
 
   @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role)
   rolePermissions: RolePermission[];
+
+  @OneToMany(() => UserRole, (userRole) => userRole.role)
+  userRoles: UserRole[];
 }

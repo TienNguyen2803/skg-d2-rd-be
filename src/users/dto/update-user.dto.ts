@@ -1,47 +1,44 @@
-
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { IsEmail, IsOptional, MinLength, IsArray } from 'class-validator';
+import { Status } from '../../statuses/entities/status.entity';
 import { CreateUserDto } from './create-user.dto';
-import { IsEmail, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import { Department } from 'src/departments/entities/department.entity';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-  @ApiProperty({ example: 'test@example.com' })
+  @ApiProperty({ example: 'test1@example.com' })
+  @Transform(({ value }) => value?.toLowerCase().trim())
+  @IsOptional()
   @IsEmail()
-  @IsOptional()
-  email?: string;
-
-  @ApiProperty({ example: 'John' })
-  @IsString()
-  @IsOptional()
-  firstName?: string;
-
-  @ApiProperty({ example: 'Doe' })
-  @IsString()
-  @IsOptional()
-  lastName?: string;
-
-  @ApiProperty({ example: 'John D', required: false })
-  @IsString()
-  @IsOptional()
-  short_name?: string;
+  email?: string | null;
 
   @ApiProperty()
-  @IsString()
   @IsOptional()
+  @MinLength(6)
   password?: string;
 
+  @ApiProperty({ example: 'John' })
+  @IsOptional()
+  firstName?: string | null;
+
+  @ApiProperty({ example: 'Doe' })
+  @IsOptional()
+  lastName?: string | null;
+
+  @ApiProperty({ example: [1, 2], required: false, description: 'Array of role IDs' })
+  @IsOptional()
+  @IsArray()
+  roleIds?: number[];
+
+  @ApiProperty({ type: () => Status })
+  @IsOptional()
+  status?: Status;
+
   @ApiProperty({ example: 1 })
-  @IsNumber()
   @IsOptional()
   department_id?: number;
 
-  @ApiProperty({ example: 1 })
-  @IsNumber()
+  @ApiProperty({ type: () => Department })
   @IsOptional()
-  role_id?: number;
-
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  @IsOptional()
-  status_id?: number;
+  department?: Department;
 }

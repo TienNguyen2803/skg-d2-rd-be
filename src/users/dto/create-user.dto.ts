@@ -1,45 +1,53 @@
-
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+  Validate,
+  IsArray,
+} from 'class-validator';
+import { IsNotExist } from 'src/utils/validators/is-not-exists.validator';
+import { Status } from '../../statuses/entities/status.entity';
+import { Department } from 'src/departments/entities/department.entity';
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'test@example.com' })
-  @IsEmail()
+  @ApiProperty({ example: 'test1@example.com' })
+  @Transform(({ value }) => value?.toLowerCase().trim())
   @IsNotEmpty()
-  email: string;
-
-  @ApiProperty({ example: 'John' })
-  @IsString()
-  @IsOptional()
-  firstName?: string;
-
-  @ApiProperty({ example: 'Doe' })
-  @IsString()
-  @IsOptional()
-  lastName?: string;
-
-  @ApiProperty({ example: 'John D', required: false })
-  @IsString()
-  @IsOptional()
-  short_name?: string;
+  @IsEmail()
+  @Validate(IsNotExist, ['User'], {
+    message: 'emailAlreadyExists',
+  })
+  email: string | null;
 
   @ApiProperty()
-  @IsString()
+  @MinLength(6)
+  password?: string;
+
+  @ApiProperty({ example: 'John' })
   @IsNotEmpty()
-  password: string;
+  firstName: string | null;
+
+  @ApiProperty({ example: 'Doe' })
+  @IsNotEmpty()
+  lastName: string | null;
+
+  @ApiProperty({ example: [1, 2], required: false, description: 'Array of role IDs' })
+  @IsOptional()
+  @IsArray()
+  roleIds?: number[];
+
+  @ApiProperty({ type: () => Status })
+  @IsOptional()
+  status?: Status;
 
   @ApiProperty({ example: 1 })
-  @IsNumber()
   @IsOptional()
   department_id?: number;
 
-  @ApiProperty({ example: 1 })
-  @IsNumber()
+  @ApiProperty({ type: () => Department })
   @IsOptional()
-  role_id?: number;
-
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  @IsOptional()
-  status_id?: number;
+  department?: Department;
 }

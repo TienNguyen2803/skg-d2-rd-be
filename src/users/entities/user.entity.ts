@@ -13,11 +13,11 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { Role } from '../../roles/entities/role.entity';
 import { Status } from '../../statuses/entities/status.entity';
 import { Department } from '../../departments/entities/department.entity';
 import { Project } from '../../projects/entities/project.entity';
 import { Timesheet } from '../../timesheet/entities/timesheet.entity';
+import { UserRole } from '../../user-roles/entities/user-role.entity';
 import bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
@@ -74,10 +74,8 @@ export class User extends EntityHelper {
   @Column({ type: String, nullable: true })
   short_name: string | null;
 
-  @ManyToOne(() => Role, {
-    eager: true,
-  })
-  role?: Role | null;
+  @OneToMany(() => UserRole, (userRole) => userRole.user)
+  userRoles: UserRole[];
 
   @ManyToOne(() => Status, {
     eager: true,
