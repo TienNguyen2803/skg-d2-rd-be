@@ -15,31 +15,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserSeedService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const roles_enum_1 = require("../../../roles/roles.enum");
+const role_entity_1 = require("../../../roles/entities/role.entity");
+const status_entity_1 = require("../../../statuses/entities/status.entity");
 const statuses_enum_1 = require("../../../statuses/statuses.enum");
 const user_entity_1 = require("../../../users/entities/user.entity");
 const typeorm_2 = require("typeorm");
 let UserSeedService = exports.UserSeedService = class UserSeedService {
-    constructor(repository) {
+    constructor(repository, roleRepository, statusRepository) {
         this.repository = repository;
+        this.roleRepository = roleRepository;
+        this.statusRepository = statusRepository;
     }
     async run() {
         const userCount = await this.repository.count();
         if (userCount === 0) {
+            const adminRole = await this.roleRepository.findOne({
+                where: {
+                    code: 'ADMIN',
+                },
+            });
+            const activeStatus = await this.statusRepository.findOne({
+                where: {
+                    id: statuses_enum_1.StatusEnum.active,
+                },
+            });
             await this.repository.save(this.repository.create({
                 firstName: 'Super',
                 lastName: 'Admin',
                 email: 'admin@example.com',
                 password: 'secret',
-                role: {
-                    id: roles_enum_1.RoleEnum.admin,
-                    name: 'Admin',
-                    code: 'ADMIN',
-                },
-                status: {
-                    id: statuses_enum_1.StatusEnum.active,
-                    name: 'Active',
-                },
+                role: adminRole || null,
+                status: activeStatus || null,
             }));
             console.log('User Admin đã được tạo thành công.');
         }
@@ -51,6 +57,10 @@ let UserSeedService = exports.UserSeedService = class UserSeedService {
 exports.UserSeedService = UserSeedService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(role_entity_1.Role)),
+    __param(2, (0, typeorm_1.InjectRepository)(status_entity_1.Status)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
+        typeorm_2.Repository])
 ], UserSeedService);
 //# sourceMappingURL=user-seed.service.js.map
