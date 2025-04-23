@@ -47,34 +47,34 @@ export class TimesheetService {
       ...FilterBuilder.buildFilter(filterQuery),
       skip: paginationOptions.offset,
       take: paginationOptions.limit,
-      relations: ['creator', 'project', 'department', 'status', 'details'],
+      relations: ['creator', 'project', 'project.project_type', 'department', 'status', 'details'],
       order: {}
     };
 
     // Đảm bảo findOptions.where là một mảng
     if (!findOptions.where) {
-        findOptions.where = [];
+      findOptions.where = [];
     }
 
     // Nếu không phải admin và có creatorId, thêm điều kiện creator_id vào từng object trong mảng where
     if (!isAdmin && creatorId !== undefined) {
-        if (findOptions.where.length > 0) {
-            // Tạo mảng where mới với điều kiện creator_id được thêm vào mỗi object
-            const newWhereConditions = findOptions.where.map(condition => {
-                // Tạo một bản sao của điều kiện hiện tại và thêm creator_id
-                return {
-                    ...condition,
-                    creator_id: creatorId
-                };
-            });
+      if (findOptions.where.length > 0) {
+        // Tạo mảng where mới với điều kiện creator_id được thêm vào mỗi object
+        const newWhereConditions = findOptions.where.map(condition => {
+          // Tạo một bản sao của điều kiện hiện tại và thêm creator_id
+          return {
+            ...condition,
+            creator_id: creatorId
+          };
+        });
 
-            findOptions.where = newWhereConditions;
-        } else {
-            // Nếu mảng where rỗng, chỉ cần thêm điều kiện creator_id
-            findOptions.where = [{ creator_id: creatorId }];
-        }
+        findOptions.where = newWhereConditions;
+      } else {
+        // Nếu mảng where rỗng, chỉ cần thêm điều kiện creator_id
+        findOptions.where = [{ creator_id: creatorId }];
+      }
     }
-    
+
     if (sort) {
       const [field, direction] = sort.split(',');
       if (field && direction) {
@@ -99,26 +99,26 @@ export class TimesheetService {
 
     // Đảm bảo findOptions.where là một mảng
     if (!findOptions.where) {
-        findOptions.where = [];
+      findOptions.where = [];
     }
 
     // Nếu không phải admin và có creatorId, thêm điều kiện creator_id vào từng object trong mảng where
     if (!isAdmin && creatorId !== undefined) {
-        if (findOptions.where.length > 0) {
-            // Tạo mảng where mới với điều kiện creator_id được thêm vào mỗi object
-            const newWhereConditions = findOptions.where.map(condition => {
-                // Tạo một bản sao của điều kiện hiện tại và thêm creator_id
-                return {
-                    ...condition,
-                    creator_id: creatorId
-                };
-            });
+      if (findOptions.where.length > 0) {
+        // Tạo mảng where mới với điều kiện creator_id được thêm vào mỗi object
+        const newWhereConditions = findOptions.where.map(condition => {
+          // Tạo một bản sao của điều kiện hiện tại và thêm creator_id
+          return {
+            ...condition,
+            creator_id: creatorId
+          };
+        });
 
-            findOptions.where = newWhereConditions;
-        } else {
-            // Nếu mảng where rỗng, chỉ cần thêm điều kiện creator_id
-            findOptions.where = [{ creator_id: creatorId }];
-        }
+        findOptions.where = newWhereConditions;
+      } else {
+        // Nếu mảng where rỗng, chỉ cần thêm điều kiện creator_id
+        findOptions.where = [{ creator_id: creatorId }];
+      }
     }
 
     return this.timesheetRepository.count(findOptions);

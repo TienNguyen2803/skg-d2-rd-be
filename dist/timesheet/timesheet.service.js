@@ -58,7 +58,7 @@ let TimesheetService = exports.TimesheetService = class TimesheetService {
         return this.timesheetRepository.save(timesheet);
     }
     async findManyWithPagination(paginationOptions, filterQuery, sort, creatorId, isAdmin) {
-        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: paginationOptions.offset, take: paginationOptions.limit, relations: ['creator', 'project', 'department', 'status', 'details'], order: {} });
+        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: paginationOptions.offset, take: paginationOptions.limit, relations: ['creator', 'project', 'project.project_type', 'department', 'status', 'details'], order: {} });
         if (!findOptions.where) {
             findOptions.where = [];
         }
