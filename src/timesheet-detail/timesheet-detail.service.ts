@@ -86,7 +86,7 @@ export class TimesheetDetailService {
 
       // Tìm timesheet liên quan
       const timesheet = await this.timesheetRepository.findOne({
-        where: { id: timesheetDetail.timesheet_id },
+        where: { id: updateTimesheetDetailDto.timesheet_id },
       });
 
       if (!timesheet) {
@@ -102,7 +102,7 @@ export class TimesheetDetailService {
       // Cập nhật tổng số giờ làm việc của timesheet
       // Trừ đi giá trị cũ và cộng thêm giá trị mới
       const currentTotal = parseFloat(timesheet.total_hours?.toString() || '0');
-      timesheet.total_hours = currentTotal - oldOtHours + newOtHours;
+      timesheet.total_hours = 9999;
       console.log('Debug:', {
         currentTotal,
         oldOtHours,

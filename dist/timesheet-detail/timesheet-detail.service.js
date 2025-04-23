@@ -58,13 +58,14 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
         return timesheetDetail;
     }
     async update(id, updateTimesheetDetailDto) {
+        var _a;
         try {
             const timesheetDetail = await this.findOne(id);
             if (!timesheetDetail) {
                 throw new common_1.NotFoundException(`Timesheet detail with ID ${id} not found`);
             }
             const timesheet = await this.timesheetRepository.findOne({
-                where: { id: timesheetDetail.timesheet_id },
+                where: { id: updateTimesheetDetailDto.timesheet_id },
             });
             if (!timesheet) {
                 throw new common_1.NotFoundException(`Timesheet with ID ${timesheetDetail.timesheet_id} not found`);
@@ -73,10 +74,14 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
             const newOtHours = updateTimesheetDetailDto.ot_hours !== undefined
                 ? Number(updateTimesheetDetailDto.ot_hours)
                 : oldOtHours;
-            timesheet.total_hours = (timesheet.total_hours || 0) - oldOtHours + newOtHours;
-            console.log(timesheet);
-            console.log(timesheet.total_hours, oldOtHours, newOtHours);
-            console.log(timesheet.total_hours - oldOtHours + newOtHours);
+            const currentTotal = parseFloat(((_a = timesheet.total_hours) === null || _a === void 0 ? void 0 : _a.toString()) || '0');
+            timesheet.total_hours = 9999;
+            console.log('Debug:', {
+                currentTotal,
+                oldOtHours,
+                newOtHours,
+                newTotal: timesheet.total_hours
+            });
             if (timesheet.total_hours < 0) {
                 timesheet.total_hours = 0;
             }
