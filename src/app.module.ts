@@ -39,7 +39,7 @@ import { ProjectTypesModule } from './project-types/project-types.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { FunctionalitiesModule } from './functionalities/functionalities.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
-import { UserRolesModule } from './user-roles/user-roles.module'; // Added import
+import { UserRolesModule } from './user-roles/user-roles.module';
 
 
 @Module({
@@ -52,7 +52,7 @@ import { UserRolesModule } from './user-roles/user-roles.module'; // Added impor
     PermissionsModule,
     FunctionalitiesModule,
     RolePermissionsModule, 
-    UserRolesModule, // Added to imports
+    UserRolesModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
@@ -115,6 +115,7 @@ import { UserRolesModule } from './user-roles/user-roles.module'; // Added impor
     RolesModule,
     StatusesModule,
     ProjectTypesModule,
+    UserRolesModule, // Added UserRolesModule to imports
   ],
 })
 export class AppModule { }
