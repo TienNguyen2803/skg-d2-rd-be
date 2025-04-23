@@ -95,14 +95,16 @@ export class TimesheetDetailService {
 
       // Lấy giá trị ot_hours mới từ DTO
       const oldOtHours = timesheetDetail.ot_hours || 0;
-      const newOtHours = updateTimesheetDetailDto.ot_hours !== undefined 
-        ? Number(updateTimesheetDetailDto.ot_hours) 
+      const newOtHours = updateTimesheetDetailDto.ot_hours !== undefined
+        ? Number(updateTimesheetDetailDto.ot_hours)
         : oldOtHours;
 
       // Cập nhật tổng số giờ làm việc của timesheet
       // Trừ đi giá trị cũ và cộng thêm giá trị mới
       timesheet.total_hours = (timesheet.total_hours || 0) - oldOtHours + newOtHours;
-
+      console.log(timesheet)
+      console.log(timesheet.total_hours, oldOtHours, newOtHours)
+      console.log(timesheet.total_hours - oldOtHours + newOtHours)
       // Đảm bảo total_hours không âm
       if (timesheet.total_hours < 0) {
         timesheet.total_hours = 0;
@@ -113,7 +115,7 @@ export class TimesheetDetailService {
 
       // Cập nhật chi tiết timesheet
       Object.assign(timesheetDetail, updateTimesheetDetailDto);
-      
+
       // Lưu và trả về chi tiết timesheet đã cập nhật
       return this.timesheetDetailRepository.save(timesheetDetail);
     } catch (error) {

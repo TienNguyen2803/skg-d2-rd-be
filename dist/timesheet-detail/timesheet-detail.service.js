@@ -58,23 +58,35 @@ let TimesheetDetailService = exports.TimesheetDetailService = class TimesheetDet
         return timesheetDetail;
     }
     async update(id, updateTimesheetDetailDto) {
-        const timesheetDetail = await this.findOne(id);
-        if (!timesheetDetail) {
-            throw new common_1.NotFoundException(`Timesheet detail with ID ${id} not found`);
+        try {
+            const timesheetDetail = await this.findOne(id);
+            if (!timesheetDetail) {
+                throw new common_1.NotFoundException(`Timesheet detail with ID ${id} not found`);
+            }
+            const timesheet = await this.timesheetRepository.findOne({
+                where: { id: timesheetDetail.timesheet_id },
+            });
+            if (!timesheet) {
+                throw new common_1.NotFoundException(`Timesheet with ID ${timesheetDetail.timesheet_id} not found`);
+            }
+            const oldOtHours = timesheetDetail.ot_hours || 0;
+            const newOtHours = updateTimesheetDetailDto.ot_hours !== undefined
+                ? Number(updateTimesheetDetailDto.ot_hours)
+                : oldOtHours;
+            timesheet.total_hours = (timesheet.total_hours || 0) - oldOtHours + newOtHours;
+            console.log(timesheet);
+            console.log(timesheet.total_hours, oldOtHours, newOtHours);
+            console.log(timesheet.total_hours - oldOtHours + newOtHours);
+            if (timesheet.total_hours < 0) {
+                timesheet.total_hours = 0;
+            }
+            await this.timesheetRepository.save(timesheet);
+            Object.assign(timesheetDetail, updateTimesheetDetailDto);
+            return this.timesheetDetailRepository.save(timesheetDetail);
         }
-        const timesheet = await this.timesheetRepository.findOne({
-            where: { id: timesheetDetail.timesheet_id },
-        });
-        if (!timesheet) {
-            throw new common_1.NotFoundException(`Timesheet with ID ${timesheetDetail.timesheet_id} not found`);
+        catch (error) {
+            throw new Error('Error updating timesheet detail: ' + error.message);
         }
-        console.log("updateTimesheetDetailDto", updateTimesheetDetailDto);
-        timesheet.total_hours = timesheet.total_hours - timesheetDetail.ot_hours + updateTimesheetDetailDto.ot_hours;
-        console.log(timesheet.total_hours, timesheetDetail.ot_hours, updateTimesheetDetailDto.ot_hours);
-        console.log("timesheet.total_hours", timesheet.total_hours);
-        await this.timesheetRepository.save(timesheet);
-        Object.assign(timesheetDetail, updateTimesheetDetailDto);
-        return this.timesheetDetailRepository.save(timesheetDetail);
     }
     async remove(id) {
         try {
