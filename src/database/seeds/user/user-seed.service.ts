@@ -1,6 +1,9 @@
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from 'src/roles/entities/role.entity';
 import { RoleEnum } from 'src/roles/roles.enum';
+import { Status } from 'src/statuses/entities/status.entity';
 import { StatusEnum } from 'src/statuses/statuses.enum';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -10,6 +13,10 @@ export class UserSeedService {
   constructor(
     @InjectRepository(User)
     private repository: Repository<User>,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
+    @InjectRepository(Status)
+    private statusRepository: Repository<Status>,
   ) {}
 
   async run() {
@@ -18,21 +25,28 @@ export class UserSeedService {
 
     // Nếu chưa có người dùng nào, tạo tài khoản Admin
     if (userCount === 0) {
+      // Tìm role ADMIN trong cơ sở dữ liệu
+      const adminRole = await this.roleRepository.findOne({
+        where: {
+          code: 'ADMIN',
+        },
+      });
+
+      // Tìm status ACTIVE trong cơ sở dữ liệu
+      const activeStatus = await this.statusRepository.findOne({
+        where: {
+          id: StatusEnum.active,
+        },
+      });
+
       await this.repository.save(
         this.repository.create({
           firstName: 'Super',
           lastName: 'Admin',
           email: 'admin@example.com',
           password: 'secret',
-          role: {
-            id: RoleEnum.admin,
-            name: 'Admin',
-            code: 'ADMIN',
-          },
-          status: {
-            id: StatusEnum.active,
-            name: 'Active',
-          },
+          role: adminRole || null,
+          status: activeStatus || null,
         }),
       );
 
