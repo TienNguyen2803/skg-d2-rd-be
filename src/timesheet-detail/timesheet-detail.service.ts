@@ -77,32 +77,48 @@ export class TimesheetDetailService {
   }
 
   async update(id: number, updateTimesheetDetailDto: UpdateTimesheetDetailDto): Promise<TimesheetDetail> {
+    try {
+      // Tìm chi tiết timesheet hiện tại
+      const timesheetDetail = await this.findOne(id);
+      if (!timesheetDetail) {
+        throw new NotFoundException(`Timesheet detail with ID ${id} not found`);
+      }
 
-    const timesheetDetail = await this.findOne(id);
-    if (!timesheetDetail) {
-      throw new NotFoundException(`Timesheet detail with ID ${id} not found`);
+      // Tìm timesheet liên quan
+      const timesheet = await this.timesheetRepository.findOne({
+        where: { id: timesheetDetail.timesheet_id },
+      });
+
+      if (!timesheet) {
+        throw new NotFoundException(`Timesheet with ID ${timesheetDetail.timesheet_id} not found`);
+      }
+
+      // Lấy giá trị ot_hours mới từ DTO
+      const oldOtHours = timesheetDetail.ot_hours || 0;
+      const newOtHours = updateTimesheetDetailDto.ot_hours !== undefined 
+        ? Number(updateTimesheetDetailDto.ot_hours) 
+        : oldOtHours;
+
+      // Cập nhật tổng số giờ làm việc của timesheet
+      // Trừ đi giá trị cũ và cộng thêm giá trị mới
+      timesheet.total_hours = (timesheet.total_hours || 0) - oldOtHours + newOtHours;
+
+      // Đảm bảo total_hours không âm
+      if (timesheet.total_hours < 0) {
+        timesheet.total_hours = 0;
+      }
+
+      // Lưu timesheet đã cập nhật
+      await this.timesheetRepository.save(timesheet);
+
+      // Cập nhật chi tiết timesheet
+      Object.assign(timesheetDetail, updateTimesheetDetailDto);
+      
+      // Lưu và trả về chi tiết timesheet đã cập nhật
+      return this.timesheetDetailRepository.save(timesheetDetail);
+    } catch (error) {
+      throw new Error('Error updating timesheet detail: ' + error.message);
     }
-
-    // Find the related timesheet
-    const timesheet = await this.timesheetRepository.findOne({
-      where: { id: timesheetDetail.timesheet_id },
-    });
-
-    if (!timesheet) {
-      throw new NotFoundException(`Timesheet with ID ${timesheetDetail.timesheet_id} not found`);
-    }
-
-
-    console.log("updateTimesheetDetailDto", updateTimesheetDetailDto)
-
-    // Update timesheet total_hours by subtracting detail's ot_hours
-    timesheet.total_hours = timesheet.total_hours - timesheetDetail.ot_hours + (updateTimesheetDetailDto as any).ot_hours;
-
-    console.log(timesheet.total_hours, timesheetDetail.ot_hours, (updateTimesheetDetailDto as any).ot_hours)
-    console.log("timesheet.total_hours", timesheet.total_hours)
-    await this.timesheetRepository.save(timesheet);
-    Object.assign(timesheetDetail, updateTimesheetDetailDto);
-    return this.timesheetDetailRepository.save(timesheetDetail);
   }
 
   async remove(id: number): Promise<void> {
