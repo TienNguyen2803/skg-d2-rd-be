@@ -23,24 +23,26 @@ let RoleSeedService = exports.RoleSeedService = class RoleSeedService {
         this.repository = repository;
     }
     async run() {
-        const countUser = await this.repository.count({
+        const existingUserRole = await this.repository.findOne({
             where: {
-                id: roles_enum_1.RoleEnum.user,
+                code: 'USER',
             },
         });
-        if (!countUser) {
+        if (!existingUserRole) {
             await this.repository.save(this.repository.create({
+                id: roles_enum_1.RoleEnum.user,
                 name: 'User',
                 code: 'USER'
             }));
         }
-        const countAdmin = await this.repository.count({
+        const existingAdminRole = await this.repository.findOne({
             where: {
-                id: roles_enum_1.RoleEnum.admin,
+                code: 'ADMIN',
             },
         });
-        if (!countAdmin) {
+        if (!existingAdminRole) {
             await this.repository.save(this.repository.create({
+                id: roles_enum_1.RoleEnum.admin,
                 name: 'Admin',
                 code: 'ADMIN'
             }));
