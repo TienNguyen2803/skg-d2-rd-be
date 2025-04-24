@@ -57,6 +57,17 @@ export class UserRolesController {
     return this.userRolesService.createUserRoles(createUserRolesDto);
   }
 
+  @Get('role/:roleId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get all users by role ID' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of users for the specified role',
+    type: [UserRole],
+  })
+  findUsersByRoleId(@Param('roleId', ParseIntPipe) roleId: number) {
+    return this.userRolesService.findUsersByRoleId(roleId);
+  }
 
   @Delete('user/:userId')
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -51,6 +51,13 @@ export class UserRolesService {
     });
   }
 
+  async findUsersByRoleId(roleId: number): Promise<UserRole[]> {
+    return this.userRoleRepository.find({
+      where: { role_id: roleId },
+      relations: ['user', 'user.department', 'user.status']
+    });
+  }
+
   async removeUserRole(userId: number, roleId: number): Promise<void> {
     await this.userRoleRepository.delete({
       user_id: userId,
