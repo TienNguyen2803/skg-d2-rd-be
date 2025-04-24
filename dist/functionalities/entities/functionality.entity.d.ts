@@ -4,5 +4,6 @@ export declare class Functionality extends EntityHelper {
     id: number;
     name: string;
     description: string;
+    resource: string;
     permissions: Permission[];
 }

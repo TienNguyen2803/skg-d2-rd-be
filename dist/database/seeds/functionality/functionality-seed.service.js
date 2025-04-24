@@ -23,8 +23,8 @@ let FunctionalitySeedService = exports.FunctionalitySeedService = class Function
     }
     async run() {
         const functionalities = [
-            { id: 1, name: 'Timesheet', description: "Bảng chấm công" },
-            { id: 2, name: 'Project', description: "Quản lý dự án" },
+            { id: 1, name: 'Timesheet', resource: "timesheets", description: "Bảng chấm công" },
+            { id: 2, name: 'Project', resource: "projects", description: "Quản lý dự án" },
         ];
         for (const functionality of functionalities) {
             const exists = await this.repository.findOne({ where: { id: functionality.id } });

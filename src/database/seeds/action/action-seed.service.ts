@@ -13,12 +13,12 @@ export class ActionSeedService {
 
   async run() {
     const actions = [
-      { id: 1, name: 'view', description: "Xem" },
-      { id: 2, name: 'edit', description: "Sửa" },
-      { id: 3, name: 'delete', description: "Xoá" },
-      { id: 4, name: 'create', description: "Tạo" },
-      { id: 5, name: 'approve', description: "Phê duyệt" },
-      { id: 6, name: 'reject', description: "Từ chối" },
+      { id: 1, name: 'view', code: "list", description: "Xem" },
+      { id: 2, name: 'edit', code: "edit", description: "Sửa" },
+      { id: 3, name: 'delete', code: "delete", description: "Xoá" },
+      { id: 4, name: 'create', code: "create", description: "Tạo" },
+      { id: 5, name: 'approve', code: "edit", description: "Phê duyệt" },
+      { id: 6, name: 'reject', code: "reject", description: "Từ chối" },
     ];
 
     for (const action of actions) {

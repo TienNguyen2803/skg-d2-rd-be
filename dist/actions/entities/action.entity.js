@@ -28,6 +28,10 @@ __decorate([
     __metadata("design:type", String)
 ], Action.prototype, "description", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: String, length: 50, nullable: true }),
+    __metadata("design:type", String)
+], Action.prototype, "code", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => permission_entity_1.Permission, (permission) => permission.action),
     __metadata("design:type", Array)
 ], Action.prototype, "permissions", void 0);

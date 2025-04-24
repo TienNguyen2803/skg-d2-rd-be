@@ -4,5 +4,6 @@ export declare class Action extends EntityHelper {
     id: number;
     name: string;
     description: string;
+    code: string;
     permissions: Permission[];
 }
