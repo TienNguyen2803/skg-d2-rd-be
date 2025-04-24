@@ -60,7 +60,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserRolesController.prototype, "findUsersByRoleId", null);
 __decorate([
-    (0, common_1.Delete)(':userId/:roleId'),
+    (0, common_1.Delete)(':user_id/:role_id'),
     (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
     (0, swagger_1.ApiOperation)({ summary: 'Remove specific role from user' }),
     (0, swagger_1.ApiResponse)({

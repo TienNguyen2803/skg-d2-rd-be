@@ -65,7 +65,7 @@ let UserRolesService = exports.UserRolesService = class UserRolesService {
             }
         });
         if (userRole) {
-            await this.userRoleRepository.softDelete({
+            await this.userRoleRepository.delete({
                 user_id: userId,
                 role_id: roleId,
             });

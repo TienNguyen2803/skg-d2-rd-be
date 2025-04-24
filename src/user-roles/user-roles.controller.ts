@@ -54,7 +54,7 @@ export class UserRolesController {
     return this.userRolesService.findUsersByRoleId(roleId);
   }
 
-  @Delete(':userId/:roleId')
+  @Delete(':user_id/:role_id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Remove specific role from user' })
   @ApiResponse({
