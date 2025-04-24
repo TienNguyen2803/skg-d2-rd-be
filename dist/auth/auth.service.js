@@ -34,6 +34,7 @@ let AuthService = exports.AuthService = class AuthService {
     }
     async validateLogin(loginDto) {
         const user = await this.usersService.findByEmail(loginDto.email);
+        console.log("user", user);
         if (!user) {
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.UNPROCESSABLE_ENTITY,

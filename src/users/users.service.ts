@@ -73,7 +73,7 @@ export class UsersService {
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['department',  'status'],
+      relations: ['department', 'status'],
     });
 
     if (!user) {
@@ -86,7 +86,7 @@ export class UsersService {
   async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { email },
-      relations: ['department',  'status'],
+      relations: ['department', 'status', 'userRoles', 'userRoles.role'],
     });
 
     if (!user) {
@@ -99,7 +99,7 @@ export class UsersService {
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['department',  'status'],
+      relations: ['department', 'status'],
     });
 
     if (!user) {
@@ -123,7 +123,7 @@ export class UsersService {
 
     return this.userRepository.findOneOrFail({
       where: { id },
-      relations: ['department',  'status'],
+      relations: ['department', 'status'],
     });
   }
 

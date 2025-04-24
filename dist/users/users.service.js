@@ -69,7 +69,7 @@ let UsersService = exports.UsersService = class UsersService {
     async findByEmail(email) {
         const user = await this.userRepository.findOne({
             where: { email },
-            relations: ['department', 'status'],
+            relations: ['department', 'status', 'userRoles', 'userRoles.role'],
         });
         if (!user) {
             throw new common_1.NotFoundException(`User with ID ${email} not found`);
