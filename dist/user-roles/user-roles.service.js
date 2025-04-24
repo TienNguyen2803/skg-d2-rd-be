@@ -28,21 +28,6 @@ let UserRolesService = exports.UserRolesService = class UserRolesService {
         });
         return this.userRoleRepository.save(userRole);
     }
-    async findUserRoles(userId) {
-        return this.userRoleRepository.find({
-            where: { user_id: userId },
-            relations: ['role'],
-        });
-    }
-    async removeUserRole(userId, roleId) {
-        await this.userRoleRepository.delete({
-            user_id: userId,
-            role_id: roleId,
-        });
-    }
-    async removeAllUserRoles(userId) {
-        await this.userRoleRepository.delete({ user_id: userId });
-    }
 };
 exports.UserRolesService = UserRolesService = __decorate([
     (0, common_1.Injectable)(),

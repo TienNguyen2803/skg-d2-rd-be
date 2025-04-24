@@ -127,6 +127,7 @@ exports.AppModule = AppModule = __decorate([
             roles_module_1.RolesModule,
             statuses_module_1.StatusesModule,
             project_types_module_1.ProjectTypesModule,
+            user_roles_module_1.UserRolesModule,
         ],
     })
 ], AppModule);
