@@ -1,12 +1,9 @@
 import { UserRolesService } from './user-roles.service';
-import { UserRole } from './entities/user-role.entity';
 import { CreateUserRolesDto } from './dto/create-user-roles.dto';
-export declare class UserRolesController {
+export declare class UserRolesApiController {
     private readonly userRolesService;
     constructor(userRolesService: UserRolesService);
-    create(userId: number, roleId: number): Promise<UserRole>;
     createUserRoles(createUserRolesDto: CreateUserRolesDto): Promise<{
         message: string;
     }>;
-    removeAll(userId: number): Promise<void>;
 }

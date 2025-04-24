@@ -16,15 +16,20 @@ exports.UserRolesController = void 0;
 const common_1 = require("@nestjs/common");
 const user_roles_service_1 = require("./user-roles.service");
 const swagger_1 = require("@nestjs/swagger");
-const passport_1 = require("@nestjs/passport");
-const roles_guard_1 = require("../roles/roles.guard");
 const user_role_entity_1 = require("./entities/user-role.entity");
+const create_user_roles_dto_1 = require("./dto/create-user-roles.dto");
 let UserRolesController = exports.UserRolesController = class UserRolesController {
     constructor(userRolesService) {
         this.userRolesService = userRolesService;
     }
     create(userId, roleId) {
         return this.userRolesService.createUserRole(userId, roleId);
+    }
+    createUserRoles(createUserRolesDto) {
+        return this.userRolesService.createUserRoles(createUserRolesDto);
+    }
+    removeAll(userId) {
+        return this.userRolesService.removeAllUserRoles(userId);
     }
 };
 __decorate([
@@ -42,9 +47,33 @@ __decorate([
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", void 0)
 ], UserRolesController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, swagger_1.ApiOperation)({ summary: 'Assign multiple roles to users' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.CREATED,
+        description: 'Roles have been successfully assigned to users.',
+    }),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_user_roles_dto_1.CreateUserRolesDto]),
+    __metadata("design:returntype", void 0)
+], UserRolesController.prototype, "createUserRoles", null);
+__decorate([
+    (0, common_1.Delete)('user/:userId'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
+    (0, swagger_1.ApiOperation)({ summary: 'Remove all roles from user' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.NO_CONTENT,
+        description: 'All roles have been successfully removed from user',
+    }),
+    __param(0, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], UserRolesController.prototype, "removeAll", null);
 exports.UserRolesController = UserRolesController = __decorate([
-    (0, swagger_1.ApiBearerAuth)(),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
     (0, swagger_1.ApiTags)('User Roles'),
     (0, common_1.Controller)({
         path: 'user-roles',

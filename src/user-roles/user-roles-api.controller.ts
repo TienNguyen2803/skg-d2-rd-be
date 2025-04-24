@@ -14,11 +14,11 @@ import { UserRolesService } from './user-roles.service';
 import { CreateUserRolesDto } from './dto/create-user-roles.dto';
 
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('User Roles API')
 @Controller('api/user_roles')
 export class UserRolesApiController {
-  constructor(private readonly userRolesService: UserRolesService) {}
+  constructor(private readonly userRolesService: UserRolesService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

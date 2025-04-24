@@ -20,9 +20,9 @@ import { RoleEnum } from 'src/roles/roles.enum';
 import { Roles } from 'src/roles/roles.decorator';
 import { CreateUserRolesDto } from './dto/create-user-roles.dto';
 
-@ApiBearerAuth()
+// @ApiBearerAuth()
 // @Roles(RoleEnum.admin)
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+// @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiTags('User Roles')
 @Controller({
   path: 'user-roles',
@@ -57,31 +57,6 @@ export class UserRolesController {
     return this.userRolesService.createUserRoles(createUserRolesDto);
   }
 
-  @Get('user/:userId')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Get roles for a user' })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'List of roles for the specified user',
-    type: [UserRole],
-  })
-  findUserRoles(@Param('userId', ParseIntPipe) userId: number) {
-    return this.userRolesService.findUserRoles(userId);
-  }
-
-  @Delete(':userId/:roleId')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Remove role from user' })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Role has been successfully removed from user',
-  })
-  remove(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Param('roleId', ParseIntPipe) roleId: number,
-  ) {
-    return this.userRolesService.removeUserRole(userId, roleId);
-  }
 
   @Delete('user/:userId')
   @HttpCode(HttpStatus.NO_CONTENT)

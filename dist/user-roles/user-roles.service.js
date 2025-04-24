@@ -28,6 +28,38 @@ let UserRolesService = exports.UserRolesService = class UserRolesService {
         });
         return this.userRoleRepository.save(userRole);
     }
+    async createUserRoles(createUserRolesDto) {
+        try {
+            const { user_role_assignments } = createUserRolesDto;
+            const userRoles = user_role_assignments.map(assignment => this.userRoleRepository.create({
+                user_id: assignment.user_id,
+                role_id: assignment.role_id,
+            }));
+            await this.userRoleRepository.save(userRoles);
+            return { message: 'Cập nhật user_roles thành công' };
+        }
+        catch (error) {
+            throw new common_1.BadRequestException({
+                message: 'Cập nhật user_roles không thành công',
+                error: error.message
+            });
+        }
+    }
+    async findUserRoles(userId) {
+        return this.userRoleRepository.find({
+            where: { user_id: userId },
+            relations: ['role']
+        });
+    }
+    async removeUserRole(userId, roleId) {
+        await this.userRoleRepository.delete({
+            user_id: userId,
+            role_id: roleId,
+        });
+    }
+    async removeAllUserRoles(userId) {
+        await this.userRoleRepository.delete({ user_id: userId });
+    }
 };
 exports.UserRolesService = UserRolesService = __decorate([
     (0, common_1.Injectable)(),

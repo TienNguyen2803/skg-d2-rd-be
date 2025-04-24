@@ -51,7 +51,7 @@ import { UserRolesModule } from './user-roles/user-roles.module';
     SpaInfoModule,
     PermissionsModule,
     FunctionalitiesModule,
-    RolePermissionsModule, 
+    RolePermissionsModule,
     UserRolesModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -115,7 +115,7 @@ import { UserRolesModule } from './user-roles/user-roles.module';
     RolesModule,
     StatusesModule,
     ProjectTypesModule,
-    UserRolesModule, // Added UserRolesModule to imports
+    UserRolesModule,
   ],
 })
 export class AppModule { }
