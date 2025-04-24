@@ -9,6 +9,7 @@ import {
   HttpStatus,
   HttpCode,
   ParseIntPipe,
+  Body,
 } from '@nestjs/common';
 import { UserRolesService } from './user-roles.service';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -17,6 +18,7 @@ import { RolesGuard } from '../roles/roles.guard';
 import { UserRole } from './entities/user-role.entity';
 import { RoleEnum } from 'src/roles/roles.enum';
 import { Roles } from 'src/roles/roles.decorator';
+import { CreateUserRolesDto } from './dto/create-user-roles.dto';
 
 @ApiBearerAuth()
 // @Roles(RoleEnum.admin)
@@ -44,5 +46,51 @@ export class UserRolesController {
     return this.userRolesService.createUserRole(userId, roleId);
   }
 
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Assign multiple roles to users' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Roles have been successfully assigned to users.',
+  })
+  createUserRoles(@Body() createUserRolesDto: CreateUserRolesDto) {
+    return this.userRolesService.createUserRoles(createUserRolesDto);
+  }
 
+  @Get('user/:userId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get roles for a user' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of roles for the specified user',
+    type: [UserRole],
+  })
+  findUserRoles(@Param('userId', ParseIntPipe) userId: number) {
+    return this.userRolesService.findUserRoles(userId);
+  }
+
+  @Delete(':userId/:roleId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Remove role from user' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Role has been successfully removed from user',
+  })
+  remove(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('roleId', ParseIntPipe) roleId: number,
+  ) {
+    return this.userRolesService.removeUserRole(userId, roleId);
+  }
+
+  @Delete('user/:userId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Remove all roles from user' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'All roles have been successfully removed from user',
+  })
+  removeAll(@Param('userId', ParseIntPipe) userId: number) {
+    return this.userRolesService.removeAllUserRoles(userId);
+  }
 }
