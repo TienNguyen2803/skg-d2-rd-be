@@ -9,6 +9,7 @@ export declare class UserRolesService {
         message: string;
     }>;
     findUserRoles(userId: number): Promise<UserRole[]>;
+    findUsersByRoleId(roleId: number): Promise<UserRole[]>;
     removeUserRole(userId: number, roleId: number): Promise<void>;
     removeAllUserRoles(userId: number): Promise<void>;
 }

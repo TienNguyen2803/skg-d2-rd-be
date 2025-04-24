@@ -51,6 +51,12 @@ let UserRolesService = exports.UserRolesService = class UserRolesService {
             relations: ['role']
         });
     }
+    async findUsersByRoleId(roleId) {
+        return this.userRoleRepository.find({
+            where: { role_id: roleId },
+            relations: ['user', 'user.department', 'user.status']
+        });
+    }
     async removeUserRole(userId, roleId) {
         await this.userRoleRepository.delete({
             user_id: userId,

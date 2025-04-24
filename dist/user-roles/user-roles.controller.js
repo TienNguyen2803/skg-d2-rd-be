@@ -28,6 +28,9 @@ let UserRolesController = exports.UserRolesController = class UserRolesControlle
     createUserRoles(createUserRolesDto) {
         return this.userRolesService.createUserRoles(createUserRolesDto);
     }
+    findUsersByRoleId(roleId) {
+        return this.userRolesService.findUsersByRoleId(roleId);
+    }
     removeAll(userId) {
         return this.userRolesService.removeAllUserRoles(userId);
     }
@@ -60,6 +63,20 @@ __decorate([
     __metadata("design:paramtypes", [create_user_roles_dto_1.CreateUserRolesDto]),
     __metadata("design:returntype", void 0)
 ], UserRolesController.prototype, "createUserRoles", null);
+__decorate([
+    (0, common_1.Get)('role/:roleId'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, swagger_1.ApiOperation)({ summary: 'Get all users by role ID' }),
+    (0, swagger_1.ApiResponse)({
+        status: common_1.HttpStatus.OK,
+        description: 'List of users for the specified role',
+        type: [user_role_entity_1.UserRole],
+    }),
+    __param(0, (0, common_1.Param)('roleId', common_1.ParseIntPipe)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", void 0)
+], UserRolesController.prototype, "findUsersByRoleId", null);
 __decorate([
     (0, common_1.Delete)('user/:userId'),
     (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),

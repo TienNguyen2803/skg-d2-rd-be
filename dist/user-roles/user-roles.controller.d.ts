@@ -8,5 +8,6 @@ export declare class UserRolesController {
     createUserRoles(createUserRolesDto: CreateUserRolesDto): Promise<{
         message: string;
     }>;
+    findUsersByRoleId(roleId: number): Promise<UserRole[]>;
     removeAll(userId: number): Promise<void>;
 }
