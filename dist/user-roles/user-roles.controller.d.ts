@@ -4,10 +4,9 @@ import { CreateUserRolesDto } from './dto/create-user-roles.dto';
 export declare class UserRolesController {
     private readonly userRolesService;
     constructor(userRolesService: UserRolesService);
-    create(userId: number, roleId: number): Promise<UserRole>;
     createUserRoles(createUserRolesDto: CreateUserRolesDto): Promise<{
         message: string;
     }>;
     findUsersByRoleId(roleId: number): Promise<UserRole[]>;
-    removeAll(userId: number): Promise<void>;
+    remove(user_id: number, role_id: number): Promise<void>;
 }

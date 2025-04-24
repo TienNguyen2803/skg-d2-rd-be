@@ -31,21 +31,6 @@ import { CreateUserRolesDto } from './dto/create-user-roles.dto';
 export class UserRolesController {
   constructor(private readonly userRolesService: UserRolesService) { }
 
-  @Post(':userId/:roleId')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Assign role to user' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Role has been successfully assigned to user.',
-    type: UserRole,
-  })
-  create(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Param('roleId', ParseIntPipe) roleId: number,
-  ) {
-    return this.userRolesService.createUserRole(userId, roleId);
-  }
-
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Assign multiple roles to users' })
@@ -77,20 +62,10 @@ export class UserRolesController {
     description: 'Role has been successfully removed from user',
   })
   remove(
-    @Param('userId', ParseIntPipe) userId: number,
-    @Param('roleId', ParseIntPipe) roleId: number,
+    @Param('user_id', ParseIntPipe) user_id: number,
+    @Param('role_id', ParseIntPipe) role_id: number,
   ) {
-    return this.userRolesService.removeUserRole(userId, roleId);
+    return this.userRolesService.removeUserRole(user_id, role_id);
   }
 
-  @Delete('user/:userId')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Remove all roles from user' })
-  @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'All roles have been successfully removed from user',
-  })
-  removeAll(@Param('userId', ParseIntPipe) userId: number) {
-    return this.userRolesService.removeAllUserRoles(userId);
-  }
 }

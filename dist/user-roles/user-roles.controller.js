@@ -22,34 +22,16 @@ let UserRolesController = exports.UserRolesController = class UserRolesControlle
     constructor(userRolesService) {
         this.userRolesService = userRolesService;
     }
-    create(userId, roleId) {
-        return this.userRolesService.createUserRole(userId, roleId);
-    }
     createUserRoles(createUserRolesDto) {
         return this.userRolesService.createUserRoles(createUserRolesDto);
     }
     findUsersByRoleId(roleId) {
         return this.userRolesService.findUsersByRoleId(roleId);
     }
-    removeAll(userId) {
-        return this.userRolesService.removeAllUserRoles(userId);
+    remove(user_id, role_id) {
+        return this.userRolesService.removeUserRole(user_id, role_id);
     }
 };
-__decorate([
-    (0, common_1.Post)(':userId/:roleId'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    (0, swagger_1.ApiOperation)({ summary: 'Assign role to user' }),
-    (0, swagger_1.ApiResponse)({
-        status: common_1.HttpStatus.CREATED,
-        description: 'Role has been successfully assigned to user.',
-        type: user_role_entity_1.UserRole,
-    }),
-    __param(0, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Param)('roleId', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number]),
-    __metadata("design:returntype", void 0)
-], UserRolesController.prototype, "create", null);
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
@@ -78,18 +60,19 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserRolesController.prototype, "findUsersByRoleId", null);
 __decorate([
-    (0, common_1.Delete)('user/:userId'),
+    (0, common_1.Delete)(':userId/:roleId'),
     (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
-    (0, swagger_1.ApiOperation)({ summary: 'Remove all roles from user' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Remove specific role from user' }),
     (0, swagger_1.ApiResponse)({
         status: common_1.HttpStatus.NO_CONTENT,
-        description: 'All roles have been successfully removed from user',
+        description: 'Role has been successfully removed from user',
     }),
-    __param(0, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
+    __param(0, (0, common_1.Param)('user_id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Param)('role_id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", void 0)
-], UserRolesController.prototype, "removeAll", null);
+], UserRolesController.prototype, "remove", null);
 exports.UserRolesController = UserRolesController = __decorate([
     (0, swagger_1.ApiTags)('User Roles'),
     (0, common_1.Controller)({
