@@ -4,6 +4,7 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '../../users/entities/user.entity';
@@ -34,4 +35,5 @@ export class UserRole extends EntityHelper {
   })
   @JoinColumn({ name: 'role_id' })
   role: Role;
+
 }

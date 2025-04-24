@@ -69,6 +69,20 @@ export class UserRolesController {
     return this.userRolesService.findUsersByRoleId(roleId);
   }
 
+  @Delete(':userId/:roleId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Remove specific role from user' })
+  @ApiResponse({
+    status: HttpStatus.NO_CONTENT,
+    description: 'Role has been successfully removed from user',
+  })
+  remove(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('roleId', ParseIntPipe) roleId: number,
+  ) {
+    return this.userRolesService.removeUserRole(userId, roleId);
+  }
+
   @Delete('user/:userId')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Remove all roles from user' })

@@ -59,13 +59,22 @@ export class UserRolesService {
   }
 
   async removeUserRole(userId: number, roleId: number): Promise<void> {
-    await this.userRoleRepository.delete({
-      user_id: userId,
-      role_id: roleId,
+    const userRole = await this.userRoleRepository.findOne({
+      where: {
+        user_id: userId,
+        role_id: roleId,
+      }
     });
+
+    if (userRole) {
+      await this.userRoleRepository.softDelete({
+        user_id: userId,
+        role_id: roleId,
+      });
+    }
   }
 
   async removeAllUserRoles(userId: number): Promise<void> {
-    await this.userRoleRepository.delete({ user_id: userId });
+    await this.userRoleRepository.softDelete({ user_id: userId });
   }
 }
