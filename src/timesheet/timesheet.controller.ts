@@ -59,7 +59,8 @@ export class TimesheetController {
     @Query('sort') sort?: string,
     @CurrentUser() user?,
   ) {
-    const isAdmin = user.role?.code === RoleEnum.admin;
+    console.log('user', user);
+    const isAdmin = user.role.includes(RoleEnum.admin);
     console.log(isAdmin)
 
     return standardPagination(

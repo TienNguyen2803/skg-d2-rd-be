@@ -33,8 +33,8 @@ let TimesheetController = exports.TimesheetController = class TimesheetControlle
         return this.timesheetService.create(createTimesheetDto, user.id);
     }
     async findAll(page, limit, filterQuery, sort, user) {
-        var _a;
-        const isAdmin = ((_a = user.role) === null || _a === void 0 ? void 0 : _a.code) === roles_enum_1.RoleEnum.admin;
+        console.log('user', user);
+        const isAdmin = user.role.includes(roles_enum_1.RoleEnum.admin);
         console.log(isAdmin);
         return (0, standard_pagination_1.standardPagination)(await this.timesheetService.findManyWithPagination({
             page,

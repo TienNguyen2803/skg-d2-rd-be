@@ -34,7 +34,6 @@ let AuthService = exports.AuthService = class AuthService {
     }
     async validateLogin(loginDto) {
         const user = await this.usersService.findByEmail(loginDto.email);
-        console.log("user", user);
         if (!user) {
             throw new common_1.HttpException({
                 status: common_1.HttpStatus.UNPROCESSABLE_ENTITY,
@@ -65,6 +64,7 @@ let AuthService = exports.AuthService = class AuthService {
         });
         const { token, refreshToken, tokenExpires } = await this.getTokensData({
             id: user.id,
+            role: user,
             sessionId: session.id,
         });
         return {
@@ -79,9 +79,11 @@ let AuthService = exports.AuthService = class AuthService {
             infer: true,
         });
         const tokenExpires = Date.now() + (0, ms_1.default)(tokenExpiresIn);
+        const roleUser = data.role.userRoles.map((userRole) => userRole.role.code);
         const [token, refreshToken] = await Promise.all([
             await this.jwtService.signAsync({
                 id: data.id,
+                role: roleUser,
                 sessionId: data.sessionId,
             }, {
                 secret: this.configService.getOrThrow('auth.secret', { infer: true }),

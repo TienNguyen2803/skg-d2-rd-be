@@ -45,7 +45,6 @@ export class AuthService {
 
   async validateLogin(loginDto: AuthEmailLoginDto): Promise<LoginResponseType> {
     const user = await this.usersService.findByEmail(loginDto.email);
-    console.log("user", user)
     if (!user) {
       throw new HttpException(
         {
@@ -93,7 +92,7 @@ export class AuthService {
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,
-      // role: user.role,
+      role: user,
       sessionId: session.id,
     });
 
@@ -413,7 +412,7 @@ export class AuthService {
 
   private async getTokensData(data: {
     id: User['id'];
-    // role: User['role'];
+    role: User;
     sessionId: Session['id'];
   }) {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
@@ -421,12 +420,12 @@ export class AuthService {
     });
 
     const tokenExpires = Date.now() + ms(tokenExpiresIn);
-
+    const roleUser = data.role.userRoles.map((userRole) => userRole.role.code)
     const [token, refreshToken] = await Promise.all([
       await this.jwtService.signAsync(
         {
           id: data.id,
-          // role: data.role,
+          role: roleUser,
           sessionId: data.sessionId,
         },
         {
