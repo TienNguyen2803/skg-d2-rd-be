@@ -14,6 +14,9 @@ export class Functionality extends EntityHelper {
   @Column({ type: String, nullable: true })
   description: string;
 
+  @Column({ type: String, nullable: true })
+  resource: string;
+
   @OneToMany(() => Permission, (permission) => permission.functionality)
   permissions: Permission[];
 }

@@ -14,6 +14,9 @@ export class Action extends EntityHelper {
   @Column({ type: String, nullable: true })
   description: string;
 
+  @Column({ type: String, length: 50, nullable: true })
+  code: string;
+
   @OneToMany(() => Permission, (permission) => permission.action)
   permissions: Permission[];
 }
