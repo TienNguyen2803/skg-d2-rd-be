@@ -24,6 +24,7 @@ export declare class User extends EntityHelper {
     deletedAt: Date;
     department: Department;
     department_id: number;
+    managed_department: Department;
     managed_projects: Project[];
     timesheets: Timesheet[];
 }

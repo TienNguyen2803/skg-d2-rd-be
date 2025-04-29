@@ -38,6 +38,15 @@ __decorate([
     __metadata("design:type", Array)
 ], Department.prototype, "users", void 0);
 __decorate([
+    (0, typeorm_1.OneToOne)(() => user_entity_1.User, (user) => user.managed_department),
+    (0, typeorm_1.JoinColumn)({ name: 'manager_id' }),
+    __metadata("design:type", user_entity_1.User)
+], Department.prototype, "manager", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: Number, nullable: true }),
+    __metadata("design:type", Number)
+], Department.prototype, "manager_id", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => project_entity_1.Project, (project) => project.department),
     __metadata("design:type", Array)
 ], Department.prototype, "projects", void 0);

@@ -33,4 +33,9 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], CreateDepartmentDto.prototype, "description", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ example: 1, required: false }),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], CreateDepartmentDto.prototype, "manager_id", void 0);
 //# sourceMappingURL=create-department.dto.js.map

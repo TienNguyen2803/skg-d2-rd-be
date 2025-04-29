@@ -12,6 +12,7 @@ import {
   BeforeUpdate,
   JoinColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { Status } from '../../statuses/entities/status.entity';
 import { Department } from '../../departments/entities/department.entity';

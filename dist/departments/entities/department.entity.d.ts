@@ -8,6 +8,8 @@ export declare class Department extends EntityHelper {
     code: string;
     description: string;
     users: User[];
+    manager: User;
+    manager_id: number;
     projects: Project[];
     timesheets: Timesheet[];
 }

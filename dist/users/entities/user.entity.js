@@ -131,6 +131,10 @@ __decorate([
     __metadata("design:type", Number)
 ], User.prototype, "department_id", void 0);
 __decorate([
+    (0, typeorm_1.OneToOne)(() => department_entity_1.Department, (department) => department.manager),
+    __metadata("design:type", department_entity_1.Department)
+], User.prototype, "managed_department", void 0);
+__decorate([
     (0, typeorm_1.OneToMany)(() => project_entity_1.Project, (project) => project.project_manager),
     __metadata("design:type", Array)
 ], User.prototype, "managed_projects", void 0);

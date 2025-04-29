@@ -7,6 +7,7 @@ import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { Department } from './entities/department.entity';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { FilterBuilder } from '../utils/filter-builder';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class DepartmentsService {
@@ -15,7 +16,7 @@ export class DepartmentsService {
     private departmentRepository: Repository<Department>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   private async validateManager(manager_id: number): Promise<void> {
     if (manager_id) {
@@ -29,7 +30,7 @@ export class DepartmentsService {
   }
 
   async create(createDepartmentDto: CreateDepartmentDto): Promise<Department> {
-    await this.validateManager(createDepartmentDto.manager_id);
+    await this.validateManager(createDepartmentDto.manager_id ?? 0);
     const department = this.departmentRepository.create(createDepartmentDto);
     return this.departmentRepository.save(department);
   }
@@ -43,7 +44,7 @@ export class DepartmentsService {
       ...FilterBuilder.buildFilter(filterQuery),
       skip: offset,
       take: limit,
-      relations: ['users'],
+      relations: ['users', 'manager'],
       order: sort ? { [sort.split(',')[0]]: sort.split(',')[1] } : { id: 'DESC' },
     };
 

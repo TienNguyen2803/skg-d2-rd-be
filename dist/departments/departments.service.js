@@ -18,16 +18,30 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const department_entity_1 = require("./entities/department.entity");
 const filter_builder_1 = require("../utils/filter-builder");
+const user_entity_1 = require("../users/entities/user.entity");
 let DepartmentsService = exports.DepartmentsService = class DepartmentsService {
-    constructor(departmentRepository) {
+    constructor(departmentRepository, userRepository) {
         this.departmentRepository = departmentRepository;
+        this.userRepository = userRepository;
+    }
+    async validateManager(manager_id) {
+        if (manager_id) {
+            const manager = await this.userRepository.findOne({
+                where: { id: manager_id }
+            });
+            if (!manager) {
+                throw new common_1.NotFoundException(`Manager with ID ${manager_id} not found`);
+            }
+        }
     }
     async create(createDepartmentDto) {
+        var _a;
+        await this.validateManager((_a = createDepartmentDto.manager_id) !== null && _a !== void 0 ? _a : 0);
         const department = this.departmentRepository.create(createDepartmentDto);
         return this.departmentRepository.save(department);
     }
     async findManyWithPagination({ page, limit, offset }, filterQuery, sort) {
-        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: offset, take: limit, relations: ['users'], order: sort ? { [sort.split(',')[0]]: sort.split(',')[1] } : { id: 'DESC' } });
+        const findOptions = Object.assign(Object.assign({}, filter_builder_1.FilterBuilder.buildFilter(filterQuery)), { skip: offset, take: limit, relations: ['users', 'manager'], order: sort ? { [sort.split(',')[0]]: sort.split(',')[1] } : { id: 'DESC' } });
         return this.departmentRepository.find(findOptions);
     }
     standardCount(filterQuery) {
@@ -57,6 +71,8 @@ let DepartmentsService = exports.DepartmentsService = class DepartmentsService {
 exports.DepartmentsService = DepartmentsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(department_entity_1.Department)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], DepartmentsService);
 //# sourceMappingURL=departments.service.js.map
