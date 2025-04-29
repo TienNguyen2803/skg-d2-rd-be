@@ -13,23 +13,9 @@ export class DepartmentsService {
   constructor(
     @InjectRepository(Department)
     private departmentRepository: Repository<Department>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
   ) {}
 
-  private async validateManager(manager_id: number): Promise<void> {
-    if (manager_id) {
-      const manager = await this.userRepository.findOne({
-        where: { id: manager_id }
-      });
-      if (!manager) {
-        throw new NotFoundException(`User with ID ${manager_id} not found`);
-      }
-    }
-  }
-
   async create(createDepartmentDto: CreateDepartmentDto): Promise<Department> {
-    await this.validateManager(createDepartmentDto.manager_id);
     const department = this.departmentRepository.create(createDepartmentDto);
     return this.departmentRepository.save(department);
   }
@@ -72,7 +58,6 @@ export class DepartmentsService {
     id: number,
     updateDepartmentDto: UpdateDepartmentDto,
   ): Promise<Department> {
-    await this.validateManager(updateDepartmentDto.manager_id);
     const department = await this.findOne(id);
     Object.assign(department, updateDepartmentDto);
     return this.departmentRepository.save(department);

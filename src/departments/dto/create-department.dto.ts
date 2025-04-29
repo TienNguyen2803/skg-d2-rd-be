@@ -17,8 +17,4 @@ export class CreateDepartmentDto {
   @IsString()
   @IsOptional()
   description?: string;
-
-  @ApiProperty({ example: 1 })
-  @IsOptional()
-  manager_id?: number;
 }

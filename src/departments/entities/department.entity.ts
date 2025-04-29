@@ -27,16 +27,4 @@ export class Department extends EntityHelper {
 
   @OneToMany(() => Timesheet, (t) => t.department)
   timesheets: Timesheet[];
-
-  @ManyToOne(() => User, (user) => user.managed_departments, {
-    cascade: true,
-    onDelete: 'SET NULL',
-    onUpdate: 'CASCADE',
-    eager: true
-  })
-  @JoinColumn({ name: 'manager_id' })
-  manager: User;
-
-  @Column({ type: Number, nullable: true })
-  manager_id: number;
 }
