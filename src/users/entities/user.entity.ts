@@ -108,6 +108,9 @@ export class User extends EntityHelper {
   @Column({ type: Number, nullable: true })
   department_id: number;
 
+  @OneToOne(() => Department, (department) => department.manager)
+  managed_department: Department;
+
   @OneToMany(() => Project, (project) => project.project_manager)
   managed_projects: Project[];
 

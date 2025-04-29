@@ -22,6 +22,13 @@ export class Department extends EntityHelper {
   @OneToMany(() => User, (user) => user.department)
   users: User[];
 
+  @OneToOne(() => User, (user) => user.managed_department)
+  @JoinColumn({ name: 'manager_id' })
+  manager: User;
+
+  @Column({ type: Number, nullable: true })
+  manager_id: number;
+
   @OneToMany(() => Project, (project) => project.department)
   projects: Project[];
 
