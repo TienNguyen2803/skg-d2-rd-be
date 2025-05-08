@@ -144,7 +144,7 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "timesheets", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => employee_type_entity_1.EmployeeType, (employeeType) => employeeType.user, {
+    (0, typeorm_1.ManyToOne)(() => employee_type_entity_1.EmployeeType, (employeeType) => employeeType.users, {
         cascade: true,
         onDelete: 'SET NULL',
         onUpdate: 'CASCADE',

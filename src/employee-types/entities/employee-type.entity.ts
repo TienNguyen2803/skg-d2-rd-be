@@ -1,5 +1,5 @@
 
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '../../users/entities/user.entity';
 

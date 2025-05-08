@@ -5,5 +5,5 @@ export declare class EmployeeType extends EntityHelper {
     code: string;
     name: string;
     resource_effort: number;
-    user: User;
+    users: User[];
 }
