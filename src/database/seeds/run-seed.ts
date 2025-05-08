@@ -8,6 +8,7 @@ import { ProjectTypeSeedService } from './project-type/project-type-seed.service
 import { FunctionalitySeedService } from './functionality/functionality-seed.service';
 import { ActionSeedService } from './action/action-seed.service';
 import { PermissionSeedService } from './permission/permission-seed.service';
+import { EmployeeTypeSeedService } from './employee-type/employee-type-seed.service'; // Added import
 
 const runSeed = async () => {
   const app = await NestFactory.create(SeedModule);
@@ -21,9 +22,7 @@ const runSeed = async () => {
   const functionalitySeedService = app.get(FunctionalitySeedService);
   const actionSeedService = app.get(ActionSeedService);
   const permissionSeedService = app.get(PermissionSeedService);
-
-
-
+  const employeeTypeSeedService = app.get(EmployeeTypeSeedService); // Added get
 
   // Run the seeds
   await roleSeedService.run();
@@ -34,7 +33,7 @@ const runSeed = async () => {
   await functionalitySeedService.run();
   await actionSeedService.run();
   await permissionSeedService.run();
-
+  await employeeTypeSeedService.run(); // Added run
 
   await app.close();
 };

@@ -13,6 +13,7 @@ import { ProjectTypeSeedModule } from './project-type/project-type-seed.module';
 import { ActionSeedModule } from './action/action-seed.module';
 import { FunctionalitySeedModule } from './functionality/functionality-seed.module';
 import { PermissionSeedModule } from './permission/permission-seed.module';
+import { EmployeeTypeSeedModule } from './employee-type/employee-type-seed.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PermissionSeedModule } from './permission/permission-seed.module';
     ActionSeedModule,
     FunctionalitySeedModule,
     PermissionSeedModule,
+    EmployeeTypeSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
