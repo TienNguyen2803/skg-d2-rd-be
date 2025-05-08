@@ -23,6 +23,7 @@ import bcrypt from 'bcryptjs';
 import { EntityHelper } from 'src/utils/entity-helper';
 import { AuthProvidersEnum } from 'src/auth/auth-providers.enum';
 import { Exclude, Expose } from 'class-transformer';
+import { EmployeeType } from 'src/employee-types/entities/employee-type.entity';
 
 @Entity()
 export class User extends EntityHelper {

@@ -4,6 +4,7 @@ import { Project } from '../../projects/entities/project.entity';
 import { Timesheet } from '../../timesheet/entities/timesheet.entity';
 import { UserRole } from '../../user-roles/entities/user-role.entity';
 import { EntityHelper } from 'src/utils/entity-helper';
+import { EmployeeType } from 'src/employee-types/entities/employee-type.entity';
 export declare class User extends EntityHelper {
     id: number;
     email: string | null;
@@ -27,4 +28,6 @@ export declare class User extends EntityHelper {
     managed_department: Department;
     managed_projects: Project[];
     timesheets: Timesheet[];
+    employee_type: EmployeeType;
+    employee_type_id: number;
 }

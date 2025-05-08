@@ -11,5 +11,6 @@ export declare class UpdateUserDto extends UpdateUserDto_base {
     status?: Status;
     department_id?: number;
     department?: Department;
+    employee_type_id?: number;
 }
 export {};

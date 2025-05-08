@@ -23,6 +23,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const entity_helper_1 = require("../../utils/entity-helper");
 const auth_providers_enum_1 = require("../../auth/auth-providers.enum");
 const class_transformer_1 = require("class-transformer");
+const employee_type_entity_1 = require("../../employee-types/entities/employee-type.entity");
 let User = exports.User = class User extends entity_helper_1.EntityHelper {
     loadPreviousPassword() {
         this.previousPassword = this.password;
@@ -142,6 +143,20 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => timesheet_entity_1.Timesheet, (timesheet) => timesheet.creator),
     __metadata("design:type", Array)
 ], User.prototype, "timesheets", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => employee_type_entity_1.EmployeeType, (employeeType) => employeeType.user, {
+        cascade: true,
+        onDelete: 'SET NULL',
+        onUpdate: 'CASCADE',
+        eager: true
+    }),
+    (0, typeorm_1.JoinColumn)({ name: 'employee_type_id' }),
+    __metadata("design:type", employee_type_entity_1.EmployeeType)
+], User.prototype, "employee_type", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: Number, nullable: true }),
+    __metadata("design:type", Number)
+], User.prototype, "employee_type_id", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

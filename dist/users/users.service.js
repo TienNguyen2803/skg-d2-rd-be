@@ -30,6 +30,9 @@ let UsersService = exports.UsersService = class UsersService {
         if (createUserDto.department_id) {
             user.department = { id: createUserDto.department_id };
         }
+        if (createUserDto.employee_type_id) {
+            user.employee_type = { id: createUserDto.employee_type_id };
+        }
         await this.userRepository.save(user);
         return this.userRepository.findOneOrFail({
             where: { id: user.id },
@@ -104,6 +107,9 @@ let UsersService = exports.UsersService = class UsersService {
         }
         if (updateUserDto.department_id) {
             user.department = { id: updateUserDto.department_id };
+        }
+        if (updateUserDto.employee_type_id) {
+            user.employee_type = { id: updateUserDto.employee_type_id };
         }
         await this.userRepository.save(user);
         return this.userRepository.findOneOrFail({
