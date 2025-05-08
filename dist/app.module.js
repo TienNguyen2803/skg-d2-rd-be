@@ -51,11 +51,13 @@ const permissions_module_1 = require("./permissions/permissions.module");
 const functionalities_module_1 = require("./functionalities/functionalities.module");
 const role_permissions_module_1 = require("./role-permissions/role-permissions.module");
 const user_roles_module_1 = require("./user-roles/user-roles.module");
+const employee_types_module_1 = require("./employee-types/employee-types.module");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            employee_types_module_1.EmployeeTypesModule,
             timesheet_module_1.TimesheetModule,
             timesheet_detail_module_1.TimesheetDetailModule,
             departments_module_1.DepartmentsModule,
