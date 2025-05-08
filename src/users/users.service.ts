@@ -29,6 +29,10 @@ export class UsersService {
       user.department = { id: createUserDto.department_id } as any;
     }
 
+    if (createUserDto.employee_type_id) {
+      user.employee_type = { id: createUserDto.employee_type_id } as any;
+    }
+
     await this.userRepository.save(user);
 
     return this.userRepository.findOneOrFail({
@@ -132,6 +136,10 @@ export class UsersService {
     // Handle department relationship
     if (updateUserDto.department_id) {
       user.department = { id: updateUserDto.department_id } as any;
+    }
+
+    if (updateUserDto.employee_type_id) {
+      user.employee_type = { id: updateUserDto.employee_type_id } as any;
     }
 
     await this.userRepository.save(user);

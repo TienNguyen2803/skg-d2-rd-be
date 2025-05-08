@@ -117,4 +117,16 @@ export class User extends EntityHelper {
 
   @OneToMany(() => Timesheet, (timesheet) => timesheet.creator)
   timesheets: Timesheet[];
+
+  @OneToOne(() => EmployeeType, (employeeType) => employeeType.user, {
+    cascade: true,
+    onDelete: 'SET NULL',
+    onUpdate: 'CASCADE',
+    eager: true
+  })
+  @JoinColumn({ name: 'employee_type_id' })
+  employee_type: EmployeeType;
+
+  @Column({ type: Number, nullable: true })
+  employee_type_id: number;
 }

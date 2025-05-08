@@ -42,4 +42,7 @@ export class CreateUserDto {
   @IsOptional()
   department_id?: number;
 
+  @ApiProperty({ example: 1 })
+  @IsOptional()
+  employee_type_id?: number;
 }

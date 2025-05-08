@@ -41,4 +41,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({ type: () => Department })
   @IsOptional()
   department?: Department;
+
+  @ApiProperty({ example: 1 })
+  @IsOptional()
+  employee_type_id?: number;
 }
