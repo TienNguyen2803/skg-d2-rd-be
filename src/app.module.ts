@@ -40,10 +40,12 @@ import { PermissionsModule } from './permissions/permissions.module';
 import { FunctionalitiesModule } from './functionalities/functionalities.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { UserRolesModule } from './user-roles/user-roles.module';
+import { EmployeeTypesModule } from './employee-types/employee-types.module';
 
 
 @Module({
   imports: [
+    EmployeeTypesModule,
     TimesheetModule,
     TimesheetDetailModule,
     DepartmentsModule,
