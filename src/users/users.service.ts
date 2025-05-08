@@ -118,7 +118,7 @@ export class UsersService {
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['department', 'status'],
+      relations: ['department', 'status','employee_type'],
     });
 
     if (!user) {
@@ -137,7 +137,7 @@ export class UsersService {
     if (updateUserDto.department_id) {
       user.department = { id: updateUserDto.department_id } as any;
     }
-
+   console.log(updateUserDto.employee_type_id)
     if (updateUserDto.employee_type_id) {
       user.employee_type = { id: updateUserDto.employee_type_id } as any;
     }

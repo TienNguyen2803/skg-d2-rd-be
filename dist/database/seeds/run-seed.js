@@ -10,6 +10,7 @@ const project_type_seed_service_1 = require("./project-type/project-type-seed.se
 const functionality_seed_service_1 = require("./functionality/functionality-seed.service");
 const action_seed_service_1 = require("./action/action-seed.service");
 const permission_seed_service_1 = require("./permission/permission-seed.service");
+const employee_type_seed_service_1 = require("./employee-type/employee-type-seed.service");
 const runSeed = async () => {
     const app = await core_1.NestFactory.create(seed_module_1.SeedModule);
     const roleSeedService = app.get(role_seed_service_1.RoleSeedService);
@@ -20,6 +21,7 @@ const runSeed = async () => {
     const functionalitySeedService = app.get(functionality_seed_service_1.FunctionalitySeedService);
     const actionSeedService = app.get(action_seed_service_1.ActionSeedService);
     const permissionSeedService = app.get(permission_seed_service_1.PermissionSeedService);
+    const employeeTypeSeedService = app.get(employee_type_seed_service_1.EmployeeTypeSeedService);
     await roleSeedService.run();
     await statusSeedService.run();
     await userSeedService.run();
@@ -28,6 +30,7 @@ const runSeed = async () => {
     await functionalitySeedService.run();
     await actionSeedService.run();
     await permissionSeedService.run();
+    await employeeTypeSeedService.run();
     await app.close();
 };
 void runSeed();

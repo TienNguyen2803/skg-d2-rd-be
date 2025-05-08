@@ -25,6 +25,7 @@ const project_type_seed_module_1 = require("./project-type/project-type-seed.mod
 const action_seed_module_1 = require("./action/action-seed.module");
 const functionality_seed_module_1 = require("./functionality/functionality-seed.module");
 const permission_seed_module_1 = require("./permission/permission-seed.module");
+const employee_type_seed_module_1 = require("./employee-type/employee-type-seed.module");
 let SeedModule = exports.SeedModule = class SeedModule {
 };
 exports.SeedModule = SeedModule = __decorate([
@@ -38,6 +39,7 @@ exports.SeedModule = SeedModule = __decorate([
             action_seed_module_1.ActionSeedModule,
             functionality_seed_module_1.FunctionalitySeedModule,
             permission_seed_module_1.PermissionSeedModule,
+            employee_type_seed_module_1.EmployeeTypeSeedModule,
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 load: [database_config_1.default, app_config_1.default],

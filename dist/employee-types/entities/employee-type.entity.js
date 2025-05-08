@@ -28,7 +28,7 @@ __decorate([
     __metadata("design:type", String)
 ], EmployeeType.prototype, "name", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: Number }),
+    (0, typeorm_1.Column)({ type: 'double precision', nullable: true }),
     __metadata("design:type", Number)
 ], EmployeeType.prototype, "resource_effort", void 0);
 __decorate([
