@@ -17,6 +17,6 @@ export class EmployeeType extends EntityHelper {
   @Column({ type: 'double precision', nullable: true })
   resource_effort: number;
 
-  @OneToOne(() => User, (user) => user.employee_type)
-  user: User;
+  @OneToMany(() => User, (user) => user.employee_type)
+  users: User[];
 }
